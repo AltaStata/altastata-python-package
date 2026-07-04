@@ -202,7 +202,7 @@ register_altastata_functions_for_pytorch(f, "my_account")
 dataset = AltaStataPyTorchDataset("my_account", root_dir="Public/", file_pattern="*.jpg")
 ```
 
-See `examples/pytorch-example/` and `examples/tensorflow-example/`.
+See examples/pytorch-example/ and examples/tensorflow-example/.
 
 ---
 
@@ -222,7 +222,7 @@ f.add_event_listener(on_event)
 
 With gRPC / Web UI, SHARE and DELETE events also appear in the browser and via EventsService.Watch.
 
-See `examples/event-listener-example/`.
+See examples/event-listener-example/.
 
 ---
 

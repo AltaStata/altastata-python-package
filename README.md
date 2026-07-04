@@ -126,7 +126,7 @@ One bundled Java process (`altastata-grpc-server` / `altastata-services`) listen
 
 ### HPCS in Docker / Jupyter
 
-Mount a populated `grep11client.yaml` (e.g. `/etc/ep11client/grep11client.yaml`) and `hpcs-privkey.blob`. See [`containers/jupyter/README-Docker.md`](containers/jupyter/README-Docker.md).
+Mount a populated `grep11client.yaml` (e.g. `/etc/ep11client/grep11client.yaml`) and `hpcs-privkey.blob`. See [containers/jupyter/README-Docker.md](containers/jupyter/README-Docker.md).
 
 ---
 
@@ -165,7 +165,7 @@ with fs.open("Public/docs/policy.txt", "r") as fh:
     docs = [Document(page_content=fh.read(), metadata={"source": "Public/docs/policy.txt"})]
 ```
 
-`TextLoader`, `DirectoryLoader`, and other LangChain loaders work via the `altastata://` fsspec protocol once the filesystem is registered — see [`examples/fsspec-example/`](examples/fsspec-example/) and full RAG pipelines in [`examples/rag-example/`](examples/rag-example/).
+`TextLoader`, `DirectoryLoader`, and other LangChain loaders work via the `altastata://` fsspec protocol once the filesystem is registered — see [examples/fsspec-example/](examples/fsspec-example/) and full RAG pipelines in [examples/rag-example/](examples/rag-example/).
 
 ### Databricks / Apache Spark
 
@@ -262,8 +262,8 @@ Set `ALTASTATA_WEB_UI_DIR=` (empty) to disable the UI and run gRPC-only.
 
 ## More documentation
 
-- **Developers** (build wheel, bundle JAR + Console SPA, PyPI): [`README-developer.md`](README-developer.md)
-- **Examples**: [`examples/`](examples/)
+- **Developers** (build wheel, bundle JAR + Console SPA, PyPI): [README-developer.md](README-developer.md)
+- **Examples**: [examples/](examples/)
 
 ## Questions?
 

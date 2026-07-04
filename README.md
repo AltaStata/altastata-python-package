@@ -126,7 +126,7 @@ One bundled Java process (altastata-grpc-server / altastata-services) listens on
 
 ### HPCS in Docker / Jupyter
 
-Mount a populated grep11client.yaml (e.g. /etc/ep11client/grep11client.yaml) and hpcs-privkey.blob. See [containers/jupyter/README-Docker.md](containers/jupyter/README-Docker.md).
+Mount a populated grep11client.yaml (e.g. /etc/ep11client/grep11client.yaml) and hpcs-privkey.blob. See [containers/jupyter/README-Docker.md](https://github.com/SergeVil/altastata-python-package/tree/main/containers/jupyter/README-Docker.md).
 
 ---
 
@@ -165,7 +165,7 @@ with fs.open("Public/docs/policy.txt", "r") as fh:
     docs = [Document(page_content=fh.read(), metadata={"source": "Public/docs/policy.txt"})]
 ```
 
-TextLoader, DirectoryLoader, and other LangChain loaders work via the altastata:// fsspec protocol once the filesystem is registered — see [examples/fsspec-example/](examples/fsspec-example/) and full RAG pipelines in [examples/rag-example/](examples/rag-example/).
+TextLoader, DirectoryLoader, and other LangChain loaders work via the altastata:// fsspec protocol once the filesystem is registered — see [examples/fsspec-example/](https://github.com/SergeVil/altastata-python-package/tree/main/examples/fsspec-example/) and full RAG pipelines in [examples/rag-example/](https://github.com/SergeVil/altastata-python-package/tree/main/examples/rag-example/).
 
 ### Databricks / Apache Spark
 
@@ -202,7 +202,7 @@ register_altastata_functions_for_pytorch(f, "my_account")
 dataset = AltaStataPyTorchDataset("my_account", root_dir="Public/", file_pattern="*.jpg")
 ```
 
-See examples/pytorch-example/ and examples/tensorflow-example/.
+See [examples/pytorch-example/](https://github.com/SergeVil/altastata-python-package/tree/main/examples/pytorch-example/) and [examples/tensorflow-example/](https://github.com/SergeVil/altastata-python-package/tree/main/examples/tensorflow-example/).
 
 ---
 
@@ -222,7 +222,7 @@ f.add_event_listener(on_event)
 
 With gRPC / Web UI, SHARE and DELETE events also appear in the browser and via EventsService.Watch.
 
-See examples/event-listener-example/.
+See [examples/event-listener-example/](https://github.com/SergeVil/altastata-python-package/tree/main/examples/event-listener-example/).
 
 ---
 
@@ -262,8 +262,8 @@ Set ALTASTATA_WEB_UI_DIR= (empty) to disable the UI and run gRPC-only.
 
 ## More documentation
 
-- **Developers** (build wheel, bundle JAR + Console SPA, PyPI): [README-developer.md](README-developer.md)
-- **Examples**: [examples/](examples/)
+- **Developers** (build wheel, bundle JAR + Console SPA, PyPI): [README-developer.md](https://github.com/SergeVil/altastata-python-package/blob/main/README-developer.md)
+- **Examples**: [examples/](https://github.com/SergeVil/altastata-python-package/tree/main/examples/)
 
 ## Questions?
 

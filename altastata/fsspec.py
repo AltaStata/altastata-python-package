@@ -72,12 +72,17 @@ class AltaStataFileSystem(AbstractFileSystem):
                 try:
                     size_str = self.altastata_functions.get_file_attribute(base_path, None, "size")
                     size = int(size_str) if size_str else 0
+                    try:
+                        readers = self.altastata_functions.get_file_attribute(base_path, None, "readers") or ""
+                    except Exception:
+                        readers = ""
                     files.append({
                         "name": base_path,
                         "size": size,
                         "type": "file",
                         "created": None,
                         "modified": None,
+                        "readers": readers,
                     })
                 except Exception:
                     files.append({
@@ -86,6 +91,7 @@ class AltaStataFileSystem(AbstractFileSystem):
                         "type": "file",
                         "created": None,
                         "modified": None,
+                        "readers": "",
                     })
             else:
                 files.append(base_path)
@@ -99,14 +105,57 @@ class AltaStataFileSystem(AbstractFileSystem):
         size_str = self.altastata_functions.get_file_attribute(path, None, "size")
         size = int(size_str) if size_str else 0
         
+        owner = ""
+        readers = ""
+        try:
+            readers = self.altastata_functions.get_file_attribute(path, None, "readers") or ""
+        except Exception:
+            pass
+        
         return {
             "name": path,
             "size": size,
             "type": "file",
             "created": None,
             "modified": None,
+            "owner": owner,
+            "readers": readers,
         }
     
+    def share(self, path: str, users: List[str], including_subdirectories: bool = True,
+              time_start: Optional[str] = None, time_end: Optional[str] = None) -> List[Any]:
+        """
+        Share a file or directory with specific users.
+        
+        Args:
+            path: Cloud path prefix.
+            users: List of usernames to share with.
+            including_subdirectories: Share all files matching the prefix.
+            time_start: Filter file versions with creation time >= this value.
+            time_end: Filter file versions with creation time <= this value.
+        """
+        path = self._strip_protocol(path)
+        return self.altastata_functions.share_files(
+            path, including_subdirectories, time_start, time_end, users
+        )
+        
+    def revoke(self, path: str, users: List[str], including_subdirectories: bool = True,
+               time_start: Optional[str] = None, time_end: Optional[str] = None) -> List[Any]:
+        """
+        Revoke reader access for specific users from a file or directory.
+        
+        Args:
+            path: Cloud path prefix.
+            users: List of usernames to revoke access from.
+            including_subdirectories: Revoke for all files matching the prefix.
+            time_start: Filter file versions with creation time >= this value.
+            time_end: Filter file versions with creation time <= this value.
+        """
+        path = self._strip_protocol(path)
+        return self.altastata_functions.revoke_reader_access(
+            path, including_subdirectories, time_start, time_end, users
+        )
+
     def exists(self, path: str, **kwargs) -> bool:
         """Check if file exists (latest version)."""
         try:
@@ -115,6 +164,20 @@ class AltaStataFileSystem(AbstractFileSystem):
             return True
         except Exception:
             return False
+            
+    def list_users(self) -> List[str]:
+        """
+        List all users in the AltaStata organization (excluding the current user).
+        
+        Returns:
+            List of usernames.
+        """
+        try:
+            users_info = self.altastata_functions.grpc_client.list_users()
+            current_user = self.account_id
+            return [u.get("user_name", "") for u in users_info if u.get("user_name", "") != current_user]
+        except AttributeError:
+            raise NotImplementedError("list_users requires a gRPC-backed AltaStataFunctions client.")
     
     def open(self, path: str, mode: str = "rb", **kwargs) -> io.IOBase:
         """Open file for reading (latest version)."""

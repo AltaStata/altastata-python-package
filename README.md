@@ -8,18 +8,16 @@ pip install altastata
 
 ## What you get
 
-| Capability | How |
-|------------|-----|
-| Encrypted files in S3, Azure, IBM COS, etc. | `AltaStataFunctions` |
-| Standard Python file APIs | `fsspec` (`create_filesystem`) |
-| ML datasets | `AltaStataPyTorchDataset`, `AltaStataTensorFlowDataset` |
-| **LangChain** / RAG document loading | fsspec + `DirectoryLoader` / `TextLoader` |
-| **Databricks** / Apache Spark | AltaStata Hadoop FS (`altastata-hadoop` JAR) |
-| **Snowflake** external stages | S3 Gateway (port **9876**) or Snowpark Python + fsspec |
-| S3 tools (boto3, aws CLI, s3fs) | S3-compatible API on port **9876** |
-| gRPC API (Python `transport="grpc"`, JS clients) | `altastata-services` JVM on port **9877** |
-| Real-time share/delete events | gRPC `EventsService` or Web UI |
-| **Web UI** — Finder-style file manager in the browser | http://127.0.0.1:9877 (same JVM as gRPC) |
+- **Storage:** Encrypted files in S3, Azure, IBM COS, etc. (`AltaStataFunctions`)
+- **Pythonic APIs:** Standard Python file I/O via `fsspec` (`create_filesystem`)
+- **ML & AI:** Datasets (`AltaStataPyTorchDataset`, `AltaStataTensorFlowDataset`)
+- **RAG:** LangChain document loading (fsspec + `DirectoryLoader` / `TextLoader`)
+- **Big Data:** Databricks / Apache Spark (AltaStata Hadoop FS JAR)
+- **Data Warehousing:** Snowflake external stages (S3 Gateway) or Snowpark Python (fsspec)
+- **AWS Ecosystem:** S3 tools like boto3, aws CLI, and s3fs (S3-compatible API on port **9876**)
+- **Distributed apps:** gRPC API (Python `transport="grpc"`, JS clients via port **9877**)
+- **Real-time:** Real-time share/delete events (gRPC `EventsService` or Web UI)
+- **Web UI:** Finder-style file manager in the browser (http://127.0.0.1:9877)
 
 ---
 
@@ -38,12 +36,12 @@ amazon.rsa.bob123/
   public.key
 ```
 
-| Account type | Key files | Password |
-|--------------|-----------|----------|
-| **RSA** | `private.key`, `public.key` | Yes |
-| **PQC** | `kyber_private.key`, `dilithium_private.key`, … | Yes |
-| **HPCS** | `hpcs-privkey.blob`, `public.key`, `hpcs.marker` | No |
-| **HSM** | `*user.properties` only | No |
+**Account Types:**
+
+- **RSA:** Needs `private.key`, `public.key`, and a password.
+- **PQC:** Needs `kyber_private.key`, `dilithium_private.key`, etc., and a password.
+- **HPCS:** Needs `hpcs-privkey.blob`, `public.key`, `hpcs.marker`, and NO password (leave empty).
+- **HSM:** Needs `*user.properties` only, and NO password.
 
 ```python
 from altastata import AltaStataFunctions
@@ -123,10 +121,8 @@ print(f.list_cloud_versions("Public/", True))
 
 One bundled Java process (`altastata-grpc-server` / `altastata-services`) listens on:
 
-| Port | Service |
-|------|---------|
-| **9877** | gRPC (file ops, auth, events) + Web UI static files |
-| **9876** | S3-compatible REST API |
+- **9877**: gRPC (file ops, auth, events) + Web UI static files
+- **9876**: S3-compatible REST API
 
 ### HPCS in Docker / Jupyter
 
@@ -257,10 +253,8 @@ Open **http://127.0.0.1:9877** — Miller-column browser, upload/download, share
 
 **Sign in:** Settings → **Choose account folder** → **Sign in**
 
-| Account type | Password in Settings |
-|--------------|-------------------|
-| RSA / PQC | Your account password |
-| HPCS / HSM | Leave blank |
+- **RSA / PQC:** Use your account password.
+- **HPCS / HSM:** Leave the password blank.
 
 Set `ALTASTATA_WEB_UI_DIR=` (empty) to disable the UI and run gRPC-only.
 

@@ -27,7 +27,7 @@ Two equivalent ways to connect from Python:
 
 ### 1. Account folder on disk (typical)
 
-Each user keeps a directory under `~/.altastata/accounts/<display-name>/`:
+Each user keeps a directory under ~/.altastata/accounts/<display-name>/:
 
 ```
 amazon.rsa.bob123/
@@ -53,7 +53,7 @@ f = AltaStataFunctions.from_account_dir(
 )
 ```
 
-### 2. Inline credentials (`user_properties` + `private_key`)
+### 2. Inline credentials (user_properties + private_key)
 
 Pass the same text you would have in files — useful for notebooks, secrets managers, or CI:
 
@@ -89,13 +89,13 @@ altastata_functions = AltaStataFunctions.from_credentials(
 )
 ```
 
-Your org admin creates `*user.properties` after you send them `public.key` (RSA/PQC/HPCS).
+Your org admin creates *user.properties after you send them public.key (RSA/PQC/HPCS).
 
 ---
 
 ## Quick start (gRPC — recommended)
 
-`transport="grpc"` auto-starts the bundled Java gateway (Web UI + gRPC + S3).
+transport="grpc" auto-starts the bundled Java gateway (Web UI + gRPC + S3).
 
 ```python
 from altastata import AltaStataFunctions
@@ -169,12 +169,12 @@ TextLoader, DirectoryLoader, and other LangChain loaders work via the altastata:
 
 ### Databricks / Apache Spark
 
-Use the AltaStata Hadoop filesystem implementation so Spark jobs read encrypted paths on cluster storage (`altastata://…` or configured Hadoop URI). Deploy the `altastata-hadoop` shadow JAR on Databricks / Spark clusters.
+Use the AltaStata Hadoop filesystem implementation so Spark jobs read encrypted paths on cluster storage (altastata://… or configured Hadoop URI). Deploy the altastata-hadoop shadow JAR on Databricks / Spark clusters.
 
 ### Snowflake
 
-- **External stage via S3:** point Snowflake at the bundled S3 Gateway (`http://host:9876`) as an S3-compatible endpoint for encrypted objects in your backing bucket.
-- **Snowpark Python:** use fsspec / `create_filesystem` in Snowpark notebooks to read AltaStata paths with the same account credentials.
+- **External stage via S3:** point Snowflake at the bundled S3 Gateway (http://host:9876) as an S3-compatible endpoint for encrypted objects in your backing bucket.
+- **Snowpark Python:** use fsspec / create_filesystem in Snowpark notebooks to read AltaStata paths with the same account credentials.
 
 ---
 
@@ -220,7 +220,7 @@ f = AltaStataFunctions.from_account_dir(
 f.add_event_listener(on_event)
 ```
 
-With gRPC / Web UI, SHARE and DELETE events also appear in the browser and via `EventsService.Watch`.
+With gRPC / Web UI, SHARE and DELETE events also appear in the browser and via EventsService.Watch.
 
 See `examples/event-listener-example/`.
 
@@ -236,7 +236,7 @@ docker compose -f docker-compose.yml -f docker-compose-ghcr.yml up -d
 - JupyterLab: http://127.0.0.1:8888  
 - **Web UI** / gRPC: http://127.0.0.1:9877  
 
-Images: `ghcr.io/sergevil/altastata/jupyter-datascience-{arm64,amd64}:latest`
+Images: ghcr.io/sergevil/altastata/jupyter-datascience-{arm64,amd64}:latest
 
 ---
 

@@ -8,15 +8,15 @@ pip install altastata
 
 ## What you get
 
-- **Storage:** Encrypted files in S3, Azure, IBM COS, etc. (`AltaStataFunctions`)
-- **Pythonic APIs:** Standard Python file I/O via `fsspec` (`create_filesystem`)
-- **ML & AI:** Datasets (`AltaStataPyTorchDataset`, `AltaStataTensorFlowDataset`)
-- **RAG:** LangChain document loading (fsspec + `DirectoryLoader` / `TextLoader`)
+- **Storage:** Encrypted files in S3, Azure, IBM COS, etc. (AltaStataFunctions)
+- **Pythonic APIs:** Standard Python file I/O via fsspec (create_filesystem)
+- **ML & AI:** Datasets (AltaStataPyTorchDataset, AltaStataTensorFlowDataset)
+- **RAG:** LangChain document loading (fsspec + DirectoryLoader / TextLoader)
 - **Big Data:** Databricks / Apache Spark (AltaStata Hadoop FS JAR)
 - **Data Warehousing:** Snowflake external stages (S3 Gateway) or Snowpark Python (fsspec)
 - **AWS Ecosystem:** S3 tools like boto3, aws CLI, and s3fs (S3-compatible API on port **9876**)
-- **Distributed apps:** gRPC API (Python `transport="grpc"`, JS clients via port **9877**)
-- **Real-time:** Real-time share/delete events (gRPC `EventsService` or Web UI)
+- **Distributed apps:** gRPC API (Python transport="grpc", JS clients via port **9877**)
+- **Real-time:** Real-time share/delete events (gRPC EventsService or Web UI)
 - **Web UI:** Finder-style file manager in the browser (http://127.0.0.1:9877)
 
 ---
@@ -38,10 +38,10 @@ amazon.rsa.bob123/
 
 **Account Types:**
 
-- **RSA:** Needs `private.key`, `public.key`, and a password.
-- **PQC:** Needs `kyber_private.key`, `dilithium_private.key`, etc., and a password.
-- **HPCS:** Needs `hpcs-privkey.blob`, `public.key`, `hpcs.marker`, and NO password (leave empty).
-- **HSM:** Needs `*user.properties` only, and NO password.
+- **RSA:** Needs private.key, public.key, and a password.
+- **PQC:** Needs kyber_private.key, dilithium_private.key, etc., and a password.
+- **HPCS:** Needs hpcs-privkey.blob, public.key, hpcs.marker, and NO password (leave empty).
+- **HSM:** Needs *user.properties only, and NO password.
 
 ```python
 from altastata import AltaStataFunctions
@@ -119,14 +119,14 @@ print(f.list_cloud_versions("Public/", True))
 
 ### Ports
 
-One bundled Java process (`altastata-grpc-server` / `altastata-services`) listens on:
+One bundled Java process (altastata-grpc-server / altastata-services) listens on:
 
 - **9877**: gRPC (file ops, auth, events) + Web UI static files
 - **9876**: S3-compatible REST API
 
 ### HPCS in Docker / Jupyter
 
-Mount a populated `grep11client.yaml` (e.g. `/etc/ep11client/grep11client.yaml`) and `hpcs-privkey.blob`. See [containers/jupyter/README-Docker.md](containers/jupyter/README-Docker.md).
+Mount a populated grep11client.yaml (e.g. /etc/ep11client/grep11client.yaml) and hpcs-privkey.blob. See [containers/jupyter/README-Docker.md](containers/jupyter/README-Docker.md).
 
 ---
 
@@ -165,7 +165,7 @@ with fs.open("Public/docs/policy.txt", "r") as fh:
     docs = [Document(page_content=fh.read(), metadata={"source": "Public/docs/policy.txt"})]
 ```
 
-`TextLoader`, `DirectoryLoader`, and other LangChain loaders work via the `altastata://` fsspec protocol once the filesystem is registered — see [examples/fsspec-example/](examples/fsspec-example/) and full RAG pipelines in [examples/rag-example/](examples/rag-example/).
+TextLoader, DirectoryLoader, and other LangChain loaders work via the altastata:// fsspec protocol once the filesystem is registered — see [examples/fsspec-example/](examples/fsspec-example/) and full RAG pipelines in [examples/rag-example/](examples/rag-example/).
 
 ### Databricks / Apache Spark
 
@@ -256,7 +256,7 @@ Open **http://127.0.0.1:9877** — Miller-column browser, upload/download, share
 - **RSA / PQC:** Use your account password.
 - **HPCS / HSM:** Leave the password blank.
 
-Set `ALTASTATA_WEB_UI_DIR=` (empty) to disable the UI and run gRPC-only.
+Set ALTASTATA_WEB_UI_DIR= (empty) to disable the UI and run gRPC-only.
 
 ---
 

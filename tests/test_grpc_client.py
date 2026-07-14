@@ -285,6 +285,37 @@ class GrpcClientTests(unittest.TestCase):
         self.assertEqual("sess-rsa-token", token)
         auth_stub_mock.LoginV2.assert_called_once()
 
+    @patch("altastata.grpc_client._is_port_open", return_value=True)
+    @patch("altastata.grpc_client._login_v2", return_value="sess-licensed")
+    def test_from_upload_passes_license_and_org_ca(self, mock_login, _mock_port):
+        from altastata.grpc_client import AltaStataGrpcClient, GrpcEndpoint
+
+        client = AltaStataGrpcClient.from_upload(
+            "myuser=bob123\nacccontainer-prefix=altastata-test-\naccounttype=amazon-s3-secure\n",
+            {
+                "private.key": "pem",
+                "license.jwt": "jwt.payload.sig",
+                "org-ca.pem": "-----BEGIN PUBLIC KEY-----\nX\n-----END PUBLIC KEY-----",
+            },
+            password="123",
+            endpoint=GrpcEndpoint(host="127.0.0.1", port=9877, secure=False),
+            auto_start_server=False,
+        )
+        try:
+            self.assertEqual(client._user_name, "bob123")
+            _props, files = client._login_upload
+            self.assertIn("license.jwt", files)
+            self.assertIn("org-ca.pem", files)
+            self.assertEqual(files["license.jwt"], b"jwt.payload.sig")
+            mock_login.assert_called_once()
+            kwargs = mock_login.call_args.kwargs
+            self.assertEqual(kwargs["account_files"]["private.key"], b"pem")
+        finally:
+            try:
+                client.close()
+            except Exception:
+                pass
+
     @patch("altastata.grpc_client.subprocess.Popen")
     @patch("altastata.grpc_client._find_bundled_grpc_uber_jar")
     @patch("altastata.grpc_client._build_bundled_grpc_classpath")

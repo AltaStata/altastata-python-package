@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Dict, List, Optional, Sequence, Tuple
+from typing import Dict, List, Optional, Sequence, Tuple, Union
 
 import grpc
 import threading
@@ -220,19 +220,56 @@ class AltaStataGrpcClient:
         client_hint: Optional[str] = None,
     ) -> "AltaStataGrpcClient":
         """
-        Create a gRPC client directly from credential payloads.
+        Create a gRPC client from props + a single RSA private-key PEM.
 
-        See ``from_account_dir`` for the ``client_hint`` semantics — when
-        omitted, a fresh per-instance UUID is generated automatically.
+        Community shorthand for :meth:`from_upload` with
+        ``{"private.key": private_key_encrypted}``. For Enterprise / eval
+        (``license.jwt`` + ``org-ca.pem``) use :meth:`from_upload` or
+        :meth:`from_account_dir`.
+        """
+        return cls.from_upload(
+            user_properties,
+            _account_files_from_private_key(private_key_encrypted),
+            password=password,
+            user_name=user_name,
+            endpoint=endpoint,
+            auto_start_server=auto_start_server,
+            grpc_server_command=grpc_server_command,
+            grpc_server_working_dir=grpc_server_working_dir,
+            start_timeout_s=start_timeout_s,
+            client_hint=client_hint,
+        )
+
+    @classmethod
+    def from_upload(
+        cls,
+        user_properties: str,
+        account_files: Dict[str, Union[bytes, str]],
+        *,
+        password: Optional[str] = None,
+        user_name: Optional[str] = None,
+        endpoint: GrpcEndpoint = GrpcEndpoint(),
+        auto_start_server: bool = True,
+        grpc_server_command: Optional[Sequence[str]] = None,
+        grpc_server_working_dir: Optional[str] = None,
+        start_timeout_s: int = 45,
+        client_hint: Optional[str] = None,
+    ) -> "AltaStataGrpcClient":
+        """
+        Create a gRPC client via LoginV2 upload map (basename → content).
+
+        Typical keys: ``private.key``, ``license.jwt``, ``org-ca.pem``,
+        HPCS/PQC material. Same shape as on-disk account folders.
         """
         if password is None:
             raise ValueError("password is required for AuthService.LoginV2")
+        if not user_properties or not str(user_properties).strip():
+            raise ValueError("user_properties is required for LoginV2 upload")
 
         resolved_user_name = user_name or _infer_user_name_from_properties_text(user_properties)
-        account_files = _account_files_from_private_key(private_key_encrypted)
+        normalized_files = _normalize_account_files(account_files)
 
         started_process = None
-        # NOTE: auto-start / probe path currently assumes TCP host+port.
         if not _is_port_open(endpoint.host, endpoint.port) and auto_start_server:
             started_process = _start_local_grpc_service(
                 grpc_server_command=grpc_server_command,
@@ -246,7 +283,7 @@ class AltaStataGrpcClient:
             password=password,
             client_hint=effective_hint,
             user_properties=user_properties,
-            account_files=account_files,
+            account_files=normalized_files,
         )
 
         client = cls(
@@ -254,7 +291,7 @@ class AltaStataGrpcClient:
             bearer_token=token,
             user_name=resolved_user_name,
             client_hint=effective_hint,
-            login_upload=(user_properties, account_files),
+            login_upload=(user_properties, normalized_files),
         )
         client._server_process = started_process
         return client
@@ -820,6 +857,23 @@ def _infer_user_name(account_dir: str, user_properties_path: str) -> str:
     if dir_name:
         return dir_name
     raise ValueError("Unable to infer user name from account directory")
+
+
+def _normalize_account_files(
+    account_files: Optional[Dict[str, Union[bytes, str]]],
+) -> Dict[str, bytes]:
+    """Coerce LoginV2 upload map values to bytes (str → UTF-8)."""
+    if not account_files:
+        return {}
+    out: Dict[str, bytes] = {}
+    for name, value in account_files.items():
+        if value is None:
+            continue
+        if isinstance(value, str):
+            out[name] = value.encode("utf-8")
+        else:
+            out[name] = bytes(value)
+    return out
 
 
 def _account_files_from_private_key(private_key_encrypted: str) -> Dict[str, bytes]:

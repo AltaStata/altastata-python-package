@@ -191,21 +191,57 @@ class AltaStataFunctions:
         grpc_auto_start_server: bool = True,
     ):
         """
-        Create an instance using user properties and private key.
-        
-        Args:
-            user_properties (str): User properties string
-            private_key_encrypted (str): Encrypted private key
-            
-        Returns:
-            AltaStataFunctions: New instance initialized with credentials
+        Create an instance using user properties and a single RSA private key.
+
+        Community shorthand for :meth:`from_upload` with
+        ``{"private.key": private_key_encrypted}``. For Enterprise / eval
+        kits use :meth:`from_upload` (include ``license.jwt`` + ``org-ca.pem``)
+        or :meth:`from_account_dir`.
         """
-        # See note in from_account_dir about grpc_setup_port deprecation.
+        account_files = {}
+        if private_key_encrypted:
+            account_files["private.key"] = (
+                private_key_encrypted.encode("utf-8")
+                if isinstance(private_key_encrypted, str)
+                else private_key_encrypted
+            )
+        return cls.from_upload(
+            user_properties,
+            account_files,
+            transport=transport,
+            password=password,
+            user_name=user_name,
+            grpc_endpoint=grpc_endpoint,
+            grpc_setup_port=grpc_setup_port,
+            grpc_auto_start_server=grpc_auto_start_server,
+        )
+
+    @classmethod
+    def from_upload(
+        cls,
+        user_properties,
+        account_files,
+        *,
+        transport: str = "grpc",
+        password: Optional[str] = None,
+        user_name: Optional[str] = None,
+        grpc_endpoint: Optional[GrpcEndpoint] = None,
+        grpc_setup_port: int = 9880,
+        grpc_auto_start_server: bool = True,
+    ):
+        """
+        Create an instance via LoginV2 upload map (basename → content).
+
+        Args:
+            user_properties: Raw ``*user.properties`` text.
+            account_files: Dict of basename → bytes/str (``private.key``,
+                ``license.jwt``, ``org-ca.pem``, …).
+        """
         del grpc_setup_port
         endpoint = grpc_endpoint or GrpcEndpoint()
-        client = AltaStataGrpcClient.from_credentials(
+        client = AltaStataGrpcClient.from_upload(
             user_properties=user_properties,
-            private_key_encrypted=private_key_encrypted,
+            account_files=account_files or {},
             password=password,
             user_name=user_name,
             endpoint=endpoint,
@@ -216,7 +252,12 @@ class AltaStataFunctions:
             grpc_client=client,
         )
         instance._user_properties = user_properties
-        instance._private_key_encrypted = private_key_encrypted
+        instance._account_files = dict(account_files or {})
+        pem = (account_files or {}).get("private.key")
+        if isinstance(pem, bytes):
+            instance._private_key_encrypted = pem.decode("utf-8", errors="replace")
+        elif isinstance(pem, str):
+            instance._private_key_encrypted = pem
         instance._cached_password = password
         return instance
 

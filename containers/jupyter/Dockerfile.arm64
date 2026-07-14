@@ -34,6 +34,9 @@ RUN pip install --no-cache-dir /src/altastata-python-package
 # boto3 lets notebooks drive AltaStataFunctions.boto3_s3() and the AWS CLI
 # against the local S3 gateway on :9876 without an extra `pip install`.
 RUN pip install --no-cache-dir "grpcio>=1.80.0" boto3
+# torch / conda layers may reinstall setuptools>=75, which drops pkg_resources
+# (still used by altastata.grpc_client to locate bundled jars + console SPA).
+RUN pip install --no-cache-dir "setuptools<75"
 
 # Copy pytorch-example for reference
 COPY --chown=${NB_UID}:${NB_GID} examples/pytorch-example /opt/app-root/src/pytorch-example/
@@ -46,6 +49,7 @@ USER ${NB_UID}
 RUN echo "Verifying altastata installation:" && \
     python -c "import altastata; print('Module location:', altastata.__file__)" && \
     python -c "from altastata import AltaStataFunctions; print('AltaStataFunctions imported successfully')" && \
+    python -c "from altastata import AltaStataFunctions as F; assert hasattr(F, 'from_upload')" && \
     echo "✅ AltaStata package is ready!"
 
 # Configure Jupyter (base image uses /home/jovyan)

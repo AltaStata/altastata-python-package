@@ -67,7 +67,7 @@ If you prefer to drive each build yourself:
    `ALTASTATA_WEB_UI_DIR=` (empty) before running to disable the UI and
    keep gRPC-only routing for legacy testing.
 
-### gRPC transport (`transport="grpc"`)
+### gRPC login (`LoginV2`)
 
 `AltaStataGrpcClient.from_account_dir` authenticates via `AuthService.LoginV2`
 with `user_account_directory` (account folder on the same host as the gateway).

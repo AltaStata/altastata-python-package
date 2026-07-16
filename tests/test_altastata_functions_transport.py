@@ -1,10 +1,11 @@
 import unittest
+import warnings
 from unittest.mock import MagicMock, patch
 
 
 class AltaStataFunctionsTransportTests(unittest.TestCase):
     @patch("altastata.altastata_functions.AltaStataGrpcClient")
-    def test_from_credentials_grpc_uses_grpc_backend(self, mock_grpc_cls):
+    def test_from_credentials_uses_grpc_backend(self, mock_grpc_cls):
         mock_client = MagicMock()
         # from_credentials is a thin alias that calls from_upload.
         mock_grpc_cls.from_upload.return_value = mock_client
@@ -14,7 +15,6 @@ class AltaStataFunctionsTransportTests(unittest.TestCase):
         f = AltaStataFunctions.from_credentials(
             "myuser=bob123\nregion=us-east-1\n",
             "-----BEGIN RSA PRIVATE KEY-----\n...\n",
-            transport="grpc",
             password="123",
         )
 
@@ -35,11 +35,30 @@ class AltaStataFunctionsTransportTests(unittest.TestCase):
         f = AltaStataFunctions.from_credentials(
             "myuser=bob123\nregion=us-east-1\n",
             "-----BEGIN RSA PRIVATE KEY-----\n...\n",
-            transport="grpc",
             password="123",
         )
         value = f.get_file_attribute("a/b.txt", None, "size")
         self.assertEqual("42", value)
+
+    @patch("altastata.altastata_functions.AltaStataGrpcClient")
+    def test_legacy_transport_kwarg_warns_and_is_ignored(self, mock_grpc_cls):
+        mock_grpc_cls.from_upload.return_value = MagicMock()
+        from altastata.altastata_functions import AltaStataFunctions
+
+        with warnings.catch_warnings(record=True) as caught:
+            warnings.simplefilter("always")
+            f = AltaStataFunctions.from_credentials(
+                "myuser=bob\n",
+                "PK",
+                transport="grpc",
+                password="x",
+            )
+        self.assertEqual("grpc", f.transport)
+        self.assertTrue(
+            any(issubclass(w.category, DeprecationWarning) and "transport=" in str(w.message)
+                for w in caught),
+            caught,
+        )
 
 
 if __name__ == "__main__":

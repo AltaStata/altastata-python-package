@@ -591,7 +591,7 @@ Pre-built “model-in-a-container” images (e.g. Red Hat Granite on Docker Hub)
 2. **Push to ICR:** `./containers/rag-example/push-rag-s390x-to-icr-from-server.sh` (requires `ICR_TOKEN`).
 3. **Pull and run:** `./containers/rag-example/pull-and-run-rag-s390x-from-icr.sh` (pulls image on the server, runs container, runs a test query).
 
-**Server setup:** The server needs `grep11client.yaml` (default `/etc/ep11client/grep11client.yaml`), the HPCS key blob at `/home/jovyan/hpcs/hpcs-privkey.blob`, and the account `*.user.properties` file in the account directory (e.g. `/root/.altastata/accounts/amazon.rsa.hpcs.serge678/`). The properties file should be container-ready: no `hpcs-yaml-path` or `hpcs-priv-key-blob-path` entries. See [containers/jupyter/README-ICR-BUILD-AND-PUSH.md](../../../containers/jupyter/README-ICR-BUILD-AND-PUSH.md) for details.
+**Server setup:** The server needs `grep11client.yaml` (default `/etc/ep11client/grep11client.yaml`), the HPCS key blob at `/home/jovyan/hpcs/hpcs-privkey.blob`, and the account `*.user.properties` file in the account directory (e.g. `/root/.altastata/accounts/amazon.rsa.hpcs.example/`). The properties file should be container-ready: no `hpcs-yaml-path` or `hpcs-priv-key-blob-path` entries. See [containers/jupyter/README-ICR-BUILD-AND-PUSH.md](../../../containers/jupyter/README-ICR-BUILD-AND-PUSH.md) for details.
 
 **Build (on s390x host or from Mac via script):**
 ```bash
@@ -628,7 +628,7 @@ docker pull icr.io/altastata/rag-open-llm-s390x:${RAG_VERSION}
 # Then run as above, using image icr.io/altastata/rag-open-llm-s390x:${RAG_VERSION}
 ```
 
-**Pull and run from your Mac (script):** From repo root run `./containers/rag-example/pull-and-run-rag-s390x-from-icr.sh`. It SSHs to the server, stops/removes any existing RAG container, pulls the image, runs the container, runs a test query, and leaves the container running. Set `ICR_TOKEN` on your Mac. **Accounts:** Default is **HPCS** (`amazon.rsa.hpcs.serge678`; no password; script passes `ALTASTATA_USE_HPCS=1`). For **bob123** (password-based): `ACCOUNT_NAME=amazon.rsa.bob123 ./containers/rag-example/pull-and-run-rag-s390x-from-icr.sh`. Optional env: `SSH_HOST`, `SSH_KEY`, `HF_LLM_MODEL=gpt2` (8 GB VMs). Account dir must exist on the server at `$REMOTE_ALTASTATA_ACCOUNTS/$ACCOUNT_NAME` (default `/root/.altastata/accounts/...`).
+**Pull and run from your Mac (script):** From repo root run `./containers/rag-example/pull-and-run-rag-s390x-from-icr.sh`. It SSHs to the server, stops/removes any existing RAG container, pulls the image, runs the container, runs a test query, and leaves the container running. Set `ICR_TOKEN` on your Mac. **Accounts:** Default is **HPCS** (`amazon.rsa.hpcs.example`; no password; script passes `ALTASTATA_USE_HPCS=1`). For **bob123** (password-based): `ACCOUNT_NAME=amazon.rsa.bob123 ./containers/rag-example/pull-and-run-rag-s390x-from-icr.sh`. Optional env: `SSH_HOST`, `SSH_KEY`, `HF_LLM_MODEL=gpt2` (8 GB VMs). Account dir must exist on the server at `$REMOTE_ALTASTATA_ACCOUNTS/$ACCOUNT_NAME` (default `/root/.altastata/accounts/...`).
 
 Use an NNPA-capable host for faster inference. **Faster models:** set **`HF_LLM_MODEL=HuggingFaceTB/SmolLM2-360M-Instruct`** for roughly 2–3× faster inference than TinyLlama with still usable RAG answers (360M params, instruction-tuned). **`HF_LLM_MODEL=gpt2`** is fastest but gives weak quality. On **small VMs (8 GB RAM)** use **gpt2** to avoid OOM, or **watsonx** for better answers without a local model.
 

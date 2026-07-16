@@ -21,14 +21,13 @@ set -e
 # Repo root = directory that contains containers/ and examples/ (altastata-python-package)
 REPO_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 SSH_KEY="${SSH_KEY:-$HOME/.ssh/id_rsa}"
-SSH_HOST="${SSH_HOST:-root@163.66.89.80}"
+: "${SSH_HOST:?Set SSH_HOST=user@your-linuxone-host}"
 # Speed up SSH (avoid GSSAPI/reverse-DNS delays)
 SSH_OPTS="-i $SSH_KEY -o StrictHostKeyChecking=accept-new -o GSSAPIAuthentication=no -o PreferredAuthentications=publickey"
 REMOTE_DIR="${REMOTE_DIR:-/tmp/altastata-python-package}"
 REMOTE_ALTASTATA_ACCOUNTS="${REMOTE_ALTASTATA_ACCOUNTS:-/root/.altastata/accounts}"
-# Local AltaStata accounts to copy for testing (set ALTASTATA_ACCOUNTS="" to skip).
-# Same default as the RAG build script so both share /root/.altastata/accounts on the server.
-ALTASTATA_ACCOUNTS="${ALTASTATA_ACCOUNTS:-$HOME/.altastata/accounts/amazon.rsa.bob123 $HOME/.altastata/accounts/amazon.rsa.hpcs.serge678}"
+# Space-separated local account dirs to rsync (empty = skip sync).
+ALTASTATA_ACCOUNTS="${ALTASTATA_ACCOUNTS:-}"
 
 echo "Repo root: $REPO_ROOT"
 echo "SSH: $SSH_HOST (key: $SSH_KEY)"

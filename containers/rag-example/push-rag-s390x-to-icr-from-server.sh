@@ -11,7 +11,7 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 source "$REPO_ROOT/version.sh"
 SSH_KEY="${SSH_KEY:-$HOME/.ssh/id_rsa}"
-SSH_HOST="${SSH_HOST:-root@163.66.89.80}"
+: "${SSH_HOST:?Set SSH_HOST=user@your-linuxone-host}"
 SSH_OPTS="-i $SSH_KEY -o StrictHostKeyChecking=accept-new -o GSSAPIAuthentication=no -o PreferredAuthentications=publickey"
 REMOTE_DIR="${REMOTE_DIR:-/tmp/altastata-python-package}"
 

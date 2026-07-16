@@ -132,12 +132,12 @@ For the **`${RAG_VERSION}_zdnn`** research image, set **`ENABLE_ZDNN=1`** when r
 ```
 - Set **`ICR_TOKEN`** on your Mac so the script can log in to icr.io on the server before pull.
 - The script **stops and removes** any existing `rag-s390x-test` container **before** pulling, then **leaves the new container running** when it finishes (no stop/rm at the end).
-- **Default account:** `amazon.rsa.hpcs.serge678` (HPCS; no password). To use the password-based bob123 account:
+- **Default account:** `amazon.rsa.hpcs.example` (HPCS; no password). To use the password-based bob123 account:
   ```bash
   ACCOUNT_NAME=amazon.rsa.bob123 ./containers/rag-example/pull-and-run-rag-s390x-from-icr.sh
   ```
 - **Optional env (can set before running the script):**
-  - `ACCOUNT_NAME` – AltaStata account subdir name (default: `amazon.rsa.hpcs.serge678`). Use `amazon.rsa.bob123` for password-based; the script passes `ALTASTATA_USE_HPCS=1` only when the name contains `hpcs`.
+  - `ACCOUNT_NAME` – AltaStata account subdir name (default: `amazon.rsa.hpcs.example`). Use `amazon.rsa.bob123` for password-based; the script passes `ALTASTATA_USE_HPCS=1` only when the name contains `hpcs`.
   - `SSH_HOST`, `SSH_KEY` – server and key path (see script defaults).
   - `HF_LLM_MODEL=gpt2` – for 8 GB VMs to avoid OOM (weaker answers).
 - The account directory must exist on the **server** at `$REMOTE_ALTASTATA_ACCOUNTS/$ACCOUNT_NAME` (default `/root/.altastata/accounts/...`).

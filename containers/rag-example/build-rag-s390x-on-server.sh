@@ -33,14 +33,14 @@ fi
 # Repo root = directory that contains containers/ and examples/rag-example/ (altastata-python-package)
 REPO_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 SSH_KEY="${SSH_KEY:-$HOME/.ssh/id_rsa}"
-SSH_HOST="${SSH_HOST:-root@163.66.89.80}"
+: "${SSH_HOST:?Set SSH_HOST=user@your-linuxone-host}"
 # Speed up SSH (avoid GSSAPI/reverse-DNS delays)
 SSH_OPTS="-i $SSH_KEY -o StrictHostKeyChecking=accept-new -o GSSAPIAuthentication=no -o PreferredAuthentications=publickey"
 REMOTE_DIR="${REMOTE_DIR:-/tmp/altastata-python-package}"
 REMOTE_ALTASTATA_ACCOUNTS="${REMOTE_ALTASTATA_ACCOUNTS:-/root/.altastata/accounts}"
 REMOTE_HPCS_DIR="${REMOTE_HPCS_DIR:-/home/jovyan/hpcs}"
-# Local AltaStata accounts to copy for testing (set ALTASTATA_ACCOUNTS="" to skip)
-ALTASTATA_ACCOUNTS="${ALTASTATA_ACCOUNTS:-$HOME/.altastata/accounts/amazon.rsa.bob123 $HOME/.altastata/accounts/amazon.rsa.hpcs.serge678}"
+# Space-separated local account dirs to rsync (empty = skip sync).
+ALTASTATA_ACCOUNTS="${ALTASTATA_ACCOUNTS:-}"
 
 echo "Repo root: $REPO_ROOT"
 echo "SSH: $SSH_HOST (key: $SSH_KEY)"
@@ -61,7 +61,7 @@ if [ -n "$ALTASTATA_ACCOUNTS" ]; then
   # On server: strip hpcs-yaml-path and hpcs-priv-key-blob-path from *.user.properties so container uses GREP11_YAML / HPCS_PRIV_KEY_BLOB_PATH from env
   echo "Stripping HPCS path lines from account *.user.properties on server..."
   ssh $SSH_OPTS "$SSH_HOST" "for f in $REMOTE_ALTASTATA_ACCOUNTS/*/*.user.properties; do [ -f \"\$f\" ] && sed -i '/^hpcs-yaml-path=/d' \"\$f\" && sed -i '/^hpcs-priv-key-blob-path=/d' \"\$f\" && echo \"  \$(basename \"\$f\")\"; done"
-  HPCS_BLOB_SRC="$HOME/.altastata/accounts/amazon.rsa.hpcs.serge678/hpcs-privkey.blob"
+  HPCS_BLOB_SRC="${HPCS_BLOB_SRC:-}"
   if [ -f "$HPCS_BLOB_SRC" ]; then
     echo "Copying HPCS key blob to server ($REMOTE_HPCS_DIR/hpcs-privkey.blob)..."
     ssh $SSH_OPTS "$SSH_HOST" "mkdir -p $REMOTE_HPCS_DIR"
@@ -80,14 +80,16 @@ rsync -avz --delete \
   "$REPO_ROOT/" "$SSH_HOST:$REMOTE_DIR/"
 
 # Copy HPCS user.properties from repo to server only if present (file is not in repo by default; put it in containers/rag-example/ if you want it synced)
-HPCS_ACCOUNT="amazon.rsa.hpcs.serge678"
-HPCS_PROPERTIES_FILE="altastata-myorgrsa444-serge678.user.properties"
-HPCS_PROPERTIES_SRC="$REPO_ROOT/containers/rag-example/$HPCS_PROPERTIES_FILE"
-if [ -f "$HPCS_PROPERTIES_SRC" ]; then
-  echo "Copying $HPCS_PROPERTIES_FILE to server..."
-  ssh $SSH_OPTS "$SSH_HOST" "mkdir -p $REMOTE_ALTASTATA_ACCOUNTS/$HPCS_ACCOUNT && cp $REMOTE_DIR/containers/rag-example/$HPCS_PROPERTIES_FILE $REMOTE_ALTASTATA_ACCOUNTS/$HPCS_ACCOUNT/$HPCS_PROPERTIES_FILE && echo '  Done'"
-else
-  echo "Skipping $HPCS_PROPERTIES_FILE (not in repo). Ensure it exists on server at $REMOTE_ALTASTATA_ACCOUNTS/$HPCS_ACCOUNT/ if using HPCS."
+HPCS_ACCOUNT="${HPCS_ACCOUNT:-}"
+HPCS_PROPERTIES_FILE="${HPCS_PROPERTIES_FILE:-}"
+if [ -n "$HPCS_ACCOUNT" ] && [ -n "$HPCS_PROPERTIES_FILE" ]; then
+  HPCS_PROPERTIES_SRC="$REPO_ROOT/containers/rag-example/$HPCS_PROPERTIES_FILE"
+  if [ -f "$HPCS_PROPERTIES_SRC" ]; then
+    echo "Copying $HPCS_PROPERTIES_FILE to server..."
+    ssh $SSH_OPTS "$SSH_HOST" "mkdir -p $REMOTE_ALTASTATA_ACCOUNTS/$HPCS_ACCOUNT && cp $REMOTE_DIR/containers/rag-example/$HPCS_PROPERTIES_FILE $REMOTE_ALTASTATA_ACCOUNTS/$HPCS_ACCOUNT/$HPCS_PROPERTIES_FILE && echo '  Done'"
+  else
+    echo "Skipping $HPCS_PROPERTIES_FILE (not found locally). Ensure it exists on server at $REMOTE_ALTASTATA_ACCOUNTS/$HPCS_ACCOUNT/ if using HPCS."
+  fi
 fi
 
 # zDNN / NNPA hardware acceleration is OFF by default (ENABLE_ZDNN=0); see

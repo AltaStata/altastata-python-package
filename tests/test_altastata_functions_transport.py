@@ -6,7 +6,8 @@ class AltaStataFunctionsTransportTests(unittest.TestCase):
     @patch("altastata.altastata_functions.AltaStataGrpcClient")
     def test_from_credentials_grpc_uses_grpc_backend(self, mock_grpc_cls):
         mock_client = MagicMock()
-        mock_grpc_cls.from_credentials.return_value = mock_client
+        # from_credentials is a thin alias that calls from_upload.
+        mock_grpc_cls.from_upload.return_value = mock_client
 
         from altastata.altastata_functions import AltaStataFunctions
 
@@ -19,6 +20,7 @@ class AltaStataFunctionsTransportTests(unittest.TestCase):
 
         self.assertEqual("grpc", f.transport)
         self.assertIs(f.grpc_client, mock_client)
+        mock_grpc_cls.from_upload.assert_called_once()
         f.set_password("abc")
         mock_client.set_password.assert_called_once_with("abc")
 
@@ -26,7 +28,7 @@ class AltaStataFunctionsTransportTests(unittest.TestCase):
     def test_get_file_attribute_delegates_to_grpc(self, mock_grpc_cls):
         mock_client = MagicMock()
         mock_client.get_file_attribute.return_value = "42"
-        mock_grpc_cls.from_credentials.return_value = mock_client
+        mock_grpc_cls.from_upload.return_value = mock_client
 
         from altastata.altastata_functions import AltaStataFunctions
 

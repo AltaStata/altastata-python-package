@@ -10,7 +10,7 @@ The wheel ships with two binary artifacts that this repo deliberately does
 not commit to git:
 
 - `altastata/lib/altastata-services-<ver>-uber.jar` (built from
-  `mycloud/altastata-services` — the unified Micronaut app that hosts gRPC,
+  `AltaStata/sovereign-data-fabric (altastata-services)` — the unified Micronaut app that hosts gRPC,
   and the S3 gateway under `com.altastata.services.AltaStataServicesApplication`)
 - `altastata/lib/altastata-console-static/` (built from `altastata-console/frontend`)
 
@@ -35,13 +35,13 @@ layout differs, or pass `SKIP_GRPC=1` / `SKIP_UI=1` to leave one side untouched.
 
 If you prefer to drive each build yourself:
 
-1. Build the unified services uber jar in `mycloud/altastata-services`:
+1. Build the unified services uber jar in `AltaStata/sovereign-data-fabric (altastata-services)`:
    ```bash
    (cd ../mycloud && ./gradlew :altastata-services:shadowJar)
-   cp ../mycloud/altastata-services/build/libs/altastata-services-*-uber.jar altastata/lib/
+   cp ../AltaStata/sovereign-data-fabric (altastata-services)/build/libs/altastata-services-*-uber.jar altastata/lib/
    # BouncyCastle is externalized as signed JCE jars referenced from the
    # uber jar manifest Class-Path; co-locate them alongside the uber jar:
-   cp ../mycloud/altastata-services/build/libs/lib/bc*.jar altastata/lib/
+   cp ../AltaStata/sovereign-data-fabric (altastata-services)/build/libs/lib/bc*.jar altastata/lib/
    ```
 
 2. Build the Console SPA in `altastata-console/frontend`:
@@ -70,7 +70,7 @@ If you prefer to drive each build yourself:
 with `user_account_directory` (account folder on the same host as the gateway).
 `from_credentials` uses the `upload` form (`user_properties` + private key
 bytes). Legacy `SetUserProperties` / `SetPrivateKey` bootstrap is not used on
-the gRPC path. See `mycloud/altastata-grpc/CONSOLE_ACCOUNT_SETUP_DESIGN.md` §2.
+the gRPC path. See `AltaStata/sovereign-data-fabric (altastata-grpc)/CONSOLE_ACCOUNT_SETUP_DESIGN.md` §2.
 
 ### Logging Configuration
 - To customize logging, copy and modify the logback configuration:
@@ -175,8 +175,8 @@ is built separately using `containers/jupyter/Dockerfile.s390x`.
 ./containers/jupyter/push-to-ghcr.sh
 
 # This creates:
-# - ghcr.io/sergevil/altastata/jupyter-datascience-arm64:${VERSION}
-# - ghcr.io/sergevil/altastata/jupyter-datascience-amd64:${VERSION}
+# - ghcr.io/altastata/altastata/jupyter-datascience-arm64:${VERSION}
+# - ghcr.io/altastata/altastata/jupyter-datascience-amd64:${VERSION}
 ```
 
 ### Running the Container
@@ -210,7 +210,7 @@ docker run \
   -p 8888:8888 \
   -v ~/.altastata:/opt/app-root/src/.altastata:rw \
   -v ~/Desktop:/opt/app-root/src/Desktop:rw \
-  ghcr.io/sergevil/altastata/jupyter-datascience-arm64:${VERSION}   # or jupyter-datascience-amd64
+  ghcr.io/altastata/altastata/jupyter-datascience-arm64:${VERSION}   # or jupyter-datascience-amd64
 ```
 
 **Option C: Local build with docker-compose**
@@ -236,7 +236,7 @@ docker run \
 
 **If the container won’t run**
 
-- **“pull access denied” **— Use the GHCR image for your platform: `ghcr.io/sergevil/altastata/jupyter-datascience-arm64` or `jupyter-datascience-amd64` with your version.
+- **“pull access denied” **— Use the GHCR image for your platform: `ghcr.io/altastata/altastata/jupyter-datascience-arm64` or `jupyter-datascience-amd64` with your version.
 - **“container name already in use”** — Remove the existing container: `docker rm -f altastata-jupyter`, then start again.
 - **Port 8888 in use** — Stop the process using it or change the host port, e.g. `"8889:8888"` in the compose file.
 - **Get Jupyter URL/token** — `docker logs altastata-jupyter 2>&1 | grep -E "http://|token="`

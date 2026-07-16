@@ -94,3 +94,21 @@ containers/jupyter/docker-compose.override.yml
 # Vendored altastata-console SPA (source tracked; build artifacts not)
 altastata-console/frontend/node_modules/
 altastata-console/frontend/dist/
+
+# Notebook checkpoints / local marketing drafts
+.ipynb_checkpoints/
+**/.ipynb_checkpoints/
+.qodo/
+.cache/
+
+# Local credential notebooks (never commit)
+examples/tensorflow-example/altastata_aws_*.ipynb
+
+# Marketing / internal drafts kept outside the public tree
+altastata-brief.md
+altastata-ciso-executive-summary.md
+altastata-opcontext-synergy.md
+altastata-security-group-brief.md
+founder-video-script.md
+linux-vs-altastata-access-control.md
+open-accelerator-application.md

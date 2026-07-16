@@ -15,7 +15,7 @@ services:
       dockerfile: examples/rag-example/open_llm/Dockerfile
     ports:
       # All host-side ports bound to 127.0.0.1 so the stack is reachable only
-      # from this machine (laptop-in-cafe-safe). See mycloud/altastata-grpc/TLS_DESIGN.md.
+      # from this machine (laptop-in-cafe-safe). See AltaStata/sovereign-data-fabric (altastata-grpc)/TLS_DESIGN.md.
       - "127.0.0.1:8766:8000"
       # Console UI; only listening when ENABLE_ALTASTATA_CONSOLE_UI=1 below.
       # Host-side port defaults to 9878 (Jupyter uses 9877) so both stacks

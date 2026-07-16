@@ -23,8 +23,8 @@ def main():
     print("=" * 30)
     
     # Use the same credentials pattern as examples/smoke-test/test_script.py
-    account_dir = '/Users/sergevilvovsky/.altastata/accounts/amazon.rsa.alice222'
-    password = "123"
+    account_dir = os.path.expanduser('~/.altastata/accounts/amazon.rsa.alice222')
+    password = os.environ.get("ALTASTATA_PASSWORD", "")
     
     # Create AltaStata connection
     try:

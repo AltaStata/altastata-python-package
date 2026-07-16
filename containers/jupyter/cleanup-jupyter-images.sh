@@ -16,9 +16,9 @@ echo "🗑️  Removing jupyter-datascience images..."
 echo "Removing altastata/jupyter-datascience* images..."
 docker rmi $(docker images --format "{{.Repository}}:{{.Tag}}" | grep "altastata/jupyter-datascience") 2>/dev/null || echo "  None found"
 
-# Remove ghcr.io/sergevil/altastata/jupyter-datascience-* (arm64, amd64) and legacy
-echo "Removing ghcr.io/sergevil/altastata/jupyter-datascience* images..."
-docker rmi $(docker images --format "{{.Repository}}:{{.Tag}}" | grep "ghcr.io/sergevil/altastata/jupyter-datascience") 2>/dev/null || echo "  None found"
+# Remove ghcr.io/altastata/altastata/jupyter-datascience-* (arm64, amd64) and legacy
+echo "Removing ghcr.io/altastata/altastata/jupyter-datascience* images..."
+docker rmi $(docker images --format "{{.Repository}}:{{.Tag}}" | grep "ghcr.io/altastata/altastata/jupyter-datascience") 2>/dev/null || echo "  None found"
 
 # Remove dangling images
 echo "Removing dangling images..."

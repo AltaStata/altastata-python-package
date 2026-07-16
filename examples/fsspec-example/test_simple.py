@@ -19,8 +19,8 @@ def test_basic_fsspec():
     print("=" * 50)
     
     # Create AltaStata connection
-    altastata_functions = AltaStataFunctions.from_account_dir('/Users/sergevilvovsky/.altastata/accounts/amazon.rsa.bob123')
-    altastata_functions.set_password("123")
+    altastata_functions = AltaStataFunctions.from_account_dir(os.path.expanduser('~/.altastata/accounts/amazon.rsa.bob123'))
+    altastata_functions.set_password(os.environ.get("ALTASTATA_PASSWORD", ""))
     
     # Create fsspec filesystem
     fs = create_filesystem(altastata_functions, "bob123")

@@ -287,13 +287,13 @@ class CleanupService:
         
         # Clean up Bob's storage
         self._cleanup_storage(
-            '/Users/sergevilvovsky/.altastata/accounts/azure.rsa.bob123',
+            os.path.expanduser('~/.altastata/accounts/azure.rsa.bob123'),
             "123"
         )
         
         # Clean up Alice's storage
         self._cleanup_storage(
-            '/Users/sergevilvovsky/.altastata/accounts/azure.rsa.alice222',
+            os.path.expanduser('~/.altastata/accounts/azure.rsa.alice222'),
             "123"
         )
         

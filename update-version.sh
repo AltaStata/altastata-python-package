@@ -37,9 +37,9 @@ echo "✅ Updated .env file (VERSION=${VERSION}, ARCH=${ARCH})"
 # Update Kubernetes deployment manifest (GKE runs AMD64)
 if [ -f "containers/confidential-gke/jupyter-deployment.yaml" ]; then
     if [[ "$OSTYPE" == "darwin"* ]]; then
-        sed -i '' "s|ghcr.io/sergevil/altastata/jupyter-datascience[^:]*:[^[:space:]]*|ghcr.io/sergevil/altastata/jupyter-datascience-amd64:${VERSION}|g" containers/confidential-gke/jupyter-deployment.yaml
+        sed -i '' "s|ghcr.io/altastata/altastata/jupyter-datascience[^:]*:[^[:space:]]*|ghcr.io/altastata/altastata/jupyter-datascience-amd64:${VERSION}|g" containers/confidential-gke/jupyter-deployment.yaml
     else
-        sed -i "s|ghcr.io/sergevil/altastata/jupyter-datascience[^:]*:[^[:space:]]*|ghcr.io/sergevil/altastata/jupyter-datascience-amd64:${VERSION}|g" containers/confidential-gke/jupyter-deployment.yaml
+        sed -i "s|ghcr.io/altastata/altastata/jupyter-datascience[^:]*:[^[:space:]]*|ghcr.io/altastata/altastata/jupyter-datascience-amd64:${VERSION}|g" containers/confidential-gke/jupyter-deployment.yaml
     fi
     echo "✅ Updated containers/confidential-gke/jupyter-deployment.yaml (jupyter-datascience-amd64:${VERSION})"
 fi

@@ -366,10 +366,10 @@ ssh -i $SSH_KEY root@<FLOATING_IP> "docker logs rag-s390x-test 2>&1 | tail -80"
 
 ```bash
 # Pull the s390x S3 Gateway image
-docker pull ghcr.io/sergevil/altastata/s3-gateway-s390x:2026b_latest
+docker pull ghcr.io/altastata/altastata/s3-gateway-s390x:2026b_latest
 
 # Tag as latest (optional)
-docker tag ghcr.io/sergevil/altastata/s3-gateway-s390x:2026b_latest altastata/s3-gateway-s390x:latest
+docker tag ghcr.io/altastata/altastata/s3-gateway-s390x:2026b_latest altastata/s3-gateway-s390x:latest
 ```
 
 ### Step 2: Run S3 Gateway Container
@@ -380,7 +380,7 @@ docker run -d \
   --name altastata-s3-gateway \
   -p 9876:9876 \
   -v ~/altastata-data:/app/data \
-  ghcr.io/sergevil/altastata/s3-gateway-s390x:2026b_latest
+  ghcr.io/altastata/altastata/s3-gateway-s390x:2026b_latest
 ```
 
 ### Step 3: Configure Security Group

@@ -2,9 +2,9 @@
 
 Web console for [AltaStata](https://altastata.com) — a Finder-style file browser
 for cloud accounts, modeled after the JavaFX desktop app
-(`mycloud/altastata-ui`).
+(`AltaStata/sovereign-data-fabric (altastata-ui)`).
 
-This repo is a React client for AltaStata Java gRPC (`mycloud/altastata-grpc`)
+This repo is a React client for AltaStata Java gRPC (`AltaStata/sovereign-data-fabric (altastata-grpc)`)
 and follows the same RPC flows as `altastata-python-package/tests/js-grpc-ui`.
 
 ## Architecture
@@ -173,10 +173,10 @@ Python, FastAPI, or Node runtime is required at runtime.
 The bundle ships inside the [`altastata` Python package][pyalt] under
 `altastata/lib/altastata-console-static/`. Any image that already
 includes `altastata` therefore already includes the UI, and the Java
-gRPC server (`mycloud/altastata-grpc`) serves those static files
+gRPC server (`AltaStata/sovereign-data-fabric (altastata-grpc)`) serves those static files
 directly on `:9877` — no separate web container is needed.
 
-[pyalt]: https://github.com/SergeVil/altastata-python-package
+[pyalt]: https://github.com/AltaStata/altastata-python-package
 
 The bundle is **not committed** to the Python package repo
 (`altastata/lib/` is gitignored, same policy as
@@ -186,7 +186,7 @@ release by
 which runs `npm run build` here, then copies `frontend/dist/` into
 `altastata-python-package/altastata/lib/altastata-console-static/`.
 
-[buildscript]: https://github.com/SergeVil/altastata-python-package/blob/openshift/scripts/build-bundled-artifacts.sh
+[buildscript]: https://github.com/AltaStata/altastata-python-package/blob/main/scripts/build-bundled-artifacts.sh
 
 There is no Docker step in this repo.
 
@@ -201,7 +201,7 @@ There is no Docker step in this repo.
 
 ## Reference UI
 
-The visual target is `mycloud/altastata-ui` (JavaFX desktop, "AltaStata
+The visual target is `AltaStata/sovereign-data-fabric (altastata-ui)` (JavaFX desktop, "AltaStata
 Cloud File Explorer" v1.0.6) — three columns (folders → files → preview),
 account name in the title bar, action toolbar at the bottom, light theme.
 See `docs/architecture.md` for screenshots and mapping to web components.
@@ -209,4 +209,4 @@ See `docs/architecture.md` for screenshots and mapping to web components.
 ## License
 
 Apache License, Version 2.0 — see the parent repository [LICENSE](../LICENSE).
-(Canonical console source: https://github.com/SergeVil/altastata-console)
+(Canonical console source: https://github.com/AltaStata/altastata-console)

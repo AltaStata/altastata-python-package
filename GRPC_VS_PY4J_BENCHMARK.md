@@ -10,7 +10,7 @@ This benchmark compares control-plane latency for equivalent calls:
 ### 1) Start gRPC service (from `mycloud`)
 
 ```bash
-cd /Users/sergevilvovsky/eclipse-workspace/mcloud/mycloud
+cd $HOME/eclipse-workspace/mcloud/mycloud
 ./gradlew :altastata-services:run
 ```
 
@@ -24,11 +24,11 @@ alongside the gRPC server (see
 ```bash
 curl -sS -X PUT "http://127.0.0.1:9877/setUserProperties/bob123" \
   -H "Content-Type: text/plain" \
-  --data-binary @"/Users/sergevilvovsky/.altastata/accounts/amazon.rsa.bob123/altastata-myorgrsa444-bob123.user.properties"
+  --data-binary @"$HOME/.altastata/accounts/amazon.rsa.bob123/altastata-myorgrsa444-bob123.user.properties"
 
 curl -sS -X PUT "http://127.0.0.1:9877/setPrivateKey/bob123" \
   -H "Content-Type: text/plain" \
-  --data-binary @"/Users/sergevilvovsky/.altastata/accounts/amazon.rsa.bob123/private.key"
+  --data-binary @"$HOME/.altastata/accounts/amazon.rsa.bob123/private.key"
 
 curl -sS -X PUT "http://127.0.0.1:9877/setPassword/bob123" \
   -H "Content-Type: text/plain" \
@@ -38,7 +38,7 @@ curl -sS -X PUT "http://127.0.0.1:9877/setPassword/bob123" \
 ### 3) Generate Python gRPC stubs (from `altastata-python-package`)
 
 ```bash
-cd /Users/sergevilvovsky/eclipse-workspace/mcloud/altastata-python-package
+cd .
 python3 -m pip install grpcio-tools
 python3 scripts/generate_grpc_stubs.py
 ```
@@ -47,7 +47,7 @@ python3 scripts/generate_grpc_stubs.py
 
 ```bash
 python3 examples/<control-plane benchmark script>.py \
-  --account-dir "/Users/sergevilvovsky/.altastata/accounts/amazon.rsa.bob123" \
+  --account-dir "$HOME/.altastata/accounts/amazon.rsa.bob123" \
   --password "123" \
   --user-name "bob123" \
   --file-path "Applications/AltaStata Investor Deck_prev.pdf" \
@@ -70,9 +70,9 @@ Notes:
 ### Exact Command
 
 ```bash
-cd /Users/sergevilvovsky/eclipse-workspace/mcloud/altastata-python-package
+cd .
 python3 examples/<getbuffer benchmark script>.py \
-  --account-dir "/Users/sergevilvovsky/.altastata/accounts/amazon.rsa.bob123" \
+  --account-dir "$HOME/.altastata/accounts/amazon.rsa.bob123" \
   --password "123" \
   --user-name "bob123" \
   --sizes-mb 1 4 12 18 \

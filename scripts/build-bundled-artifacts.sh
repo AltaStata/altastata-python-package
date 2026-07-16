@@ -5,7 +5,7 @@
 #   The altastata Python package ships two binary artifacts that this repo
 #   does not store in git:
 #     1. altastata-services-<ver>-uber.jar  (built from sibling
-#        mycloud/altastata-services — the unified Micronaut app that hosts
+#        AltaStata/sovereign-data-fabric (altastata-services) — the unified Micronaut app that hosts
 #        gRPC + S3 + py4j under com.altastata.services.AltaStataServicesApplication)
 #     2. altastata/lib/altastata-console-static/  (built from altastata-console/frontend)
 #   Both are deliberately gitignored under altastata/lib/ so the repo stays

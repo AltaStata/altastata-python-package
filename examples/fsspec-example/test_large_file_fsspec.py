@@ -2,6 +2,7 @@
 """
 Test fsspec with large files (100MB)
 """
+import os
 
 import time
 import hashlib
@@ -35,8 +36,8 @@ def create_large_file():
     print("Creating 100MB test file...")
     
     # Create AltaStata connection
-    altastata_functions = AltaStataFunctions.from_account_dir('/Users/sergevilvovsky/.altastata/accounts/amazon.rsa.bob123')
-    altastata_functions.set_password("123")
+    altastata_functions = AltaStataFunctions.from_account_dir(os.path.expanduser('~/.altastata/accounts/amazon.rsa.bob123'))
+    altastata_functions.set_password(os.environ.get("ALTASTATA_PASSWORD", ""))
     
     # Create large content (100MB)
     chunk_size = 1024 * 1024  # 1MB chunks
@@ -68,8 +69,8 @@ def test_fsspec_large_file():
     print("\nTesting fsspec with large file...")
     
     # Create AltaStata connection
-    altastata_functions = AltaStataFunctions.from_account_dir('/Users/sergevilvovsky/.altastata/accounts/amazon.rsa.bob123')
-    altastata_functions.set_password("123")
+    altastata_functions = AltaStataFunctions.from_account_dir(os.path.expanduser('~/.altastata/accounts/amazon.rsa.bob123'))
+    altastata_functions.set_password(os.environ.get("ALTASTATA_PASSWORD", ""))
     
     # Create fsspec filesystem
     fs = create_filesystem(altastata_functions, "bob123")
@@ -154,8 +155,8 @@ def cleanup_large_file():
     """Clean up the large test file."""
     print("\nCleaning up large file...")
     
-    altastata_functions = AltaStataFunctions.from_account_dir('/Users/sergevilvovsky/.altastata/accounts/amazon.rsa.bob123')
-    altastata_functions.set_password("123")
+    altastata_functions = AltaStataFunctions.from_account_dir(os.path.expanduser('~/.altastata/accounts/amazon.rsa.bob123'))
+    altastata_functions.set_password(os.environ.get("ALTASTATA_PASSWORD", ""))
     
     try:
         result = altastata_functions.delete_files('StoreTest/large_file_100mb.txt', False, None, None)

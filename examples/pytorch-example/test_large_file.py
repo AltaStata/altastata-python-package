@@ -8,7 +8,7 @@ from altastata.altastata_functions import PLAIN_CHUNK_MAX_SIZE, TEMP_FILE_THRESH
 
 af = altastata_config.altastata_functions
 
-LOCAL_FILE = "/Users/sergevilvovsky/Movies/Кроличье сердце v8.mov"
+LOCAL_FILE = os.path.expanduser("~/Movies/Кроличье сердце v8.mov")
 CLOUD_PREFIX = "test_large_file/"
 
 local_size = os.path.getsize(LOCAL_FILE)
@@ -33,7 +33,7 @@ cloud_path = find_cloud_path()
 if cloud_path is None:
     print("No file found in cloud. Uploading first...")
     t0 = time.time()
-    af.store([LOCAL_FILE], "/Users/sergevilvovsky/Movies/", CLOUD_PREFIX, True)
+    af.store([LOCAL_FILE], os.path.expanduser("~/Movies/"), CLOUD_PREFIX, True)
     upload_sec = time.time() - t0
     print(f"Upload completed in {upload_sec:.1f}s ({local_size / upload_sec / (1024**2):.1f} MB/s)")
     print("\nListing again...")

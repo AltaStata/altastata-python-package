@@ -150,7 +150,7 @@ class S3CredentialsTests(unittest.TestCase):
         inst = _make_instance("grpc")
         inst._user_properties = "myuser=bob\n"
         inst._private_key_encrypted = "PRIVATE_KEY"
-        inst._cached_password = "123"
+        inst._cached_password = os.environ.get("ALTASTATA_PASSWORD", "")
 
         creds = inst.s3_credentials()
 
@@ -254,7 +254,7 @@ class S3CredentialsTests(unittest.TestCase):
         inst = _make_instance("grpc")
         inst._user_properties = "myuser=bob\n"
         inst._private_key_encrypted = "PK"
-        inst._cached_password = "123"
+        inst._cached_password = os.environ.get("ALTASTATA_PASSWORD", "")
 
         creds = inst.s3_credentials()
         self.assertEqual("AK_REBOOT", creds["aws_access_key_id"])

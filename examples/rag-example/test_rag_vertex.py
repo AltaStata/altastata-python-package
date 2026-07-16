@@ -126,9 +126,9 @@ def test_rag_vertex_ai():
     print("\n1️⃣  Initializing AltaStata connection...")
     global altastata_functions
     altastata_functions = AltaStataFunctions.from_account_dir(
-        '/Users/sergevilvovsky/.altastata/accounts/azure.rsa.bob123'
+        os.path.expanduser('~/.altastata/accounts/azure.rsa.bob123')
     )
-    altastata_functions.set_password("123")
+    altastata_functions.set_password(os.environ.get("ALTASTATA_PASSWORD", ""))
     
     # Create filesystem instance
     fs = create_filesystem(altastata_functions, "bob123")

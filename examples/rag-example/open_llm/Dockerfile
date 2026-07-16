@@ -40,7 +40,7 @@ ENV LOCAL_INDEX_PATH=/app/open_llm/local_index
 
 # Console UI on :9877 (default on). Set ENABLE_ALTASTATA_CONSOLE_UI=0 to disable.
 # 0.0.0.0 lets Docker's port forwarder reach the gateway; host-side mapping
-# bounds exposure. See mycloud/altastata-grpc/TLS_DESIGN.md.
+# bounds exposure. See AltaStata/sovereign-data-fabric (altastata-grpc)/TLS_DESIGN.md.
 ENV ALTASTATA_GRPC_BIND_ADDRESS=0.0.0.0
 EXPOSE 8000 9877
 

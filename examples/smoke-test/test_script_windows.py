@@ -1,8 +1,9 @@
+import os
 from altastata import AltaStataFunctions
 import time
 
 altastata_functions = AltaStataFunctions.from_account_dir('/Users/serge/.altastata/accounts/alice2.pqc')
-altastata_functions.set_password("123");
+altastata_functions.set_password(os.environ.get("ALTASTATA_PASSWORD", ""));
 
 # Store
 result = altastata_functions.store(['/Users/serge/Desktop/desktop.ini', 

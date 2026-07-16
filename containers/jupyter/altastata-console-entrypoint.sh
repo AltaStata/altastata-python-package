@@ -1,6 +1,6 @@
 #!/bin/bash
 # Auto-start altastata-grpc-server alongside Jupyter Lab when
-# ENABLE_ALTASTATA_CONSOLE_UI=1. See mycloud/altastata-grpc/TLS_DESIGN.md.
+# ENABLE_ALTASTATA_CONSOLE_UI=1. See AltaStata/sovereign-data-fabric (altastata-grpc)/TLS_DESIGN.md.
 set -e
 
 if [ "${ENABLE_ALTASTATA_CONSOLE_UI:-1}" = "1" ]; then

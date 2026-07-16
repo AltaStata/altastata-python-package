@@ -114,7 +114,7 @@ ENV LC_ALL=en_US.UTF-8
 # PYTHONPATH not needed - altastata installed via pip
 
 # altastata-grpc-server safe default is loopback; override here so Docker
-# port forwarding reaches it. See mycloud/altastata-grpc/TLS_DESIGN.md.
+# port forwarding reaches it. See AltaStata/sovereign-data-fabric (altastata-grpc)/TLS_DESIGN.md.
 ENV ALTASTATA_GRPC_BIND_ADDRESS=0.0.0.0
 
 # Console UI on :9877 (default on). Set ENABLE_ALTASTATA_CONSOLE_UI=0 to disable.

@@ -32,7 +32,7 @@ fi
 
 # Repo root = directory that contains containers/ and examples/rag-example/ (altastata-python-package)
 REPO_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
-SSH_KEY="${SSH_KEY:-/Users/sergevilvovsky/Downloads/torontolinuxonesshkey_rsa.prv}"
+SSH_KEY="${SSH_KEY:-$HOME/.ssh/id_rsa}"
 SSH_HOST="${SSH_HOST:-root@163.66.89.80}"
 # Speed up SSH (avoid GSSAPI/reverse-DNS delays)
 SSH_OPTS="-i $SSH_KEY -o StrictHostKeyChecking=accept-new -o GSSAPIAuthentication=no -o PreferredAuthentications=publickey"

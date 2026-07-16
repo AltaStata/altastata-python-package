@@ -12,10 +12,10 @@ You need two AltaStata accounts set up:
 
 ```bash
 # Bob's account should exist at:
-/Users/sergevilvovsky/.altastata/accounts/amazon.rsa.bob123
+$HOME/.altastata/accounts/amazon.rsa.bob123
 
 # Alice's account should exist at:
-/Users/sergevilvovsky/.altastata/accounts/amazon.rsa.alice222
+$HOME/.altastata/accounts/amazon.rsa.alice222
 ```
 
 Both accounts should have password `123` (or update the scripts accordingly).
@@ -228,7 +228,7 @@ Still listening...
 **Solution:** Create Alice's account:
 ```bash
 # Create alice222 account directory
-mkdir -p /Users/sergevilvovsky/.altastata/accounts/amazon.rsa.alice222
+mkdir -p $HOME/.altastata/accounts/amazon.rsa.alice222
 
 # Copy account files or set up new account
 # (Follow AltaStata account setup instructions)

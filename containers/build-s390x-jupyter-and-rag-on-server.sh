@@ -30,7 +30,7 @@ if [ "${SKIP_S390X_WORKSTATION_CHECK:-}" != "1" ] && command -v uname >/dev/null
 fi
 
 REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-SSH_KEY="${SSH_KEY:-/Users/sergevilvovsky/Downloads/torontolinuxonesshkey_rsa.prv}"
+SSH_KEY="${SSH_KEY:-$HOME/.ssh/id_rsa}"
 SSH_HOST="${SSH_HOST:-root@163.66.89.80}"
 SSH_OPTS="-i $SSH_KEY -o StrictHostKeyChecking=accept-new -o GSSAPIAuthentication=no -o PreferredAuthentications=publickey"
 REMOTE_DIR="${REMOTE_DIR:-/tmp/altastata-python-package}"

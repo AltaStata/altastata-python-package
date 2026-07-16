@@ -33,7 +33,7 @@ fi
 
 # Login to GHCR
 echo "Logging in to GitHub Container Registry..."
-echo $GITHUB_TOKEN | docker login ghcr.io -u sergevil --password-stdin
+echo $GITHUB_TOKEN | docker login ghcr.io -u USERNAME --password-stdin
 
 if [[ "${PUSH_JUPYTER_AMD64_TO_GHCR:-}" == "1" ]]; then
     echo "🔧 Setting up Docker buildx (needed for amd64 cross-build)..."
@@ -53,7 +53,7 @@ echo ""
 
 cd "$REPO_ROOT"
 
-ARM64_IMG="ghcr.io/sergevil/altastata/jupyter-datascience-arm64:${VERSION}"
+ARM64_IMG="ghcr.io/altastata/altastata/jupyter-datascience-arm64:${VERSION}"
 
 if [[ "${SKIP_JUPYTER_ARM64_BUILD:-}" == "1" ]]; then
     echo "Pushing existing jupyter-datascience-arm64 (altastata ${ALTASTATA_PYPI_VERSION}), tag ${VERSION}..."
@@ -77,7 +77,7 @@ if [[ "${PUSH_JUPYTER_AMD64_TO_GHCR:-}" == "1" ]]; then
     echo "Building and pushing jupyter-datascience-amd64 (altastata ${ALTASTATA_PYPI_VERSION})..."
     docker buildx build --platform linux/amd64 --file containers/jupyter/Dockerfile.amd64 \
         --build-arg ALTASTATA_VERSION=${ALTASTATA_PYPI_VERSION} \
-        --tag ghcr.io/sergevil/altastata/jupyter-datascience-amd64:${VERSION} \
+        --tag ghcr.io/altastata/altastata/jupyter-datascience-amd64:${VERSION} \
         --push .
 fi
 
@@ -85,14 +85,14 @@ echo ""
 echo "✅ Push to GHCR finished."
 echo ""
 echo "Images:"
-echo "- ghcr.io/sergevil/altastata/jupyter-datascience-arm64:${VERSION}"
+echo "- ghcr.io/altastata/altastata/jupyter-datascience-arm64:${VERSION}"
 if [[ "${PUSH_JUPYTER_AMD64_TO_GHCR:-}" == "1" ]]; then
-    echo "- ghcr.io/sergevil/altastata/jupyter-datascience-amd64:${VERSION}"
+    echo "- ghcr.io/altastata/altastata/jupyter-datascience-amd64:${VERSION}"
 fi
 echo ""
 
 echo "Pull:"
-echo "  ARM64 (Apple Silicon): docker pull ghcr.io/sergevil/altastata/jupyter-datascience-arm64:${VERSION}"
+echo "  ARM64 (Apple Silicon): docker pull ghcr.io/altastata/altastata/jupyter-datascience-arm64:${VERSION}"
 if [[ "${PUSH_JUPYTER_AMD64_TO_GHCR:-}" == "1" ]]; then
-    echo "  AMD64:                 docker pull ghcr.io/sergevil/altastata/jupyter-datascience-amd64:${VERSION}"
+    echo "  AMD64:                 docker pull ghcr.io/altastata/altastata/jupyter-datascience-amd64:${VERSION}"
 fi

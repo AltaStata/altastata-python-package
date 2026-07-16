@@ -1,8 +1,9 @@
+import os
 from altastata import AltaStataFunctions
 import time
 
-altastata_functions = AltaStataFunctions.from_account_dir('/Users/sergevilvovsky/.altastata/accounts/amazon.rsa.alice222')
-altastata_functions.set_password("123");
+altastata_functions = AltaStataFunctions.from_account_dir(os.path.expanduser('~/.altastata/accounts/amazon.rsa.alice222'))
+altastata_functions.set_password(os.environ.get("ALTASTATA_PASSWORD", ""));
 
 # Test create_file and append_buffer_to_file
 print("\nTesting create_file and append_buffer_to_file:")
@@ -27,9 +28,9 @@ buffer = altastata_functions.get_buffer('StoreTest/empty_file.txt', file_create_
 print("Appended file content: " + buffer.decode('utf-8'))
 
 # Store
-result = altastata_functions.store(['/Users/sergevilvovsky/Desktop/serge.png',
-                                    '/Users/sergevilvovsky/Desktop/meeting_saved_chat.txt'],
-                                   '/Users/sergevilvovsky/Desktop', 'StoreTest', True)
+result = altastata_functions.store([os.path.expanduser('~/Desktop/serge.png'),
+                                    os.path.expanduser('~/Desktop/meeting_saved_chat.txt')],
+                                   os.path.expanduser('~/Desktop'), 'StoreTest', True)
 
 # Get the first CloudFileOperationStatus object
 print('store: ' + str(result[0].getOperationStateValue()) + " " + result[0].getCloudFileCreateTime())
@@ -41,7 +42,7 @@ result = altastata_functions.share_files('StoreTest/meeting_saved_chat', True, N
 print('share_files:' + str(result[0].getOperationStateValue()))
 
 # Retrieve file
-result = altastata_functions.retrieve_files('/Users/sergevilvovsky/Desktop/tmp', 'StoreTest/meeting_saved', True, file_create_time_id, False, True)
+result = altastata_functions.retrieve_files(os.path.expanduser('~/Desktop/tmp'), 'StoreTest/meeting_saved', True, file_create_time_id, False, True)
 print('retrieve_files:' + str(result[0].getOperationStateValue()))
 
 # Show list

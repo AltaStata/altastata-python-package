@@ -30,14 +30,14 @@ def main():
     print("\n1️⃣  Connecting to AltaStata as alice222...")
     try:
         alice_altastata = AltaStataFunctions.from_account_dir(
-            '/Users/sergevilvovsky/.altastata/accounts/amazon.rsa.alice222'
+            os.path.expanduser('~/.altastata/accounts/amazon.rsa.alice222')
         )
-        alice_altastata.set_password("123")
+        alice_altastata.set_password(os.environ.get("ALTASTATA_PASSWORD", ""))
         print("✅ Alice connected successfully")
     except Exception as e:
         print(f"❌ Failed to connect as alice222: {e}")
         print("\nMake sure alice222 account exists at:")
-        print("   /Users/sergevilvovsky/.altastata/accounts/amazon.rsa.alice222")
+        print("   $HOME/.altastata/accounts/amazon.rsa.alice222")
         print("\nIf not, create it first.")
         return
     

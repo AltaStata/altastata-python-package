@@ -55,7 +55,7 @@ if [ -n "$ALTASTATA_ACCOUNT_DIR" ] && [ -d "$ALTASTATA_ACCOUNT_DIR" ]; then
   python -m indexer &
 fi
 
-# Optional Console UI on :9877. See mycloud/altastata-grpc/TLS_DESIGN.md.
+# Optional Console UI on :9877. See AltaStata/sovereign-data-fabric (altastata-grpc)/TLS_DESIGN.md.
 if [ "${ENABLE_ALTASTATA_CONSOLE_UI:-1}" = "1" ]; then
   if [ -n "$ALTASTATA_ACCOUNT_DIR" ] && [ -d "$ALTASTATA_ACCOUNT_DIR" ]; then
     echo "[entrypoint] Starting altastata-grpc-server on :9877."

@@ -335,7 +335,7 @@ def test_streaming_assembles_chunks():
 Run the suite:
 
 ```bash
-cd /Users/sergevilvovsky/eclipse-workspace/mcloud/altastata-python-package
+cd .
 python -m pytest tests/ -q
 ```
 

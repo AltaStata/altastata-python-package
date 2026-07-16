@@ -304,7 +304,9 @@ ssh -L 9878:127.0.0.1:9878 user@<server>
 
 ### Why bound to host loopback only
 
-The gRPC gateway in the container does not yet do TLS (the SPA is served as plain HTTP for now). Pinning the host-side port to `127.0.0.1` keeps the cleartext UI off the LAN/Wi-Fi while keeping the developer experience simple. The image bakes `ALTASTATA_GRPC_BIND_ADDRESS=0.0.0.0` only because Docker's port forwarder cannot reach a process bound to the container's loopback — see [`mycloud/altastata-grpc/TLS_DESIGN.md`](../../../../mycloud/altastata-grpc/TLS_DESIGN.md) for the full bind-address rationale.
+The gRPC gateway in the container does not yet do TLS (the SPA is served as plain HTTP for now). Pinning the host-side port to `127.0.0.1` keeps the cleartext UI off the LAN/Wi-Fi while keeping the developer experience simple. The image bakes `ALTASTATA_GRPC_BIND_ADDRESS=0.0.0.0` only because Docker's port forwarder cannot reach a process bound to the container's loopback — see the `altastata-grpc` module in
+[AltaStata/sovereign-data-fabric](https://github.com/AltaStata/sovereign-data-fabric)
+for gateway bind-address / TLS design notes.
 
 ### Logs
 

@@ -90,12 +90,12 @@ source version.sh
 VERSION="${JUPYTER_VERSION}"
 
 # Apple Silicon (ARM64):
-docker pull ghcr.io/sergevil/altastata/jupyter-datascience-arm64:${VERSION}
-docker run -p 8888:8888 ghcr.io/sergevil/altastata/jupyter-datascience-arm64:${VERSION}
+docker pull ghcr.io/altastata/altastata/jupyter-datascience-arm64:${VERSION}
+docker run -p 8888:8888 ghcr.io/altastata/altastata/jupyter-datascience-arm64:${VERSION}
 
 # Intel/AMD (AMD64):
-docker pull ghcr.io/sergevil/altastata/jupyter-datascience-amd64:${VERSION}
-docker run -p 8888:8888 ghcr.io/sergevil/altastata/jupyter-datascience-amd64:${VERSION}
+docker pull ghcr.io/altastata/altastata/jupyter-datascience-amd64:${VERSION}
+docker run -p 8888:8888 ghcr.io/altastata/altastata/jupyter-datascience-amd64:${VERSION}
 ```
 
 ### Platform Compatibility
@@ -142,7 +142,7 @@ docker exec altastata-jupyter tail -f /tmp/altastata-grpc-server.log
 #     -p 127.0.0.1:9877:9877 -e ENABLE_ALTASTATA_CONSOLE_UI=1
 #   Console UI is on by default (entrypoint + compose); set
 #   ENABLE_ALTASTATA_CONSOLE_UI=0 to skip the JVM.
-# See mycloud/altastata-grpc/TLS_DESIGN.md (§10).
+# See AltaStata/sovereign-data-fabric (altastata-grpc)/TLS_DESIGN.md (§10).
 ```
 
 ### Option 2: Use Pre-built GHCR Images
@@ -220,7 +220,7 @@ docker run -d \
   -v $(pwd)/examples/tensorflow-example:/home/jovyan/tensorflow-example \
   -v $(pwd)/altastata:/home/jovyan/altastata-source \
   -e JUPYTER_ENABLE_LAB=yes \
-  ghcr.io/sergevil/altastata/jupyter-datascience-arm64:latest   # or jupyter-datascience-amd64 on Intel/AMD
+  ghcr.io/altastata/altastata/jupyter-datascience-arm64:latest   # or jupyter-datascience-amd64 on Intel/AMD
 ```
 
 ### Development Workflow
@@ -280,10 +280,10 @@ export GITHUB_TOKEN=your_github_token_here
 source version.sh
 
 # Apple Silicon (ARM64):
-docker pull ghcr.io/sergevil/altastata/jupyter-datascience-arm64:${VERSION}
+docker pull ghcr.io/altastata/altastata/jupyter-datascience-arm64:${VERSION}
 
 # Intel/AMD (AMD64):
-docker pull ghcr.io/sergevil/altastata/jupyter-datascience-amd64:${VERSION}
+docker pull ghcr.io/altastata/altastata/jupyter-datascience-amd64:${VERSION}
 
 
 
@@ -305,8 +305,8 @@ docker compose -f containers/jupyter/docker-compose-ghcr.yml up -d
 
 After pushing images to GHCR, you may need to make them public for external access:
 
-1. **ARM64**: https://github.com/users/SergeVil/packages/container/package/altastata%2Fjupyter-datascience-arm64
-2. **AMD64**: https://github.com/users/SergeVil/packages/container/package/altastata%2Fjupyter-datascience-amd64
+1. **ARM64**: `ghcr.io/altastata/altastata/jupyter-datascience-arm64`
+2. **AMD64**: `ghcr.io/altastata/altastata/jupyter-datascience-amd64`
 3. **Click "Package settings"** (gear icon) for each
 4. **Scroll to "Danger Zone"** → **"Change visibility"** → **"Public"**
 5. **Confirm the change**
@@ -590,7 +590,7 @@ docker exec altastata-jupyter pip install -e /home/jovyan/altastata-source
 
 ```bash
 # Navigate to Python package project
-cd /Users/sergevilvovsky/eclipse-workspace/mcloud/altastata-python-package
+cd .
 
 # Build and start Jupyter environment
 ./containers/jupyter/build-all-images.sh
@@ -615,12 +615,12 @@ open http://localhost:8888
 
 ```bash
 # Terminal 1: Start main Altastata project
-cd /Users/sergevilvovsky/eclipse-workspace/mcloud/mycloud
+cd $HOME/eclipse-workspace/mcloud/mycloud
 ./containers/jupyter/build-all-images.sh
 docker compose -f containers/jupyter/docker-compose.yml up -d
 
 # Terminal 2: Start Python package
-cd /Users/sergevilvovsky/eclipse-workspace/mcloud/altastata-python-package
+cd .
 ./containers/jupyter/build-all-images.sh
 docker compose -f containers/jupyter/docker-compose.yml up -d
 
@@ -696,10 +696,10 @@ for batch in DataLoader(dataset):
 
 ```bash
 # Deploy both projects from GHCR
-cd /Users/sergevilvovsky/eclipse-workspace/mcloud/mycloud
+cd $HOME/eclipse-workspace/mcloud/mycloud
 docker compose -f containers/jupyter/docker-compose-ghcr.yml up -d
 
-cd /Users/sergevilvovsky/eclipse-workspace/mcloud/altastata-python-package
+cd .
 docker compose -f containers/jupyter/docker-compose-ghcr.yml up -d
 
 # Configure Jupyter for inference workloads
@@ -733,14 +733,14 @@ docker exec altastata-jupyter pip install -e /home/jovyan/altastata-source
 
 ```bash
 # Developer 1: Backend APIs
-cd /Users/sergevilvovsky/eclipse-workspace/mcloud/mycloud
+cd $HOME/eclipse-workspace/mcloud/mycloud
 docker-compose up -d altastata-web-api altastata-admin-api
 
 # Developer 2: Frontend UIs  
 docker-compose up -d altastata-web-ui altastata-admin-ui
 
 # Developer 3: ML/Python package
-cd /Users/sergevilvovsky/eclipse-workspace/mcloud/altastata-python-package
+cd .
 docker compose -f containers/jupyter/docker-compose.yml up -d
 
 # All share the same altastata-network for communication

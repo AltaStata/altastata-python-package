@@ -2,7 +2,7 @@
 
 ## Visual reference
 
-The visual target is **`mycloud/altastata-ui`** (JavaFX desktop, "AltaStata
+The visual target is **`AltaStata/sovereign-data-fabric (altastata-ui)`** (JavaFX desktop, "AltaStata
 Cloud File Explorer"). Three columns:
 
 ```
@@ -22,7 +22,7 @@ column to the right. Clicking a file replaces the right-most preview pane.
 
 ## Component map
 
-| JavaFX (mycloud/altastata-ui) | React (this repo) |
+| JavaFX (AltaStata/sovereign-data-fabric (altastata-ui)) | React (this repo) |
 |---|---|
 | `MainController` columns | `frontend/src/components/MillerColumns.tsx` |
 | `FileListView` per column | `frontend/src/components/FileColumn.tsx` |
@@ -82,7 +82,7 @@ under `altastata/lib/altastata-console-static/`. Any image or
 environment that installs `altastata` (pip / Jupyter / mycloud
 containers) automatically gets the UI bytes alongside the library.
 
-In production, the Java gRPC server (`mycloud/altastata-grpc`) serves
+In production, the Java gRPC server (`AltaStata/sovereign-data-fabric (altastata-grpc)`) serves
 those static files directly from the filesystem path supplied via the
 `ALTASTATA_WEB_UI_DIR` environment variable on `:9877` — both gRPC
 API and SPA come from the same origin and port, so CORS is a non-issue

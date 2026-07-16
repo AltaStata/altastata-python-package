@@ -11,7 +11,7 @@ setup(
     description='A Python package for Altastata data processing and machine learning integration',
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url='https://github.com/sergevil/altastata-python-package',
+    url='https://github.com/AltaStata/altastata-python-package',
     packages=find_packages(),
     include_package_data=True,
     package_data={

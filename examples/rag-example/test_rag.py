@@ -58,9 +58,9 @@ def test_rag_pipeline():
     # Initialize AltaStata
     print("\n1️⃣  Initializing AltaStata connection...")
     altastata_functions = AltaStataFunctions.from_account_dir(
-        '/Users/sergevilvovsky/.altastata/accounts/amazon.rsa.bob123'
+        os.path.expanduser('~/.altastata/accounts/amazon.rsa.bob123')
     )
-    altastata_functions.set_password("123")
+    altastata_functions.set_password(os.environ.get("ALTASTATA_PASSWORD", ""))
     
     # Create filesystem instance
     fs = create_filesystem(altastata_functions, "bob123")

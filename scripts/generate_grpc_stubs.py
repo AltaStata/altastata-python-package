@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # Note: proto/altastata/grpc/v1/ files are the AltaStata gRPC contracts and
-# must stay in sync with mycloud/altastata-grpc/src/main/proto/altastata/grpc/v1/.
+# must stay in sync with AltaStata/sovereign-data-fabric (altastata-grpc)/src/main/proto/altastata/grpc/v1/.
 # Sync that directory before regenerating stubs so server and client never drift.
 # The protobuf package remains altastata.v1 (wire API version); only the file
 # path uses grpc/v1 for clarity in Python and Java build trees.

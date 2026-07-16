@@ -64,14 +64,14 @@ def main():
     print("\n1️⃣  Connecting to AltaStata as bob123...")
     try:
         bob_altastata = AltaStataFunctions.from_account_dir(
-            '/Users/sergevilvovsky/.altastata/accounts/amazon.rsa.bob123'
+            os.path.expanduser('~/.altastata/accounts/amazon.rsa.bob123')
         )
-        bob_altastata.set_password("123")
+        bob_altastata.set_password(os.environ.get("ALTASTATA_PASSWORD", ""))
         print("✅ Bob connected successfully")
     except Exception as e:
         print(f"❌ Failed to connect as bob123: {e}")
         print("\nMake sure bob123 account exists at:")
-        print("   /Users/sergevilvovsky/.altastata/accounts/amazon.rsa.bob123")
+        print("   $HOME/.altastata/accounts/amazon.rsa.bob123")
         return
     
     # Register Bob's event listener

@@ -7,7 +7,7 @@
 set -e
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-SSH_KEY="${SSH_KEY:-/Users/sergevilvovsky/Downloads/torontolinuxonesshkey_rsa.prv}"
+SSH_KEY="${SSH_KEY:-$HOME/.ssh/id_rsa}"
 SSH_HOST="${SSH_HOST:-root@163.66.89.80}"
 SSH_OPTS="-i $SSH_KEY -o StrictHostKeyChecking=accept-new -o GSSAPIAuthentication=no -o PreferredAuthentications=publickey"
 CONTAINER_NAME="rag-s390x-test"

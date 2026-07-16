@@ -12,7 +12,8 @@ not commit to git:
 - `altastata/lib/altastata-services-<ver>-uber.jar` (built from
   `AltaStata/sovereign-data-fabric (altastata-services)` — the unified Micronaut app that hosts gRPC,
   and the S3 gateway under `com.altastata.services.AltaStataServicesApplication`)
-- `altastata/lib/altastata-console-static/` (built from `altastata-console/frontend`)
+- `altastata/lib/altastata-console-static/` (built from sibling
+  [`AltaStata/altastata-console`](https://github.com/AltaStata/altastata-console) `frontend/`)
 
 Everything under `altastata/lib/` is gitignored (`lib/` rule in `.gitignore`)
 and must be populated locally before `pip install -e .` or `python -m build`.
@@ -26,10 +27,12 @@ them under `altastata/lib/`:
 bash scripts/build-bundled-artifacts.sh
 ```
 
-The script assumes the sibling layout `mycloud/` next to this repo and
-builds the Console SPA from `altastata-console/frontend/` in this repo.
-Override with `ALTASTATA_MYCLOUD_DIR` / `ALTASTATA_CONSOLE_DIR` if your
-layout differs, or pass `SKIP_GRPC=1` / `SKIP_UI=1` to leave one side untouched.
+The script assumes the sibling layout next to this repo:
+
+- `../mycloud` (or `ALTASTATA_MYCLOUD_DIR`) for the services uber jar
+- `../altastata-console` (or `ALTASTATA_CONSOLE_DIR`) for the Console SPA
+
+Pass `SKIP_GRPC=1` / `SKIP_UI=1` to leave one side untouched.
 
 #### Manual fallback
 
@@ -44,12 +47,12 @@ If you prefer to drive each build yourself:
    cp ../AltaStata/sovereign-data-fabric (altastata-services)/build/libs/lib/bc*.jar altastata/lib/
    ```
 
-2. Build the Console SPA in `altastata-console/frontend`:
+2. Build the Console SPA from the sibling checkout:
    ```bash
-   (cd altastata-console/frontend && npm install && npm run build)
+   (cd ../altastata-console/frontend && npm install && npm run build)
    rm -rf altastata/lib/altastata-console-static
    mkdir -p altastata/lib/altastata-console-static
-   cp -R altastata-console/frontend/dist/. altastata/lib/altastata-console-static/
+   cp -R ../altastata-console/frontend/dist/. altastata/lib/altastata-console-static/
    ```
 
 3. Run the server (Java + bundled SPA on the same port):

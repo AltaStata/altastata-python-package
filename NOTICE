@@ -1,0 +1,24 @@
+AltaStata Python Package
+Copyright 2026 AltaStata Inc.
+
+This product includes software developed at AltaStata Inc.
+(https://altastata.com/).
+
+-------------------------------------------------------------------------------
+Bundled / redistributed components
+-------------------------------------------------------------------------------
+
+This Python package may redistribute binary artifacts from the AltaStata
+open-core repository (for example altastata-services / altastata-grpc uber JARs
+and related runtime libraries). Those Java components are licensed under the
+Business Source License 1.1 (BSL 1.1), with Change License Apache License 2.0.
+See:
+
+  https://github.com/AltaStata/sovereign-data-fabric/blob/main/LICENSE.md
+
+Use of those bundled components is subject to the BSL terms, independent of
+the Apache License 2.0 that covers the Python source in this repository.
+
+This package may also redistribute Bouncy Castle Java libraries
+(https://www.bouncycastle.org/), which are licensed under the Bouncy Castle
+Licence (MIT-style). See the corresponding JAR META-INF notices.

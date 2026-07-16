@@ -150,7 +150,7 @@ class S3CredentialsTests(unittest.TestCase):
         inst = _make_instance("grpc")
         inst._user_properties = "myuser=bob\n"
         inst._private_key_encrypted = "PRIVATE_KEY"
-        inst._cached_password = os.environ.get("ALTASTATA_PASSWORD", "")
+        inst._cached_password = "123"
 
         creds = inst.s3_credentials()
 
@@ -254,7 +254,7 @@ class S3CredentialsTests(unittest.TestCase):
         inst = _make_instance("grpc")
         inst._user_properties = "myuser=bob\n"
         inst._private_key_encrypted = "PK"
-        inst._cached_password = os.environ.get("ALTASTATA_PASSWORD", "")
+        inst._cached_password = "p"
 
         creds = inst.s3_credentials()
         self.assertEqual("AK_REBOOT", creds["aws_access_key_id"])
@@ -404,7 +404,7 @@ class SetPasswordCachesTests(unittest.TestCase):
     @patch("altastata.altastata_functions.AltaStataGrpcClient")
     def test_set_password_caches_value(self, mock_grpc_cls):
         mock_client = MagicMock()
-        mock_grpc_cls.from_credentials.return_value = mock_client
+        mock_grpc_cls.from_upload.return_value = mock_client
 
         f = AltaStataFunctions.from_credentials(
             "myuser=bob\n",

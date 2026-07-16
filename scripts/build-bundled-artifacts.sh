@@ -7,7 +7,7 @@
 #     1. altastata-services-<ver>-uber.jar  (built from sibling
 #        AltaStata/sovereign-data-fabric (altastata-services) — the unified Micronaut app that hosts
 #        gRPC + S3 + py4j under com.altastata.services.AltaStataServicesApplication)
-#     2. altastata/lib/altastata-console-static/  (built from altastata-console/frontend)
+#     2. altastata/lib/altastata-console-static/  (built from sibling altastata-console)
 #   Both are deliberately gitignored under altastata/lib/ so the repo stays
 #   text-only. They are populated locally before `python -m build` so they
 #   end up inside the wheel published to PyPI.

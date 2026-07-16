@@ -1,0 +1,23 @@
+# Local-only HPCS / machine-specific bind mounts for altastata-jupyter.
+#
+# Setup:
+#   cp containers/jupyter/docker-compose.override.example.yml \
+#      containers/jupyter/docker-compose.override.yml
+#   # edit the host paths below, then:
+#   ./containers/jupyter/up.sh
+#
+# docker-compose.override.yml is gitignored — do not commit real paths or secrets.
+#
+# Destinations must match user_properties:
+#   hpcs-yaml-path=/etc/ep11client/grep11client.yaml
+#   hpcs-priv-key-blob-path=/home/jovyan/hpcs-privkey.blob
+
+services:
+  altastata-jupyter:
+    volumes:
+      # Use the populated GREP11 client YAML (not the placeholder template).
+      - /ABSOLUTE/PATH/TO/grep11client.yaml:/etc/ep11client/grep11client.yaml:ro
+      - /ABSOLUTE/PATH/TO/hpcs-privkey.blob:/home/jovyan/hpcs-privkey.blob:ro
+    environment:
+      # Stream Java gRPC logs through the Python launcher (helpful for LoginV2 / HPCS).
+      - ALTASTATA_GRPC_LOG_STREAM=1

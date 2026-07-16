@@ -1,6 +1,8 @@
 version: '3.8'
 
-# Jupyter stack. Run from repo root: docker compose -f containers/jupyter/docker-compose.yml up -d
+# Jupyter stack.
+# Prefer: ./containers/jupyter/up.sh
+# (loads repo-root .env + optional docker-compose.override.yml for HPCS mounts).
 # ARCH is set by update-version.sh or .env (arm64|amd64). Default: amd64.
 # VERSION is from version.sh. Run ./update-version.sh to sync.
 services:

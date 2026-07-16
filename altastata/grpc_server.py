@@ -3,9 +3,9 @@ import shlex
 import subprocess
 import sys
 
-from .grpc_client import (
-    _build_grpc_subprocess_env,
-    _resolve_local_grpc_startup_command,
+from .java_runtime import (
+    build_grpc_subprocess_env,
+    resolve_local_grpc_startup_command,
 )
 
 
@@ -20,7 +20,7 @@ def main() -> int:
     )
     args = parser.parse_args()
 
-    command, working_dir = _resolve_local_grpc_startup_command()
+    command, working_dir = resolve_local_grpc_startup_command()
     if args.dry_run:
         print("cwd:", working_dir or ".")
         print("command:", shlex.join(command))
@@ -28,7 +28,7 @@ def main() -> int:
 
     # Reuse the same env builder as the in-process launcher so the bundled
     # AltaStata Console SPA (when present) is served on the same port as gRPC.
-    process = subprocess.Popen(command, cwd=working_dir, env=_build_grpc_subprocess_env())
+    process = subprocess.Popen(command, cwd=working_dir, env=build_grpc_subprocess_env())
     try:
         return process.wait()
     except KeyboardInterrupt:

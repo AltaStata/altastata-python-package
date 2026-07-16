@@ -132,4 +132,4 @@ altastata/                    # Main package (separate location)
 
 ## License
 
-MIT License 
+Apache License, Version 2.0 — see the repository [LICENSE](../../LICENSE). 

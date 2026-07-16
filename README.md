@@ -271,4 +271,9 @@ Email [contact@altastata.com](mailto:contact@altastata.com).
 
 ## License
 
-MIT License — see [LICENSE](LICENSE).
+Licensed under the **Apache License, Version 2.0** — see [LICENSE](LICENSE).
+
+The Python / TypeScript sources in this repository are Apache 2.0. Bundled AltaStata
+Java runtime JARs (when present under `altastata/lib/`) remain under the
+[Business Source License 1.1](https://github.com/AltaStata/sovereign-data-fabric/blob/main/LICENSE.md).
+See [NOTICE](NOTICE) for attribution of bundled components.

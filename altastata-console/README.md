@@ -208,4 +208,5 @@ See `docs/architecture.md` for screenshots and mapping to web components.
 
 ## License
 
-TBD — copy from `altastata` repo when finalizing.
+Apache License, Version 2.0 — see the parent repository [LICENSE](../LICENSE).
+(Canonical console source: https://github.com/SergeVil/altastata-console)

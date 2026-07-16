@@ -31,12 +31,13 @@ fi
 
 REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 SSH_KEY="${SSH_KEY:-$HOME/.ssh/id_rsa}"
-SSH_HOST="${SSH_HOST:-root@163.66.89.80}"
+: "${SSH_HOST:?Set SSH_HOST=user@your-linuxone-host}"
 SSH_OPTS="-i $SSH_KEY -o StrictHostKeyChecking=accept-new -o GSSAPIAuthentication=no -o PreferredAuthentications=publickey"
 REMOTE_DIR="${REMOTE_DIR:-/tmp/altastata-python-package}"
 REMOTE_ALTASTATA_ACCOUNTS="${REMOTE_ALTASTATA_ACCOUNTS:-/root/.altastata/accounts}"
 REMOTE_HPCS_DIR="${REMOTE_HPCS_DIR:-/home/jovyan/hpcs}"
-ALTASTATA_ACCOUNTS="${ALTASTATA_ACCOUNTS:-$HOME/.altastata/accounts/amazon.rsa.bob123 $HOME/.altastata/accounts/amazon.rsa.hpcs.serge678}"
+# Space-separated local account dirs to rsync (empty = skip sync).
+ALTASTATA_ACCOUNTS="${ALTASTATA_ACCOUNTS:-}"
 ENABLE_ZDNN="${ENABLE_ZDNN:-0}"
 DETACHED="${DETACHED:-1}"
 REMOTE_BUILD_LOG="${REMOTE_BUILD_LOG:-/tmp/altastata-s390x-jupyter-rag-build.log}"
@@ -59,7 +60,7 @@ if [ -n "$ALTASTATA_ACCOUNTS" ]; then
   done
   echo "Stripping HPCS path lines from account *.user.properties on server..."
   ssh $SSH_OPTS "$SSH_HOST" "for f in $REMOTE_ALTASTATA_ACCOUNTS/*/*.user.properties; do [ -f \"\$f\" ] && sed -i '/^hpcs-yaml-path=/d' \"\$f\" && sed -i '/^hpcs-priv-key-blob-path=/d' \"\$f\" && echo \"  \$(basename \"\$f\")\"; done"
-  HPCS_BLOB_SRC="$HOME/.altastata/accounts/amazon.rsa.hpcs.serge678/hpcs-privkey.blob"
+  HPCS_BLOB_SRC="${HPCS_BLOB_SRC:-}"
   if [ -f "$HPCS_BLOB_SRC" ]; then
     echo "Copying HPCS key blob to server..."
     ssh $SSH_OPTS "$SSH_HOST" "mkdir -p $REMOTE_HPCS_DIR"
@@ -77,12 +78,14 @@ rsync -avz --delete \
   --exclude 'local_index' \
   "$REPO_ROOT/" "$SSH_HOST:$REMOTE_DIR/"
 
-HPCS_ACCOUNT="amazon.rsa.hpcs.serge678"
-HPCS_PROPERTIES_FILE="altastata-myorgrsa444-serge678.user.properties"
-HPCS_PROPERTIES_SRC="$REPO_ROOT/containers/rag-example/$HPCS_PROPERTIES_FILE"
-if [ -f "$HPCS_PROPERTIES_SRC" ]; then
-  echo "Copying $HPCS_PROPERTIES_FILE to server..."
-  ssh $SSH_OPTS "$SSH_HOST" "mkdir -p $REMOTE_ALTASTATA_ACCOUNTS/$HPCS_ACCOUNT && cp $REMOTE_DIR/containers/rag-example/$HPCS_PROPERTIES_FILE $REMOTE_ALTASTATA_ACCOUNTS/$HPCS_ACCOUNT/$HPCS_PROPERTIES_FILE && echo '  Done'"
+HPCS_ACCOUNT="${HPCS_ACCOUNT:-}"
+HPCS_PROPERTIES_FILE="${HPCS_PROPERTIES_FILE:-}"
+if [ -n "$HPCS_ACCOUNT" ] && [ -n "$HPCS_PROPERTIES_FILE" ]; then
+  HPCS_PROPERTIES_SRC="$REPO_ROOT/containers/rag-example/$HPCS_PROPERTIES_FILE"
+  if [ -f "$HPCS_PROPERTIES_SRC" ]; then
+    echo "Copying $HPCS_PROPERTIES_FILE to server..."
+    ssh $SSH_OPTS "$SSH_HOST" "mkdir -p $REMOTE_ALTASTATA_ACCOUNTS/$HPCS_ACCOUNT && cp $REMOTE_DIR/containers/rag-example/$HPCS_PROPERTIES_FILE $REMOTE_ALTASTATA_ACCOUNTS/$HPCS_ACCOUNT/$HPCS_PROPERTIES_FILE && echo '  Done'"
+  fi
 fi
 
 F16_FILE="llama-3.2-1b-instruct-be.f16.gguf"

@@ -328,7 +328,7 @@ The **Open LLM RAG** app (simple vector store + Transformers + AltaStata) can be
 ```
 - SSHs to the server, **stops/removes** any existing `rag-s390x-test` container **before** pulling, pulls `icr.io/altastata/rag-open-llm-s390x:${RAG_VERSION}` (same as **`RAG_VERSION`** in repo **`version.sh`**), runs the container, runs a test query, then **leaves the container running** (no stop/rm at the end).
 - Set **`ICR_TOKEN`** on your Mac so the script can log in to icr.io on the server before pull.
-- **Account:** Default is **HPCS** (`amazon.rsa.hpcs.serge678`; no password). For **bob123** (password-based):
+- **Account:** Default is **HPCS** (`amazon.rsa.hpcs.example`; no password). For **bob123** (password-based):
   ```bash
   ACCOUNT_NAME=amazon.rsa.bob123 ./containers/rag-example/pull-and-run-rag-s390x-from-icr.sh
   ```

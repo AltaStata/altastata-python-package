@@ -16,17 +16,16 @@ RUN mkdir -p /opt/app-root/src && \
     chown -R ${NB_UID}:${NB_GID} /opt/app-root
 
 # Install PyTorch and the local altastata checkout
-# Use setuptools<75 for pkg_resources (conda setuptools 82 lacks it for Python 3.13)
 # Note: torchaudio 2.5.1 not available for Python 3.13/ARM64; using latest compatible versions
 #
-# Split into three RUN steps so a Docker layer-cache only invalidates from the
-# changed step downward. PyTorch is ~2 GB to download — keep it in its own
-# layer so local altastata source changes don't force a re-pull.
-RUN pip install --no-cache-dir "setuptools<75"
+# Split RUN steps so a Docker layer-cache only invalidates from the changed
+# step downward. PyTorch is ~2 GB to download — keep it in its own layer so
+# local altastata source changes don't force a re-pull.
 RUN pip install --no-cache-dir torch torchvision torchaudio
 
 # Install AltaStata from this repository so local changes are testable before
-# publishing a wheel to PyPI.
+# publishing a wheel to PyPI. Jar/UI discovery uses importlib.resources (no
+# setuptools/pkg_resources pin required).
 COPY setup.py pyproject.toml README.md /src/altastata-python-package/
 COPY altastata /src/altastata-python-package/altastata
 RUN pip install --no-cache-dir /src/altastata-python-package
@@ -34,9 +33,6 @@ RUN pip install --no-cache-dir /src/altastata-python-package
 # boto3 lets notebooks drive AltaStataFunctions.boto3_s3() and the AWS CLI
 # against the local S3 gateway on :9876 without an extra `pip install`.
 RUN pip install --no-cache-dir "grpcio>=1.80.0" boto3
-# torch / conda layers may reinstall setuptools>=75, which drops pkg_resources
-# (still used by altastata.grpc_client to locate bundled jars + console SPA).
-RUN pip install --no-cache-dir "setuptools<75"
 
 # Copy pytorch-example for reference
 COPY --chown=${NB_UID}:${NB_GID} examples/pytorch-example /opt/app-root/src/pytorch-example/

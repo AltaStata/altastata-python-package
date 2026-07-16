@@ -15,7 +15,7 @@ pip install altastata
 - **Big Data:** Databricks / Apache Spark (AltaStata Hadoop FS JAR)
 - **Data Warehousing:** Snowflake external stages (S3 Gateway) or Snowpark Python (fsspec)
 - **AWS Ecosystem:** S3 tools like boto3, aws CLI, and s3fs (S3-compatible API on port **9876**)
-- **Distributed apps:** gRPC API (Python transport="grpc", JS clients via port **9877**)
+- **Distributed apps:** gRPC API (Python client + JS clients via port **9877**)
 - **Real-time:** Real-time share/delete events (gRPC EventsService or Web UI)
 - **Web UI:** Finder-style file manager in the browser (http://127.0.0.1:9877)
 
@@ -48,7 +48,6 @@ from altastata import AltaStataFunctions
 
 f = AltaStataFunctions.from_account_dir(
     "/path/to/.altastata/accounts/amazon.rsa.bob123",
-    transport="grpc",
     password="your_password",
 )
 ```
@@ -77,14 +76,9 @@ DEK-Info: DES-EDE3,F26EBECE6DDAEC52
 ... encrypted PEM body ...
 -----END RSA PRIVATE KEY-----"""
 
-altastata_functions = AltaStataFunctions.from_credentials(user_properties, private_key)
-altastata_functions.set_password("my_password")
-
-# Or with gRPC transport:
 altastata_functions = AltaStataFunctions.from_credentials(
     user_properties,
     private_key,
-    transport="grpc",
     password="my_password",
 )
 ```
@@ -95,7 +89,7 @@ Your org admin creates *user.properties after you send them public.key (RSA/PQC/
 
 ## Quick start (gRPC — recommended)
 
-transport="grpc" auto-starts the bundled Java gateway (Web UI + gRPC + S3).
+`from_account_dir` / `from_credentials` auto-start the bundled Java gateway (Web UI + gRPC + S3).
 
 ```python
 from altastata import AltaStataFunctions
@@ -103,14 +97,12 @@ from altastata import AltaStataFunctions
 # RSA / PQC
 f = AltaStataFunctions.from_account_dir(
     "/path/to/.altastata/accounts/amazon.rsa.bob123",
-    transport="grpc",
     password="your_password",
 )
 
 # HPCS / HSM — empty password
 f = AltaStataFunctions.from_account_dir(
     "/path/to/.altastata/accounts/amazon.rsa.hpcs.myuser",
-    transport="grpc",
     password="",
 )
 
@@ -136,7 +128,7 @@ Mount a populated grep11client.yaml (e.g. /etc/ep11client/grep11client.yaml) and
 from altastata import AltaStataFunctions
 from altastata.fsspec import create_filesystem
 
-f = AltaStataFunctions.from_account_dir("/path/to/account", transport="grpc", password="secret")
+f = AltaStataFunctions.from_account_dir("/path/to/account", password="secret")
 fs = create_filesystem(f, "my_account")
 
 with fs.open("Public/readme.txt", "r") as fh:
@@ -158,7 +150,7 @@ from altastata import AltaStataFunctions
 from altastata.fsspec import create_filesystem
 from langchain_core.documents import Document
 
-f = AltaStataFunctions.from_account_dir("/path/to/account", transport="grpc", password="secret")
+f = AltaStataFunctions.from_account_dir("/path/to/account", password="secret")
 fs = create_filesystem(f, "my_account")
 
 with fs.open("Public/docs/policy.txt", "r") as fh:
@@ -181,7 +173,7 @@ Use the AltaStata Hadoop filesystem implementation so Spark jobs read encrypted 
 ## S3-compatible API (boto3, aws CLI, s3fs)
 
 ```python
-f = AltaStataFunctions.from_account_dir("/path/to/account", transport="grpc", password="secret")
+f = AltaStataFunctions.from_account_dir("/path/to/account", password="secret")
 
 s3 = f.boto3_s3()   # pip install boto3
 s3.put_object(Bucket="altastata-bucket", Key="hello.txt", Body=b"hi")
@@ -197,7 +189,7 @@ f.install_aws_env()   # AWS_* for !aws s3 ls in Jupyter
 from altastata import AltaStataFunctions, AltaStataPyTorchDataset
 from altastata.altastata_pytorch_dataset import register_altastata_functions_for_pytorch
 
-f = AltaStataFunctions.from_account_dir("/path/to/account", transport="grpc", password="secret")
+f = AltaStataFunctions.from_account_dir("/path/to/account", password="secret")
 register_altastata_functions_for_pytorch(f, "my_account")
 dataset = AltaStataPyTorchDataset("my_account", root_dir="Public/", file_pattern="*.jpg")
 ```
@@ -214,7 +206,6 @@ def on_event(name, data):
 
 f = AltaStataFunctions.from_account_dir(
     "/path/to/account",
-    transport="grpc",
     password="secret",
 )
 f.add_event_listener(on_event)

@@ -86,7 +86,6 @@ def my_event_handler(event_name, data):
 # Initialize AltaStata gRPC client
 altastata = AltaStataFunctions.from_account_dir(
     'path/to/account',
-    transport="grpc",
     password="your_password",
 )
 

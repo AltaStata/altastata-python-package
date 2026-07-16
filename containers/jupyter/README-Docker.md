@@ -112,11 +112,17 @@ docker run -p 8888:8888 ghcr.io/altastata/altastata/jupyter-datascience-amd64:${
 ### Option 1: Build and Run Everything
 
 ```bash
-# 1. Build the image
-./containers/jupyter/build-all-images.sh
+# 1. Build the image (arm64-only is enough on Apple Silicon):
+source version.sh
+docker build -f containers/jupyter/Dockerfile.arm64 \
+  --build-arg ALTASTATA_VERSION=${ALTASTATA_PYPI_VERSION} \
+  -t altastata/jupyter-datascience-arm64:latest \
+  -t altastata/jupyter-datascience-arm64:${JUPYTER_VERSION} \
+  .
+# Or both arches: ./containers/jupyter/build-all-images.sh
 
-# 2. Run locally (from repo root)
-docker compose -f containers/jupyter/docker-compose.yml up -d
+# 2. Run locally — use the helper so root .env + HPCS override always apply:
+./containers/jupyter/up.sh
 
 # 3. Access Jupyter Lab at http://localhost:8888/lab
 # Get the token from logs: docker logs altastata-jupyter 2>&1 | grep -E "127.0.0.1:8888|token"
@@ -128,22 +134,35 @@ docker compose -f containers/jupyter/docker-compose.yml up -d
 # Lab and prefer to skip the JVM startup).
 # Tail its log:
 docker exec altastata-jupyter tail -f /tmp/altastata-grpc-server.log
-
-# Notes on the security model:
-# - The image bakes ALTASTATA_GRPC_BIND_ADDRESS=0.0.0.0 (see Dockerfile.${ARCH}).
-#   Without it, altastata-grpc-server would bind the container's loopback —
-#   its safe default since Phase 1 of the TLS / bind-address design — and
-#   Docker port forwarding could not reach it.
-# - docker-compose.yml pins the host-side port to 127.0.0.1:9877, so the UI
-#   is reachable only from this machine, not from the LAN. Override with
-#   ALTASTATA_CONSOLE_UI_HOST_PORT=... in .env (e.g. when running RAG on
-#   the same machine — RAG defaults to 9878).
-# - For a plain `docker run` (no compose), pass both:
-#     -p 127.0.0.1:9877:9877 -e ENABLE_ALTASTATA_CONSOLE_UI=1
-#   Console UI is on by default (entrypoint + compose); set
-#   ENABLE_ALTASTATA_CONSOLE_UI=0 to skip the JVM.
-# See AltaStata/sovereign-data-fabric (altastata-grpc)/TLS_DESIGN.md (§10).
 ```
+
+**HPCS / GREP11 mounts (one-time):**
+
+```bash
+cp containers/jupyter/docker-compose.override.example.yml \
+   containers/jupyter/docker-compose.override.yml
+# edit absolute host paths to grep11client.yaml + hpcs-privkey.blob
+./containers/jupyter/up.sh up -d --force-recreate
+```
+
+Do **not** use `docker compose -f containers/jupyter/docker-compose.yml --project-directory .`
+for day-to-day runs — that skips `docker-compose.override.yml` and breaks relative
+example volume paths. Prefer `./containers/jupyter/up.sh`.
+
+Notes on the security model:
+
+- The image bakes `ALTASTATA_GRPC_BIND_ADDRESS=0.0.0.0` (see `Dockerfile.${ARCH}`).
+  Without it, `altastata-grpc-server` would bind the container's loopback —
+  its safe default since Phase 1 of the TLS / bind-address design — and
+  Docker port forwarding could not reach it.
+- `docker-compose.yml` pins the host-side port to `127.0.0.1:9877`, so the UI
+  is reachable only from this machine, not from the LAN. Override with
+  `ALTASTATA_CONSOLE_UI_HOST_PORT=...` in `.env` (e.g. when running RAG on
+  the same machine — RAG defaults to 9878).
+- For a plain `docker run` (no compose), pass both:
+  `-p 127.0.0.1:9877:9877 -e ENABLE_ALTASTATA_CONSOLE_UI=1`.
+  Console UI is on by default (entrypoint + compose); set
+  `ENABLE_ALTASTATA_CONSOLE_UI=0` to skip the JVM.
 
 ### Option 2: Use Pre-built GHCR Images
 

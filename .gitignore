@@ -91,9 +91,9 @@ containers/rag-example/*.user.properties
 rag-zdnn-build.log
 containers/jupyter/docker-compose.override.yml
 
-# Vendored altastata-console SPA (source tracked; build artifacts not)
-altastata-console/frontend/node_modules/
-altastata-console/frontend/dist/
+# Console source lives in sibling AltaStata/altastata-console — do not re-vendor here.
+# Ignore a local checkout/symlink if someone drops one under this repo by mistake.
+/altastata-console/
 
 # Notebook checkpoints / local marketing drafts
 .ipynb_checkpoints/

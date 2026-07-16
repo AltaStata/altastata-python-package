@@ -7,7 +7,7 @@
 #     1. altastata-services-<ver>-uber.jar  (built from sibling
 #        AltaStata/sovereign-data-fabric (altastata-services) — the unified Micronaut app that hosts
 #        gRPC + S3 + py4j under com.altastata.services.AltaStataServicesApplication)
-#     2. altastata/lib/altastata-console-static/  (built from altastata-console/frontend)
+#     2. altastata/lib/altastata-console-static/  (built from sibling altastata-console)
 #   Both are deliberately gitignored under altastata/lib/ so the repo stays
 #   text-only. They are populated locally before `python -m build` so they
 #   end up inside the wheel published to PyPI.
@@ -19,7 +19,7 @@
 #   ALTASTATA_MYCLOUD_DIR   override path to the mycloud checkout
 #                           (default: ../mycloud relative to this repo)
 #   ALTASTATA_CONSOLE_DIR   override path to the altastata-console checkout
-#                           (default: altastata-console/ in this repo)
+#                           (default: ../altastata-console sibling of this repo)
 #   SKIP_GRPC=1             skip the altastata-services Gradle build (use existing
 #                           altastata-services-*-uber.jar already present in lib/)
 #   SKIP_UI=1               skip the altastata-console npm build (use existing
@@ -40,7 +40,14 @@ LIB_DIR="$PKG_DIR/altastata/lib"
 STATIC_DIR="$LIB_DIR/altastata-console-static"
 
 MYCLOUD_DIR="${ALTASTATA_MYCLOUD_DIR:-$(cd "$PKG_DIR/../mycloud" 2>/dev/null && pwd || true)}"
-CONSOLE_DIR="${ALTASTATA_CONSOLE_DIR:-$(cd "$PKG_DIR/altastata-console" 2>/dev/null && pwd || true)}"
+# Canonical Console source is the sibling AltaStata/altastata-console checkout
+# (https://github.com/AltaStata/altastata-console). Do not vendor a second copy
+# under this repo — it drifts and can ship a stale SPA in the wheel.
+if [[ -n "${ALTASTATA_CONSOLE_DIR:-}" ]]; then
+    CONSOLE_DIR="$(cd "$ALTASTATA_CONSOLE_DIR" 2>/dev/null && pwd || true)"
+else
+    CONSOLE_DIR="$(cd "$PKG_DIR/../altastata-console" 2>/dev/null && pwd || true)"
+fi
 
 mkdir -p "$LIB_DIR"
 
@@ -82,9 +89,10 @@ else
 fi
 
 if [[ -z "${SKIP_UI:-}" ]]; then
-    if [[ -z "$CONSOLE_DIR" || ! -d "$CONSOLE_DIR" ]]; then
-        echo "ERROR: altastata-console directory not found." >&2
-        echo "       Set ALTASTATA_CONSOLE_DIR or ensure altastata-console/ exists in this repo." >&2
+    if [[ -z "$CONSOLE_DIR" || ! -d "$CONSOLE_DIR/frontend" ]]; then
+        echo "ERROR: altastata-console checkout not found." >&2
+        echo "       Clone https://github.com/AltaStata/altastata-console next to this repo," >&2
+        echo "       or set ALTASTATA_CONSOLE_DIR to that checkout." >&2
         exit 1
     fi
     echo "==> Building altastata-console SPA in $CONSOLE_DIR/frontend"

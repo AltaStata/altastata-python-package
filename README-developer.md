@@ -75,6 +75,26 @@ with `user_account_directory` (account folder on the same host as the gateway).
 bytes). Legacy `SetUserProperties` / `SetPrivateKey` bootstrap is not used on
 the gRPC path. See `AltaStata/sovereign-data-fabric (altastata-grpc)/CONSOLE_ACCOUNT_SETUP_DESIGN.md` §2.
 
+### Account setup CLI / SDK (no Desktop UI)
+
+`AccountSetupService.GenerateKeys` is wrapped by `altastata.account_setup` and
+the `altastata` console script:
+
+```bash
+# after pip install -e .
+altastata account create --type rsa --password 'secret' \
+  --out ~/.altastata/accounts/amazon.rsa.alice --name amazon.rsa.alice
+altastata account types
+```
+
+When `account_setup.proto` changes in mycloud, sync and regenerate:
+
+```bash
+cp ../mycloud/altastata-grpc/src/main/proto/altastata/grpc/v1/account_setup.proto \
+  proto/altastata/grpc/v1/
+python scripts/generate_grpc_stubs.py
+```
+
 ### Logging Configuration
 - To customize logging, copy and modify the logback configuration:
   ```bash

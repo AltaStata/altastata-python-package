@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name='altastata',
-    version='1.0.5',
+    version='1.0.6',
     author='Serge Vilvovsky',
     author_email='serge.vilvovsky@altastata.com',
     description='A Python package for Altastata data processing and machine learning integration',
@@ -40,6 +40,7 @@ setup(
     ],
     entry_points={
         'console_scripts': [
+            'altastata=altastata.cli:main',
             'altastata-grpc-server=altastata.grpc_server:main',
         ],
     },

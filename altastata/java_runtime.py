@@ -172,12 +172,40 @@ def build_grpc_subprocess_env() -> Dict[str, str]:
     return env
 
 
+def _use_maven_classpath() -> bool:
+    """Opt-in prototype: assemble gateway -cp from GAV lock + mavenLocal/Central.
+
+    Enable with ``ALTASTATA_USE_MAVEN_CLASSPATH=1``. Default remains uber jar /
+    Gradle fallback so existing installs and tests are unchanged.
+    """
+    flag = os.environ.get("ALTASTATA_USE_MAVEN_CLASSPATH", "").strip().lower()
+    return flag in {"1", "true", "yes", "on"}
+
+
+def resolve_maven_gateway_command() -> Tuple[List[str], Optional[str]]:
+    """Build ``java -cp … AltaStataServicesApplication`` via :mod:`maven_resolve`."""
+    from altastata.maven_resolve import resolve_classpath, summarize_resolve
+
+    result = resolve_classpath()
+    print(f"Maven classpath resolve: {summarize_resolve(result)}")
+    command = [
+        "java",
+        *resolve_java_memory_opts(),
+        "-cp",
+        result.classpath,
+        result.main_class,
+    ]
+    return command, None
+
+
 def resolve_local_grpc_startup_command(
     grpc_server_command: Optional[Sequence[str]] = None,
     working_dir: Optional[str] = None,
 ) -> Tuple[List[str], Optional[str]]:
     resolved_working_dir = working_dir
     if grpc_server_command is None:
+        if _use_maven_classpath():
+            return resolve_maven_gateway_command()
         bundled_uber_jar = find_bundled_grpc_uber_jar()
         if bundled_uber_jar is not None:
             classpath = build_bundled_grpc_classpath(bundled_uber_jar)

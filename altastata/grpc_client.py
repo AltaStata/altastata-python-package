@@ -991,6 +991,198 @@ def _wait_for_port(host: str, port: int, timeout_s: int = 45) -> None:
     raise TimeoutError(f"Timed out waiting for {host}:{port}")
 
 
-# Local Java gateway launch (uber jar / Gradle / Console SPA) lives in
-# :mod:`altastata.java_runtime`. Underscore aliases are re-exported above
-# for :mod:`altastata.grpc_server` and existing tests.
+def _start_local_grpc_service(
+    grpc_server_command: Optional[Sequence[str]] = None,
+    working_dir: Optional[str] = None,
+):
+    resolved_command, resolved_working_dir = _resolve_local_grpc_startup_command(
+        grpc_server_command=grpc_server_command,
+        working_dir=working_dir,
+    )
+    print(
+        "Starting gRPC server command:",
+        " ".join(resolved_command),
+        f"(cwd={resolved_working_dir or os.getcwd()})",
+    )
+
+    stream_logs = os.environ.get("ALTASTATA_GRPC_LOG_STREAM", "").strip().lower() in {
+        "1", "true", "yes", "on"
+    }
+    process = subprocess.Popen(
+        list(resolved_command),
+        cwd=resolved_working_dir,
+        env=_build_grpc_subprocess_env(),
+        stdout=subprocess.PIPE if stream_logs else subprocess.DEVNULL,
+        stderr=subprocess.PIPE if stream_logs else subprocess.DEVNULL,
+    )
+    if stream_logs:
+        _start_stream_thread(process.stdout, "grpc-stdout")
+        _start_stream_thread(process.stderr, "grpc-stderr")
+    return process
+
+
+def _resolve_local_grpc_startup_command(
+    grpc_server_command: Optional[Sequence[str]] = None,
+    working_dir: Optional[str] = None,
+) -> Tuple[Sequence[str], Optional[str]]:
+    resolved_working_dir = working_dir
+    if grpc_server_command is None:
+        bundled_uber_jar = _find_bundled_grpc_uber_jar()
+        if bundled_uber_jar is not None:
+            classpath = _build_bundled_grpc_classpath(bundled_uber_jar)
+            main_class = _grpc_main_class_for_jar(bundled_uber_jar)
+            grpc_server_command = ["java", *resolve_java_memory_opts(), "-cp", classpath, main_class]
+            if resolved_working_dir is None:
+                resolved_working_dir = os.path.dirname(bundled_uber_jar)
+        else:
+            grpc_server_command = ["./gradlew", ":altastata-services:run"]
+            if resolved_working_dir is None:
+                resolved_working_dir = _default_mycloud_dir()
+
+    if resolved_working_dir is None and grpc_server_command[:2] == ["./gradlew", ":altastata-services:run"]:
+        raise RuntimeError(
+            "Unable to locate bundled altastata-services runtime jar and unable to determine mycloud "
+            "directory for Gradle fallback. Package altastata-services-*-uber.jar under altastata/lib, "
+            "or pass grpc_server_command/grpc_server_working_dir, or set ALTASTATA_MYCLOUD_DIR."
+        )
+    return list(grpc_server_command), resolved_working_dir
+
+
+def _default_mycloud_dir() -> Optional[str]:
+    env_dir = os.environ.get("ALTASTATA_MYCLOUD_DIR")
+    if env_dir and os.path.isdir(env_dir):
+        return env_dir
+
+    repo_candidate = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "mycloud"))
+    if os.path.isdir(repo_candidate):
+        return repo_candidate
+    return None
+
+
+def _find_bundled_grpc_uber_jar() -> Optional[str]:
+    """
+    Locate the bundled gateway uber jar under ``altastata/lib``.
+
+    Preference order:
+      1. ``altastata-services-*-uber.jar`` — the unified gateway shipped by
+         current mycloud builds (Micronaut + gRPC + S3 under
+         ``com.altastata.services.AltaStataServicesApplication``).
+      2. ``altastata-grpc-*-uber.jar`` — the legacy gRPC-only gateway
+         (``com.altastata.grpc.GrpcApplication``). Kept so older wheels keep
+         working if the user pip-installed before the rename.
+    """
+    try:
+        jar_dir = pkg_resources.resource_filename("altastata", "lib")
+    except Exception:
+        return None
+    if not os.path.isdir(jar_dir):
+        return None
+
+    services = sorted(
+        os.path.join(jar_dir, f)
+        for f in os.listdir(jar_dir)
+        if f.startswith("altastata-services-") and f.endswith("-uber.jar")
+    )
+    if services:
+        return services[-1]
+
+    legacy = sorted(
+        os.path.join(jar_dir, f)
+        for f in os.listdir(jar_dir)
+        if f.startswith("altastata-grpc-") and f.endswith("-uber.jar")
+    )
+    if not legacy:
+        return None
+    return legacy[-1]
+
+
+def _grpc_main_class_for_jar(bundled_uber_jar: str) -> str:
+    """Pick the right Java main class for the given uber jar filename."""
+    name = os.path.basename(bundled_uber_jar)
+    if name.startswith("altastata-services-"):
+        return "com.altastata.services.AltaStataServicesApplication"
+    return "com.altastata.grpc.GrpcApplication"
+
+
+def _build_grpc_subprocess_env() -> Dict[str, str]:
+    """
+    Environment dict to hand to ``subprocess.Popen`` when launching the Java
+    gRPC gateway from Python.
+
+    Inherits the parent environment so callers can keep influencing Java
+    tuning via ``JAVA_TOOL_OPTIONS`` / ``JAVA_OPTS``, then exports
+    ``ALTASTATA_WEB_UI_DIR`` pointing at the bundled SPA bundle (when one is
+    present in this wheel) so the Java gateway also serves the AltaStata
+    Console UI on the gRPC port. The variable is set only if the caller has
+    not already chosen a value, leaving room for explicit overrides during
+    development or testing — including ``ALTASTATA_WEB_UI_DIR=`` to disable
+    the UI entirely.
+    """
+    env = os.environ.copy()
+    if not env.get("ALTASTATA_WEB_UI_DIR"):
+        ui_dir = _find_bundled_console_ui_dir()
+        if ui_dir is not None:
+            env["ALTASTATA_WEB_UI_DIR"] = ui_dir
+            print(f"Bundled AltaStata Console UI: {ui_dir}")
+    return env
+
+
+def _find_bundled_console_ui_dir() -> Optional[str]:
+    """
+    Resolve the AltaStata Console SPA bundle that ships next to the gRPC jar.
+
+    Returns the absolute path to ``altastata/lib/altastata-console-static`` if
+    it exists and contains an ``index.html``, otherwise None. The directory is
+    optional: wheels built without ``scripts/build-bundled-artifacts.sh`` (or
+    builds where ``SKIP_UI=1`` was passed) simply will not have it, and the
+    Java gRPC gateway falls back to gRPC-only routing.
+    """
+    try:
+        ui_dir = pkg_resources.resource_filename(
+            "altastata", "lib/altastata-console-static"
+        )
+    except Exception:
+        return None
+    if not os.path.isdir(ui_dir):
+        return None
+    if not os.path.isfile(os.path.join(ui_dir, "index.html")):
+        return None
+    return os.path.abspath(ui_dir)
+
+
+def _build_bundled_grpc_classpath(bundled_uber_jar: str) -> str:
+    """
+    Build classpath for packaged gRPC server.
+
+    Uses all jars under altastata/lib so we can support the Hadoop-style build
+    where Bouncy Castle remains in separate signed jars (excluded from uber).
+    """
+    jar_dir = os.path.dirname(os.path.abspath(bundled_uber_jar))
+    jars = sorted(
+        os.path.join(jar_dir, f)
+        for f in os.listdir(jar_dir)
+        if f.endswith(".jar")
+    )
+    # Prefer signed BC jars before uber if both are present.
+    bc_jars = [p for p in jars if os.path.basename(p).startswith(("bcprov", "bcpkix", "bcutil"))]
+    others = [p for p in jars if p not in bc_jars and p != bundled_uber_jar]
+    ordered = bc_jars + others + [bundled_uber_jar]
+    return (";" if platform.system() == "Windows" else ":").join(ordered)
+
+
+def _start_stream_thread(pipe, label: str) -> None:
+    if pipe is None:
+        return
+
+    def _reader():
+        try:
+            with pipe:
+                for line in iter(pipe.readline, b""):
+                    txt = line.decode("utf-8", errors="replace").rstrip()
+                    if txt:
+                        print(f"[{label}] {txt}")
+        except Exception:
+            # Keep startup robust even if output streaming fails.
+            pass
+
+    threading.Thread(target=_reader, daemon=True).start()

@@ -19,8 +19,8 @@ import tempfile
 import unittest
 from unittest.mock import MagicMock, patch
 
-from altastata.altastata_functions import AltaStataFunctions
-from altastata.s3_bridge import (
+from altastata.altastata_functions import (
+    AltaStataFunctions,
     _parse_user_name_from_properties,
     _http_put_text,
 )
@@ -144,7 +144,7 @@ class S3CredentialsTests(unittest.TestCase):
             return 404, b'{"error":"unknown"}'
         return _put
 
-    @patch("altastata.s3_bridge._http_put_text")
+    @patch("altastata.altastata_functions._http_put_text")
     def test_returns_boto3_kwargs(self, mock_put):
         mock_put.side_effect = self._put_responder()
         inst = _make_instance("grpc")
@@ -174,7 +174,7 @@ class S3CredentialsTests(unittest.TestCase):
         # setPassword sends password in body, not query.
         self.assertNotIn("?password=", urls_called[2])
 
-    @patch("altastata.s3_bridge._http_put_text")
+    @patch("altastata.altastata_functions._http_put_text")
     def test_password_is_url_encoded(self, mock_put):
         mock_put.side_effect = self._put_responder()
         inst = _make_instance("grpc")
@@ -193,7 +193,7 @@ class S3CredentialsTests(unittest.TestCase):
         self.assertIn(f"?password={encoded}", urls[0])
         self.assertIn(f"?password={encoded}", urls[1])
 
-    @patch("altastata.s3_bridge._http_put_text")
+    @patch("altastata.altastata_functions._http_put_text")
     def test_caches_result_per_endpoint(self, mock_put):
         mock_put.side_effect = self._put_responder()
         inst = _make_instance("grpc")
@@ -206,7 +206,7 @@ class S3CredentialsTests(unittest.TestCase):
         # Three PUTs total, not six — the second call must hit the cache.
         self.assertEqual(3, mock_put.call_count)
 
-    @patch("altastata.s3_bridge._http_put_text")
+    @patch("altastata.altastata_functions._http_put_text")
     def test_explicit_endpoint_override(self, mock_put):
         mock_put.side_effect = self._put_responder()
         inst = _make_instance("grpc")
@@ -219,7 +219,7 @@ class S3CredentialsTests(unittest.TestCase):
         for call in mock_put.call_args_list:
             self.assertTrue(call.args[0].startswith("http://altastata.example:19876/"))
 
-    @patch("altastata.s3_bridge._http_put_text")
+    @patch("altastata.altastata_functions._http_put_text")
     def test_already_bootstrapped_user_recovers(self, mock_put):
         """The S3 gateway rejects setUserProperties / setPrivateKey with 400
         once UserData exists, unless ?password= is supplied. The helper
@@ -267,7 +267,7 @@ class S3CredentialsTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             inst.s3_credentials()
 
-    @patch("altastata.s3_bridge._http_put_text")
+    @patch("altastata.altastata_functions._http_put_text")
     def test_explicit_password_overrides_cache(self, mock_put):
         mock_put.side_effect = self._put_responder()
         inst = _make_instance("grpc")
@@ -280,7 +280,7 @@ class S3CredentialsTests(unittest.TestCase):
         # body of the third PUT is the password (second positional arg).
         self.assertEqual("correct", last_call.args[1])
 
-    @patch("altastata.s3_bridge._http_put_text")
+    @patch("altastata.altastata_functions._http_put_text")
     def test_setPassword_500_surfaces_as_runtime_error(self, mock_put):
         def _put(url, body, timeout_s=30.0):
             if "/setPassword/" in url:
@@ -296,7 +296,7 @@ class S3CredentialsTests(unittest.TestCase):
         with self.assertRaises(RuntimeError):
             inst.s3_credentials()
 
-    @patch("altastata.s3_bridge._http_put_text")
+    @patch("altastata.altastata_functions._http_put_text")
     def test_grpc_mode_default_endpoint_follows_grpc_host(self, mock_put):
         mock_put.side_effect = self._put_responder()
         inst = _make_instance("grpc")
@@ -311,7 +311,7 @@ class S3CredentialsTests(unittest.TestCase):
 
 
 class Boto3ClientTests(unittest.TestCase):
-    @patch("altastata.s3_bridge._http_put_text")
+    @patch("altastata.altastata_functions._http_put_text")
     def test_boto3_s3_passes_creds_and_overrides(self, mock_put):
         def _put(url, body, timeout_s=30.0):
             if "/setPassword/" in url:
@@ -360,7 +360,7 @@ class Boto3ClientTests(unittest.TestCase):
 
 
 class InstallAwsEnvTests(unittest.TestCase):
-    @patch("altastata.s3_bridge._http_put_text")
+    @patch("altastata.altastata_functions._http_put_text")
     def test_install_aws_env_populates_environ(self, mock_put):
         def _put(url, body, timeout_s=30.0):
             if "/setPassword/" in url:
@@ -409,6 +409,7 @@ class SetPasswordCachesTests(unittest.TestCase):
         f = AltaStataFunctions.from_credentials(
             "myuser=bob\n",
             "PK",
+            transport="grpc",
         )
         # Pre-condition: no cached password (no constructor kwarg).
         self.assertIsNone(f._cached_password)

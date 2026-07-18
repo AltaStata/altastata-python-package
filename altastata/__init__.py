@@ -18,6 +18,7 @@ except _PkgNotFound:
     __version__ = "0.0.0+unknown"
 
 from .altastata_functions import AltaStataFunctions
+from .account_setup import AccountSetupClient, GenerateKeysResult, create_account
 from .grpc_client import AltaStataGrpcClient, GrpcEndpoint
 
 # Lazy import for PyTorch
@@ -61,6 +62,9 @@ except ImportError:
 __all__ = [
     'AltaStataFunctions',
     'AltaStataGrpcClient',
+    'AccountSetupClient',
+    'GenerateKeysResult',
+    'create_account',
     'GrpcEndpoint',
     'AltaStataPyTorchDataset',
     'AltaStataTensorFlowDataset'

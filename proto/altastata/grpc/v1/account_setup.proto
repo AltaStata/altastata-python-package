@@ -1,0 +1,72 @@
+syntax = "proto3";
+
+package altastata.v1;
+
+option java_multiple_files = true;
+option java_package = "com.altastata.grpc.proto";
+option java_outer_classname = "AccountSetupProto";
+
+// End-user account keygen and maintenance (Console / SetupUI parity).
+// See altastata-grpc/CONSOLE_ACCOUNT_SETUP_DESIGN.md.
+
+enum AccountType {
+  ACCOUNT_TYPE_UNSPECIFIED = 0;
+  RSA = 1;
+  PQC = 2;
+  HPCS = 3;
+}
+
+service AccountSetupService {
+  rpc GetSupportedAccountTypes(GetSupportedAccountTypesRequest)
+      returns (GetSupportedAccountTypesResponse);
+  rpc GenerateKeys(GenerateKeysRequest) returns (GenerateKeysResponse);
+  rpc ChangePassword(ChangePasswordRequest) returns (ChangePasswordResponse);
+  rpc UpdateUserProperties(UpdateUserPropertiesRequest)
+      returns (UpdateUserPropertiesResponse);
+  rpc ExportAccount(ExportAccountRequest) returns (ExportAccountResponse);
+  rpc DeleteAccount(DeleteAccountRequest) returns (DeleteAccountResponse);
+}
+
+message GetSupportedAccountTypesRequest {}
+
+message GetSupportedAccountTypesResponse {
+  repeated AccountType account_types = 1;
+}
+
+message GenerateKeysRequest {
+  AccountType account_type = 1;
+  string password = 2;
+  string suggested_display_name = 3;
+}
+
+message GenerateKeysResponse {
+  map<string, bytes> account_files = 1;
+  string suggested_display_name = 2;
+}
+
+message ChangePasswordRequest {
+  string current_password = 1;
+  string new_password = 2;
+}
+
+message ChangePasswordResponse {
+  map<string, bytes> account_files = 1;
+}
+
+message UpdateUserPropertiesRequest {
+  string new_user_properties = 1;
+}
+
+message UpdateUserPropertiesResponse {}
+
+message ExportAccountRequest {}
+
+message ExportAccountResponse {
+  map<string, bytes> account_files = 1;
+}
+
+message DeleteAccountRequest {
+  string current_password = 1;
+}
+
+message DeleteAccountResponse {}

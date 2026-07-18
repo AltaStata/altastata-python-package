@@ -85,6 +85,40 @@ altastata_functions = AltaStataFunctions.from_credentials(
 
 Your org admin creates *user.properties after you send them public.key (RSA/PQC/HPCS).
 
+### Create an account without the Desktop UI (CLI / SDK)
+
+Key generation uses the same gRPC `AccountSetupService` as Console / SetupUI
+(RSA / PQC / HPCS). Requires a local gateway on port **9877** (auto-started by default).
+
+```bash
+# RSA
+altastata account create --type rsa --password 'secret' \
+  --out ~/.altastata/accounts/amazon.rsa.alice --name amazon.rsa.alice
+
+# PQC
+altastata account create --type pqc --password 'secret' \
+  --out ~/.altastata/accounts/amazon.pqc.bob --name amazon.pqc.bob
+
+altastata account types
+```
+
+Or from Python:
+
+```python
+from altastata import create_account
+
+result = create_account(
+    "rsa",
+    "~/.altastata/accounts/amazon.rsa.alice",
+    password="secret",
+    name="amazon.rsa.alice",
+)
+print(result.suggested_display_name, sorted(result.account_files))
+```
+
+Then send public key material to your org admin, place the returned
+`*user.properties` in the same directory, and login with `from_account_dir`.
+
 ---
 
 ## Quick start (gRPC — recommended)

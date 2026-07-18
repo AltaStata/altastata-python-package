@@ -9,7 +9,7 @@ from .java_runtime import (
 )
 
 
-def main() -> int:
+def main(argv=None) -> int:
     parser = argparse.ArgumentParser(
         description="Start AltaStata gRPC server from Python package runtime."
     )
@@ -18,7 +18,7 @@ def main() -> int:
         action="store_true",
         help="Print the resolved startup command and exit.",
     )
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
 
     command, working_dir = resolve_local_grpc_startup_command()
     if args.dry_run:

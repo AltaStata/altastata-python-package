@@ -77,17 +77,8 @@ the gRPC path. See `AltaStata/sovereign-data-fabric (altastata-grpc)/CONSOLE_ACC
 
 ### Account setup CLI / SDK (no Desktop UI)
 
-`AccountSetupService.GenerateKeys` is wrapped by `altastata.account_setup` and
-the `altastata` console script:
-
-```bash
-# after pip install -e .
-altastata account create --type rsa --password 'secret' \
-  --out ~/.altastata/accounts/amazon.rsa.alice --name amazon.rsa.alice
-altastata account types
-```
-
-When `account_setup.proto` changes in mycloud, sync and regenerate:
+See **[USER_SETUP_GUIDE.md](USER_SETUP_GUIDE.md)**. When `account_setup.proto`
+changes in mycloud, sync and regenerate:
 
 ```bash
 cp ../mycloud/altastata-grpc/src/main/proto/altastata/grpc/v1/account_setup.proto \

@@ -77,7 +77,7 @@ the gRPC path. See `AltaStata/sovereign-data-fabric (altastata-grpc)/CONSOLE_ACC
 
 ### Account setup CLI / SDK (no Desktop UI)
 
-See **[USER_SETUP_GUIDE.md](USER_SETUP_GUIDE.md)**. When `account_setup.proto`
+See **[USER_SETUP_GUIDE.md](https://github.com/AltaStata/altastata-python-package/blob/main/USER_SETUP_GUIDE.md)**. When `account_setup.proto`
 changes in mycloud, sync and regenerate:
 
 ```bash

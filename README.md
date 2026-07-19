@@ -23,7 +23,17 @@ pip install altastata
 
 ## Configure your account
 
-See **[USER_SETUP_GUIDE.md](USER_SETUP_GUIDE.md)** — connect with an account folder or inline credentials, and create keys via CLI/SDK without the Desktop UI.
+See **[USER_SETUP_GUIDE.md](USER_SETUP_GUIDE.md)** for create-account (CLI/SDK),
+inline credentials, and account types.
+
+```python
+from altastata import AltaStataFunctions
+
+f = AltaStataFunctions.from_account_dir(
+    "~/.altastata/accounts/amazon.rsa.bob123",
+    password="your_password",
+)
+```
 
 ---
 

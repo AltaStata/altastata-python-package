@@ -12,7 +12,9 @@ pip install altastata
 - **Pythonic APIs:** Standard Python file I/O via fsspec (create_filesystem)
 - **ML & AI:** Datasets (AltaStataPyTorchDataset, AltaStataTensorFlowDataset)
 - **RAG:** LangChain document loading (fsspec + DirectoryLoader / TextLoader)
-- **Big Data:** Databricks / Apache Spark (AltaStata Hadoop FS JAR)
+- **Big Data:** Databricks / Apache Spark via the AltaStata Hadoop FS JAR
+  (not in this pip package — download separately from
+  [sovereign-data-fabric](https://github.com/AltaStata/sovereign-data-fabric))
 - **Data Warehousing:** Snowflake external stages (S3 Gateway) or Snowpark Python (fsspec)
 - **AWS Ecosystem:** S3 tools like boto3, aws CLI, and s3fs (S3-compatible API on port **9876**)
 - **Distributed apps:** gRPC API (Python client + JS clients via port **9877**)
@@ -116,7 +118,16 @@ TextLoader, DirectoryLoader, and other LangChain loaders work via the altastata:
 
 ### Databricks / Apache Spark
 
-Use the AltaStata Hadoop filesystem implementation so Spark jobs read encrypted paths on cluster storage (altastata://… or configured Hadoop URI). Deploy the altastata-hadoop shadow JAR on Databricks / Spark clusters.
+Spark / Databricks use the AltaStata **Hadoop filesystem** JAR so jobs can read
+encrypted paths (`altastata://…` or a configured Hadoop URI).
+
+That JAR is **not** shipped inside the `altastata` pip wheel. Download or build
+it from the public BSL repo
+[AltaStata/sovereign-data-fabric](https://github.com/AltaStata/sovereign-data-fabric)
+(module `altastata-hadoop`, release assets / shadow JAR), then deploy it on your
+Databricks / Spark cluster classpath. Python notebooks still use this package
+for account setup and local gateway helpers; the cluster needs the Hadoop JAR
+separately.
 
 ### Snowflake
 

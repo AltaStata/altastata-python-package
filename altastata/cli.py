@@ -1,12 +1,15 @@
 """
 AltaStata command-line interface.
 
-Account setup (no Desktop UI required)::
+::
 
+    altastata help
     altastata account create --type rsa --password 'secret' --out ~/.altastata/accounts/amazon.rsa.alice
     altastata account create --type pqc --password 'secret' --out ~/.altastata/accounts/amazon.pqc.bob --name amazon.pqc.bob
     altastata account change-password --account-dir ~/.altastata/accounts/amazon.rsa.alice
     altastata account types
+    altastata grpc-server
+    altastata mcp
 """
 
 from __future__ import annotations
@@ -20,13 +23,52 @@ from typing import List, Optional
 from .account_setup import AccountSetupClient, change_account_password, create_account
 from .grpc_client import GrpcEndpoint
 
+_HELP_TEXT = """\
+AltaStata CLI — account setup and local gateway helpers.
+
+Usage:
+  altastata <command> [options]
+
+Commands:
+  help                 Show this help message
+  account create       Generate RSA/PQC/HPCS account keys (no Desktop UI)
+  account change-password
+                       Re-encrypt private keys under a new password (RSA/PQC)
+  account types        List account types supported by the local gateway
+  grpc-server          Start the bundled gRPC / Console gateway (:9877)
+  mcp                  Run the bundled services jar as an MCP stdio server
+
+Examples:
+  altastata account create --type rsa --password 'secret' \\
+    --out ~/.altastata/accounts/amazon.rsa.alice
+
+  altastata account change-password \\
+    --account-dir ~/.altastata/accounts/amazon.rsa.alice
+
+  altastata account types
+  altastata grpc-server
+  altastata mcp --account-dir ~/.altastata/accounts/amazon.rsa.alice
+
+Run 'altastata <command> --help' for options on a specific command.
+"""
+
 
 def main(argv: Optional[List[str]] = None) -> int:
+    if argv is None:
+        argv = sys.argv[1:]
+    if not argv or argv[0] in ("help", "-h", "--help"):
+        print(_HELP_TEXT, end="")
+        return 0
+
     parser = argparse.ArgumentParser(
         prog="altastata",
         description="AltaStata CLI — account setup and local gateway helpers.",
+        add_help=False,
     )
     sub = parser.add_subparsers(dest="command", required=True)
+
+    help_cmd = sub.add_parser("help", help="Show available commands")
+    help_cmd.set_defaults(_help=True)
 
     account = sub.add_parser("account", help="Create and inspect end-user accounts")
     account_sub = account.add_subparsers(dest="account_command", required=True)
@@ -151,6 +193,10 @@ def main(argv: Optional[List[str]] = None) -> int:
     )
 
     args = parser.parse_args(argv)
+
+    if getattr(args, "_help", False) or args.command == "help":
+        print(_HELP_TEXT, end="")
+        return 0
 
     if args.command == "account":
         if args.account_command == "create":

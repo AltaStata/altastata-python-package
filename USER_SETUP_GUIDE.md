@@ -85,6 +85,8 @@ Uses the same gRPC `AccountSetupService` as Console / SetupUI.
 ### CLI
 
 ```bash
+altastata help          # list all commands
+
 # RSA
 altastata account create --type rsa --password 'secret' \
   --out ~/.altastata/accounts/amazon.rsa.alice --name amazon.rsa.alice
@@ -102,6 +104,7 @@ altastata account change-password \
 
 Tips:
 
+- Run `altastata help` (or `altastata --help`) for the full command list.
 - Prefer `--password-env` / `--current-password-env` / `--new-password-env` in scripts.
 - Use a **new** `--out` directory so you never overwrite an existing account.
 - The private key stays on disk encrypted with your password; send only the

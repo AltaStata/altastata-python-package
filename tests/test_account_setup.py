@@ -157,6 +157,33 @@ class AccountSetupTests(unittest.TestCase):
         self.assertEqual("old", kwargs["current_password"])
         self.assertEqual("new", kwargs["new_password"])
 
+    def test_cli_help_lists_commands(self):
+        from io import StringIO
+        from unittest.mock import patch
+
+        from altastata.cli import main
+
+        with patch("sys.stdout", new_callable=StringIO) as out:
+            code = main(["help"])
+        text = out.getvalue()
+        self.assertEqual(0, code)
+        self.assertIn("account create", text)
+        self.assertIn("account change-password", text)
+        self.assertIn("account types", text)
+        self.assertIn("grpc-server", text)
+        self.assertIn("mcp", text)
+
+    def test_cli_bare_shows_help(self):
+        from io import StringIO
+        from unittest.mock import patch
+
+        from altastata.cli import main
+
+        with patch("sys.stdout", new_callable=StringIO) as out:
+            code = main([])
+        self.assertEqual(0, code)
+        self.assertIn("Commands:", out.getvalue())
+
     def test_cli_mcp_help(self):
         from altastata.cli import main
 

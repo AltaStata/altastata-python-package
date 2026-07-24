@@ -27,6 +27,10 @@ pip install altastata
 See **[USER_SETUP_GUIDE.md](https://github.com/AltaStata/altastata-python-package/blob/main/USER_SETUP_GUIDE.md)** for create-account (CLI/SDK),
 inline credentials, and account types.
 
+```bash
+altastata help    # list CLI commands
+```
+
 ```python
 from altastata import AltaStataFunctions
 

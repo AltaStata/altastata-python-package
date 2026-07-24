@@ -97,7 +97,7 @@ altastata account create --type pqc --password 'secret' \
 
 altastata account types
 
-# Change the private-key password (RSA/PQC) — bootstrap, no login
+# Optional — change private-key password later (RSA/PQC; no login)
 altastata account change-password \
   --account-dir ~/.altastata/accounts/amazon.rsa.alice
 ```
@@ -125,7 +125,8 @@ result = create_account(
 )
 print(result.suggested_display_name, sorted(result.account_files))
 
-# Later — re-encrypt keys (no login / *user.properties needed)
+# Optional — only if you want to change the private-key password later
+# (no login / *user.properties needed)
 change_account_password(
     "~/.altastata/accounts/amazon.rsa.alice",
     current_password="secret",

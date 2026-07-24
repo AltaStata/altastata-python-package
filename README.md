@@ -12,11 +12,7 @@ pip install altastata
 - **Pythonic APIs:** Standard Python file I/O via fsspec (create_filesystem)
 - **ML & AI:** Datasets (AltaStataPyTorchDataset, AltaStataTensorFlowDataset)
 - **RAG:** LangChain document loading (fsspec + DirectoryLoader / TextLoader)
-- **Big Data:** Databricks / Apache Spark via the AltaStata Hadoop FS JAR
-  (not in this pip package — download the Hadoop JAR and Bouncy Castle JARs
-  from
-  [sovereign-data-fabric](https://github.com/AltaStata/sovereign-data-fabric)
-  and add them to the Spark classpath)
+- **Big Data:** Databricks / Apache Spark (AltaStata Hadoop FS JAR)
 - **Data Warehousing:** Snowflake external stages (S3 Gateway) or Snowpark Python (fsspec)
 - **AWS Ecosystem:** S3 tools like boto3, aws CLI, and s3fs (S3-compatible API on port **9876**)
 - **Distributed apps:** gRPC API (Python client + JS clients via port **9877**)

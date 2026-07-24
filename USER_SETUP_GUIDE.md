@@ -94,19 +94,25 @@ altastata account create --type pqc --password 'secret' \
   --out ~/.altastata/accounts/amazon.pqc.bob --name amazon.pqc.bob
 
 altastata account types
+
+# Change the private-key password (RSA/PQC) — bootstrap, no login
+altastata account change-password \
+  --account-dir ~/.altastata/accounts/amazon.rsa.alice
 ```
 
 Tips:
 
-- Prefer `--password-env VAR` in scripts.
+- Prefer `--password-env` / `--current-password-env` / `--new-password-env` in scripts.
 - Use a **new** `--out` directory so you never overwrite an existing account.
 - The private key stays on disk encrypted with your password; send only the
   **public** key material to your org admin.
+- `change-password` only re-encrypts key files on disk (same local bootstrap
+  mode as `create`; no LoginV2 / `*user.properties`).
 
 ### Python SDK
 
 ```python
-from altastata import create_account
+from altastata import change_account_password, create_account
 
 result = create_account(
     "rsa",
@@ -115,6 +121,13 @@ result = create_account(
     name="amazon.rsa.alice",
 )
 print(result.suggested_display_name, sorted(result.account_files))
+
+# Later — re-encrypt keys (no login / *user.properties needed)
+change_account_password(
+    "~/.altastata/accounts/amazon.rsa.alice",
+    current_password="secret",
+    new_password="new-secret",
+)
 ```
 
 Or with an explicit client:

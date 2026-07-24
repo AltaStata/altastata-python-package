@@ -24,7 +24,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n%altastata/grpc/v1/account_setup.proto\x12\x0c\x61ltastata.v1\"!\n\x1fGetSupportedAccountTypesRequest\"T\n GetSupportedAccountTypesResponse\x12\x30\n\raccount_types\x18\x01 \x03(\x0e\x32\x19.altastata.v1.AccountType\"x\n\x13GenerateKeysRequest\x12/\n\x0c\x61\x63\x63ount_type\x18\x01 \x01(\x0e\x32\x19.altastata.v1.AccountType\x12\x10\n\x08password\x18\x02 \x01(\t\x12\x1e\n\x16suggested_display_name\x18\x03 \x01(\t\"\xb8\x01\n\x14GenerateKeysResponse\x12K\n\raccount_files\x18\x01 \x03(\x0b\x32\x34.altastata.v1.GenerateKeysResponse.AccountFilesEntry\x12\x1e\n\x16suggested_display_name\x18\x02 \x01(\t\x1a\x33\n\x11\x41\x63\x63ountFilesEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\x0c:\x02\x38\x01\"G\n\x15\x43hangePasswordRequest\x12\x18\n\x10\x63urrent_password\x18\x01 \x01(\t\x12\x14\n\x0cnew_password\x18\x02 \x01(\t\"\x9c\x01\n\x16\x43hangePasswordResponse\x12M\n\raccount_files\x18\x01 \x03(\x0b\x32\x36.altastata.v1.ChangePasswordResponse.AccountFilesEntry\x1a\x33\n\x11\x41\x63\x63ountFilesEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\x0c:\x02\x38\x01\":\n\x1bUpdateUserPropertiesRequest\x12\x1b\n\x13new_user_properties\x18\x01 \x01(\t\"\x1e\n\x1cUpdateUserPropertiesResponse\"\x16\n\x14\x45xportAccountRequest\"\x9a\x01\n\x15\x45xportAccountResponse\x12L\n\raccount_files\x18\x01 \x03(\x0b\x32\x35.altastata.v1.ExportAccountResponse.AccountFilesEntry\x1a\x33\n\x11\x41\x63\x63ountFilesEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\x0c:\x02\x38\x01\"0\n\x14\x44\x65leteAccountRequest\x12\x18\n\x10\x63urrent_password\x18\x01 \x01(\t\"\x17\n\x15\x44\x65leteAccountResponse*G\n\x0b\x41\x63\x63ountType\x12\x1c\n\x18\x41\x43\x43OUNT_TYPE_UNSPECIFIED\x10\x00\x12\x07\n\x03RSA\x10\x01\x12\x07\n\x03PQC\x10\x02\x12\x08\n\x04HPCS\x10\x03\x32\xe7\x04\n\x13\x41\x63\x63ountSetupService\x12y\n\x18GetSupportedAccountTypes\x12-.altastata.v1.GetSupportedAccountTypesRequest\x1a..altastata.v1.GetSupportedAccountTypesResponse\x12U\n\x0cGenerateKeys\x12!.altastata.v1.GenerateKeysRequest\x1a\".altastata.v1.GenerateKeysResponse\x12[\n\x0e\x43hangePassword\x12#.altastata.v1.ChangePasswordRequest\x1a$.altastata.v1.ChangePasswordResponse\x12m\n\x14UpdateUserProperties\x12).altastata.v1.UpdateUserPropertiesRequest\x1a*.altastata.v1.UpdateUserPropertiesResponse\x12X\n\rExportAccount\x12\".altastata.v1.ExportAccountRequest\x1a#.altastata.v1.ExportAccountResponse\x12X\n\rDeleteAccount\x12\".altastata.v1.DeleteAccountRequest\x1a#.altastata.v1.DeleteAccountResponseB/\n\x18\x63om.altastata.grpc.protoB\x11\x41\x63\x63ountSetupProtoP\x01\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n%altastata/grpc/v1/account_setup.proto\x12\x0c\x61ltastata.v1\"!\n\x1fGetSupportedAccountTypesRequest\"T\n GetSupportedAccountTypesResponse\x12\x30\n\raccount_types\x18\x01 \x03(\x0e\x32\x19.altastata.v1.AccountType\"x\n\x13GenerateKeysRequest\x12/\n\x0c\x61\x63\x63ount_type\x18\x01 \x01(\x0e\x32\x19.altastata.v1.AccountType\x12\x10\n\x08password\x18\x02 \x01(\t\x12\x1e\n\x16suggested_display_name\x18\x03 \x01(\t\"\xb8\x01\n\x14GenerateKeysResponse\x12K\n\raccount_files\x18\x01 \x03(\x0b\x32\x34.altastata.v1.GenerateKeysResponse.AccountFilesEntry\x12\x1e\n\x16suggested_display_name\x18\x02 \x01(\t\x1a\x33\n\x11\x41\x63\x63ountFilesEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\x0c:\x02\x38\x01\"g\n\x15\x43hangePasswordRequest\x12\x18\n\x10\x63urrent_password\x18\x01 \x01(\t\x12\x14\n\x0cnew_password\x18\x02 \x01(\t\x12\x1e\n\x16user_account_directory\x18\x03 \x01(\t\"\x9c\x01\n\x16\x43hangePasswordResponse\x12M\n\raccount_files\x18\x01 \x03(\x0b\x32\x36.altastata.v1.ChangePasswordResponse.AccountFilesEntry\x1a\x33\n\x11\x41\x63\x63ountFilesEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\x0c:\x02\x38\x01\":\n\x1bUpdateUserPropertiesRequest\x12\x1b\n\x13new_user_properties\x18\x01 \x01(\t\"\x1e\n\x1cUpdateUserPropertiesResponse\"\x16\n\x14\x45xportAccountRequest\"\x9a\x01\n\x15\x45xportAccountResponse\x12L\n\raccount_files\x18\x01 \x03(\x0b\x32\x35.altastata.v1.ExportAccountResponse.AccountFilesEntry\x1a\x33\n\x11\x41\x63\x63ountFilesEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\x0c:\x02\x38\x01\"0\n\x14\x44\x65leteAccountRequest\x12\x18\n\x10\x63urrent_password\x18\x01 \x01(\t\"\x17\n\x15\x44\x65leteAccountResponse*G\n\x0b\x41\x63\x63ountType\x12\x1c\n\x18\x41\x43\x43OUNT_TYPE_UNSPECIFIED\x10\x00\x12\x07\n\x03RSA\x10\x01\x12\x07\n\x03PQC\x10\x02\x12\x08\n\x04HPCS\x10\x03\x32\xe7\x04\n\x13\x41\x63\x63ountSetupService\x12y\n\x18GetSupportedAccountTypes\x12-.altastata.v1.GetSupportedAccountTypesRequest\x1a..altastata.v1.GetSupportedAccountTypesResponse\x12U\n\x0cGenerateKeys\x12!.altastata.v1.GenerateKeysRequest\x1a\".altastata.v1.GenerateKeysResponse\x12[\n\x0e\x43hangePassword\x12#.altastata.v1.ChangePasswordRequest\x1a$.altastata.v1.ChangePasswordResponse\x12m\n\x14UpdateUserProperties\x12).altastata.v1.UpdateUserPropertiesRequest\x1a*.altastata.v1.UpdateUserPropertiesResponse\x12X\n\rExportAccount\x12\".altastata.v1.ExportAccountRequest\x1a#.altastata.v1.ExportAccountResponse\x12X\n\rDeleteAccount\x12\".altastata.v1.DeleteAccountRequest\x1a#.altastata.v1.DeleteAccountResponseB/\n\x18\x63om.altastata.grpc.protoB\x11\x41\x63\x63ountSetupProtoP\x01\x62\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -38,8 +38,8 @@ if not _descriptor._USE_C_DESCRIPTORS:
   _globals['_CHANGEPASSWORDRESPONSE_ACCOUNTFILESENTRY']._serialized_options = b'8\001'
   _globals['_EXPORTACCOUNTRESPONSE_ACCOUNTFILESENTRY']._loaded_options = None
   _globals['_EXPORTACCOUNTRESPONSE_ACCOUNTFILESENTRY']._serialized_options = b'8\001'
-  _globals['_ACCOUNTTYPE']._serialized_start=1065
-  _globals['_ACCOUNTTYPE']._serialized_end=1136
+  _globals['_ACCOUNTTYPE']._serialized_start=1097
+  _globals['_ACCOUNTTYPE']._serialized_end=1168
   _globals['_GETSUPPORTEDACCOUNTTYPESREQUEST']._serialized_start=55
   _globals['_GETSUPPORTEDACCOUNTTYPESREQUEST']._serialized_end=88
   _globals['_GETSUPPORTEDACCOUNTTYPESRESPONSE']._serialized_start=90
@@ -51,25 +51,25 @@ if not _descriptor._USE_C_DESCRIPTORS:
   _globals['_GENERATEKEYSRESPONSE_ACCOUNTFILESENTRY']._serialized_start=432
   _globals['_GENERATEKEYSRESPONSE_ACCOUNTFILESENTRY']._serialized_end=483
   _globals['_CHANGEPASSWORDREQUEST']._serialized_start=485
-  _globals['_CHANGEPASSWORDREQUEST']._serialized_end=556
-  _globals['_CHANGEPASSWORDRESPONSE']._serialized_start=559
-  _globals['_CHANGEPASSWORDRESPONSE']._serialized_end=715
+  _globals['_CHANGEPASSWORDREQUEST']._serialized_end=588
+  _globals['_CHANGEPASSWORDRESPONSE']._serialized_start=591
+  _globals['_CHANGEPASSWORDRESPONSE']._serialized_end=747
   _globals['_CHANGEPASSWORDRESPONSE_ACCOUNTFILESENTRY']._serialized_start=432
   _globals['_CHANGEPASSWORDRESPONSE_ACCOUNTFILESENTRY']._serialized_end=483
-  _globals['_UPDATEUSERPROPERTIESREQUEST']._serialized_start=717
-  _globals['_UPDATEUSERPROPERTIESREQUEST']._serialized_end=775
-  _globals['_UPDATEUSERPROPERTIESRESPONSE']._serialized_start=777
-  _globals['_UPDATEUSERPROPERTIESRESPONSE']._serialized_end=807
-  _globals['_EXPORTACCOUNTREQUEST']._serialized_start=809
-  _globals['_EXPORTACCOUNTREQUEST']._serialized_end=831
-  _globals['_EXPORTACCOUNTRESPONSE']._serialized_start=834
-  _globals['_EXPORTACCOUNTRESPONSE']._serialized_end=988
+  _globals['_UPDATEUSERPROPERTIESREQUEST']._serialized_start=749
+  _globals['_UPDATEUSERPROPERTIESREQUEST']._serialized_end=807
+  _globals['_UPDATEUSERPROPERTIESRESPONSE']._serialized_start=809
+  _globals['_UPDATEUSERPROPERTIESRESPONSE']._serialized_end=839
+  _globals['_EXPORTACCOUNTREQUEST']._serialized_start=841
+  _globals['_EXPORTACCOUNTREQUEST']._serialized_end=863
+  _globals['_EXPORTACCOUNTRESPONSE']._serialized_start=866
+  _globals['_EXPORTACCOUNTRESPONSE']._serialized_end=1020
   _globals['_EXPORTACCOUNTRESPONSE_ACCOUNTFILESENTRY']._serialized_start=432
   _globals['_EXPORTACCOUNTRESPONSE_ACCOUNTFILESENTRY']._serialized_end=483
-  _globals['_DELETEACCOUNTREQUEST']._serialized_start=990
-  _globals['_DELETEACCOUNTREQUEST']._serialized_end=1038
-  _globals['_DELETEACCOUNTRESPONSE']._serialized_start=1040
-  _globals['_DELETEACCOUNTRESPONSE']._serialized_end=1063
-  _globals['_ACCOUNTSETUPSERVICE']._serialized_start=1139
-  _globals['_ACCOUNTSETUPSERVICE']._serialized_end=1754
+  _globals['_DELETEACCOUNTREQUEST']._serialized_start=1022
+  _globals['_DELETEACCOUNTREQUEST']._serialized_end=1070
+  _globals['_DELETEACCOUNTRESPONSE']._serialized_start=1072
+  _globals['_DELETEACCOUNTRESPONSE']._serialized_end=1095
+  _globals['_ACCOUNTSETUPSERVICE']._serialized_start=1171
+  _globals['_ACCOUNTSETUPSERVICE']._serialized_end=1786
 # @@protoc_insertion_point(module_scope)

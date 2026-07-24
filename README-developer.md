@@ -77,6 +77,9 @@ the gRPC path. See `AltaStata/sovereign-data-fabric (altastata-grpc)/CONSOLE_ACC
 
 ### Account setup CLI / SDK (no Desktop UI)
 
+CLI: `altastata account create`, `altastata account change-password`,
+`altastata account types`. SDK: `create_account`, `change_account_password`.
+
 See **[USER_SETUP_GUIDE.md](https://github.com/AltaStata/altastata-python-package/blob/main/USER_SETUP_GUIDE.md)**. When `account_setup.proto`
 changes in mycloud, sync and regenerate:
 

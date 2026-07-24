@@ -5,6 +5,7 @@ Account setup (no Desktop UI required)::
 
     altastata account create --type rsa --password 'secret' --out ~/.altastata/accounts/amazon.rsa.alice
     altastata account create --type pqc --password 'secret' --out ~/.altastata/accounts/amazon.pqc.bob --name amazon.pqc.bob
+    altastata account change-password --account-dir ~/.altastata/accounts/amazon.rsa.alice
     altastata account types
 """
 
@@ -16,7 +17,7 @@ import os
 import sys
 from typing import List, Optional
 
-from .account_setup import AccountSetupClient, create_account
+from .account_setup import AccountSetupClient, change_account_password, create_account
 from .grpc_client import GrpcEndpoint
 
 
@@ -78,6 +79,39 @@ def main(argv: Optional[List[str]] = None) -> int:
         help="Do not auto-start the local gateway if the port is closed",
     )
 
+    change_pw = account_sub.add_parser(
+        "change-password",
+        help="Re-encrypt private keys under a new password (RSA/PQC; no login)",
+    )
+    change_pw.add_argument(
+        "--account-dir",
+        required=True,
+        help="Existing account directory containing private key material",
+    )
+    change_pw.add_argument(
+        "--current-password",
+        default=None,
+        help="Current password. Prefer --current-password-env in scripts.",
+    )
+    change_pw.add_argument(
+        "--current-password-env",
+        default=None,
+        help="Read current password from this environment variable",
+    )
+    change_pw.add_argument(
+        "--new-password",
+        default=None,
+        help="New password. Prefer --new-password-env in scripts.",
+    )
+    change_pw.add_argument(
+        "--new-password-env",
+        default=None,
+        help="Read new password from this environment variable",
+    )
+    change_pw.add_argument("--host", default="127.0.0.1")
+    change_pw.add_argument("--port", type=int, default=9877)
+    change_pw.add_argument("--no-auto-start", action="store_true")
+
     types_cmd = account_sub.add_parser(
         "types",
         help="List account types supported by the gateway",
@@ -101,6 +135,8 @@ def main(argv: Optional[List[str]] = None) -> int:
     if args.command == "account":
         if args.account_command == "create":
             return _cmd_account_create(args)
+        if args.account_command == "change-password":
+            return _cmd_account_change_password(args)
         if args.account_command == "types":
             return _cmd_account_types(args)
     if args.command == "grpc-server":
@@ -117,6 +153,7 @@ def _cmd_account_create(args: argparse.Namespace) -> int:
         args.password,
         args.password_env,
         required=args.account_type in ("rsa", "pqc"),
+        prompt="Account password: ",
     )
     endpoint = GrpcEndpoint(host=args.host, port=args.port, secure=False)
     try:
@@ -144,6 +181,51 @@ def _cmd_account_create(args: argparse.Namespace) -> int:
     return 0
 
 
+def _cmd_account_change_password(args: argparse.Namespace) -> int:
+    current_password = _resolve_password(
+        args.current_password,
+        args.current_password_env,
+        required=True,
+        prompt="Current password: ",
+    )
+    new_password = _resolve_password(
+        args.new_password,
+        args.new_password_env,
+        required=True,
+        prompt="New password: ",
+    )
+    if current_password == new_password:
+        print("New password must differ from the current password", file=sys.stderr)
+        return 1
+
+    if sys.stdin.isatty() and args.new_password is None and args.new_password_env is None:
+        confirm = getpass.getpass("Confirm new password: ")
+        if confirm != new_password:
+            print("New passwords do not match", file=sys.stderr)
+            return 1
+
+    endpoint = GrpcEndpoint(host=args.host, port=args.port, secure=False)
+    try:
+        result = change_account_password(
+            args.account_dir,
+            current_password=current_password,
+            new_password=new_password,
+            endpoint=endpoint,
+            auto_start_server=not args.no_auto_start,
+        )
+    except Exception as exc:
+        print(f"account change-password failed: {exc}", file=sys.stderr)
+        return 1
+
+    print(f"Password updated for account directory {result.account_dir}")
+    print("Updated files:")
+    for name in sorted(result.account_files):
+        print(f"  - {name} ({len(result.account_files[name])} bytes)")
+    print()
+    print("Use the new password for subsequent logins.")
+    return 0
+
+
 def _cmd_account_types(args: argparse.Namespace) -> int:
     endpoint = GrpcEndpoint(host=args.host, port=args.port, secure=False)
     try:
@@ -165,9 +247,10 @@ def _resolve_password(
     password_env: Optional[str],
     *,
     required: bool,
+    prompt: str = "Account password: ",
 ) -> str:
     if password is not None and password_env is not None:
-        raise SystemExit("Pass only one of --password or --password-env")
+        raise SystemExit("Pass only one of --password / --*-password and the matching --*-env flag")
     if password_env:
         value = os.environ.get(password_env)
         if value is None:
@@ -178,8 +261,8 @@ def _resolve_password(
     if not required:
         return ""
     if sys.stdin.isatty():
-        return getpass.getpass("Account password: ")
-    raise SystemExit("password is required for RSA/PQC (pass --password or --password-env)")
+        return getpass.getpass(prompt)
+    raise SystemExit("password is required (pass a flag or --*-password-env)")
 
 
 if __name__ == "__main__":

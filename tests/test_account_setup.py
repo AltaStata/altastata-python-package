@@ -88,6 +88,13 @@ class AccountSetupTests(unittest.TestCase):
             main(["account", "create", "--help"])
         self.assertEqual(0, cm.exception.code)
 
+    def test_cli_account_change_password_help(self):
+        from altastata.cli import main
+
+        with self.assertRaises(SystemExit) as cm:
+            main(["account", "change-password", "--help"])
+        self.assertEqual(0, cm.exception.code)
+
     @patch("altastata.cli.create_account")
     def test_cli_account_create_invokes_sdk(self, mock_create):
         from altastata.account_setup import GenerateKeysResult
@@ -118,6 +125,37 @@ class AccountSetupTests(unittest.TestCase):
         kwargs = mock_create.call_args.kwargs
         self.assertEqual("secret", kwargs["password"])
         self.assertEqual("rsa.alice", kwargs["name"])
+
+    @patch("altastata.cli.change_account_password")
+    def test_cli_account_change_password_invokes_sdk(self, mock_change):
+        from pathlib import Path
+
+        from altastata.account_setup import ChangePasswordResult
+        from altastata.cli import main
+
+        with tempfile.TemporaryDirectory() as tmp:
+            mock_change.return_value = ChangePasswordResult(
+                account_dir=Path(tmp),
+                account_files={"private.key": b"reenc"},
+            )
+            code = main(
+                [
+                    "account",
+                    "change-password",
+                    "--account-dir",
+                    tmp,
+                    "--current-password",
+                    "old",
+                    "--new-password",
+                    "new",
+                    "--no-auto-start",
+                ]
+            )
+        self.assertEqual(0, code)
+        mock_change.assert_called_once()
+        kwargs = mock_change.call_args.kwargs
+        self.assertEqual("old", kwargs["current_password"])
+        self.assertEqual("new", kwargs["new_password"])
 
 
 if __name__ == "__main__":

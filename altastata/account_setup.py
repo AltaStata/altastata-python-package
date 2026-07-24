@@ -5,12 +5,21 @@ Bootstrap RPCs (no Bearer session required):
 
 - ``GetSupportedAccountTypes``
 - ``GenerateKeys`` — RSA / PQC / HPCS key material as ``filename → bytes``
+- ``ChangePassword`` — re-encrypt private key files in an account directory
+
+Session RPCs (require ``AuthService.LoginV2`` Bearer token):
+
+- ``ExportAccount``
+- ``DeleteAccount``
 
 Typical flow after ``generate_keys`` / CLI ``altastata account create``:
 
 1. Send ``public.key`` (or PQC public keys) to your org admin.
 2. Admin returns ``*user.properties`` into the same account directory.
 3. Login with ``AltaStataGrpcClient.from_account_dir`` / ``AltaStataFunctions``.
+
+Change password later with CLI ``altastata account change-password`` or
+``change_account_password(...)``.
 """
 
 from __future__ import annotations
@@ -31,6 +40,26 @@ from .java_runtime import start_local_grpc_service
 AccountTypeName = str  # "rsa" | "pqc" | "hpcs"
 
 
+def _write_account_files(
+    directory: Union[str, Path],
+    account_files: Dict[str, bytes],
+    *,
+    exist_ok: bool = True,
+) -> Path:
+    """Write basename → bytes into ``directory`` (created if missing)."""
+    out = Path(directory).expanduser().resolve()
+    if out.exists() and not out.is_dir():
+        raise NotADirectoryError(f"Not a directory: {out}")
+    out.mkdir(parents=True, exist_ok=exist_ok)
+    for name, data in account_files.items():
+        # Basenames only — reject path traversal from a hostile gateway.
+        basename = Path(name).name
+        if not basename or basename != name:
+            raise ValueError(f"Refusing to write unsafe account file name: {name!r}")
+        (out / basename).write_bytes(data)
+    return out
+
+
 @dataclass(frozen=True)
 class GenerateKeysResult:
     """Result of ``AccountSetupService.GenerateKeys``."""
@@ -44,17 +73,15 @@ class GenerateKeysResult:
 
         Returns the absolute path of the directory.
         """
-        out = Path(directory).expanduser().resolve()
-        if out.exists() and not out.is_dir():
-            raise NotADirectoryError(f"Not a directory: {out}")
-        out.mkdir(parents=True, exist_ok=exist_ok)
-        for name, data in self.account_files.items():
-            # Basenames only — reject path traversal from a hostile gateway.
-            basename = Path(name).name
-            if not basename or basename != name:
-                raise ValueError(f"Refusing to write unsafe account file name: {name!r}")
-            (out / basename).write_bytes(data)
-        return out
+        return _write_account_files(directory, self.account_files, exist_ok=exist_ok)
+
+
+@dataclass(frozen=True)
+class ChangePasswordResult:
+    """Result of ``AccountSetupService.ChangePassword``."""
+
+    account_dir: Path
+    account_files: Dict[str, bytes]
 
 
 class AccountSetupClient:
@@ -206,6 +233,64 @@ def create_account(
         )
         result.write_to(out_dir)
         return result
+
+
+def change_account_password(
+    account_dir: Union[str, Path],
+    *,
+    current_password: str,
+    new_password: str,
+    endpoint: GrpcEndpoint = GrpcEndpoint(),
+    auto_start_server: bool = True,
+    grpc_server_command: Optional[Sequence[str]] = None,
+    grpc_server_working_dir: Optional[str] = None,
+    timeout_s: float = 120.0,
+) -> ChangePasswordResult:
+    """
+    Re-encrypt private keys under ``new_password`` via gRPC ``ChangePassword``.
+
+    Bootstrap / local-mode form: passes ``user_account_directory`` so the
+    gateway only re-encrypts PEM key files on disk. No LoginV2 and no
+    ``*user.properties`` required — works right after ``account create``.
+
+    RSA / PQC only — HPCS accounts do not use a local PEM passphrase.
+    """
+    if not current_password:
+        raise ValueError("current_password is required")
+    if not new_password:
+        raise ValueError("new_password is required")
+
+    account_path = Path(account_dir).expanduser().resolve()
+    if not account_path.is_dir():
+        raise FileNotFoundError(f"Account directory not found: {account_path}")
+
+    try:
+        from .grpc.v1 import account_setup_pb2, account_setup_pb2_grpc
+    except Exception as exc:
+        raise ImportError(
+            "gRPC stubs are missing. Run: python scripts/generate_grpc_stubs.py"
+        ) from exc
+
+    with AccountSetupClient.connect(
+        endpoint=endpoint,
+        auto_start_server=auto_start_server,
+        grpc_server_command=grpc_server_command,
+        grpc_server_working_dir=grpc_server_working_dir,
+    ) as client:
+        resp = client._stub.ChangePassword(
+            account_setup_pb2.ChangePasswordRequest(
+                current_password=current_password,
+                new_password=new_password,
+                user_account_directory=str(account_path),
+            ),
+            timeout=timeout_s,
+        )
+        files = {name: bytes(data) for name, data in resp.account_files.items()}
+        if not files:
+            raise RuntimeError("ChangePassword returned no account_files")
+        # Gateway already wrote keys into account_dir; refresh local copy too.
+        _write_account_files(account_path, files, exist_ok=True)
+        return ChangePasswordResult(account_dir=account_path, account_files=files)
 
 
 def _account_type_from_name(name: AccountTypeName, pb2) -> int:

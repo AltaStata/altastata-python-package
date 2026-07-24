@@ -89,6 +89,12 @@ cp ../mycloud/altastata-grpc/src/main/proto/altastata/grpc/v1/account_setup.prot
 python scripts/generate_grpc_stubs.py
 ```
 
+### Agents / MCP
+
+Python agents use `AltaStataFunctions.from_account_dir` (gateway auto-starts) —
+see **Agents (Python)** in [README.md](README.md). Optional Desktop MCP stdio:
+`altastata mcp` / `python -m altastata.mcp_server`.
+
 ### Logging Configuration
 - To customize logging, copy and modify the logback configuration:
   ```bash

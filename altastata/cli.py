@@ -130,6 +130,26 @@ def main(argv: Optional[List[str]] = None) -> int:
         help="Print the resolved startup command and exit",
     )
 
+    mcp = sub.add_parser(
+        "mcp",
+        help="Run bundled services jar as MCP stdio server (Claude Desktop / specialized agents / IDEs)",
+    )
+    mcp.add_argument(
+        "--account-dir",
+        default=None,
+        help="Account directory (sets ALTASTATA_MCP_ACCOUNT_DIR)",
+    )
+    mcp.add_argument(
+        "--password-env",
+        default=None,
+        help="Env var with unlock password (copied to ALTASTATA_MCP_PASSWORD)",
+    )
+    mcp.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Print the resolved java command and exit",
+    )
+
     args = parser.parse_args(argv)
 
     if args.command == "account":
@@ -143,6 +163,17 @@ def main(argv: Optional[List[str]] = None) -> int:
         from .grpc_server import main as grpc_server_main
 
         return grpc_server_main(["--dry-run"] if args.dry_run else [])
+    if args.command == "mcp":
+        from .mcp_server import main as mcp_server_main
+
+        mcp_argv = []
+        if args.account_dir:
+            mcp_argv.extend(["--account-dir", args.account_dir])
+        if args.password_env:
+            mcp_argv.extend(["--password-env", args.password_env])
+        if args.dry_run:
+            mcp_argv.append("--dry-run")
+        return mcp_server_main(mcp_argv)
 
     parser.error(f"Unknown command: {args.command}")
     return 2

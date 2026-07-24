@@ -157,6 +157,21 @@ class AccountSetupTests(unittest.TestCase):
         self.assertEqual("old", kwargs["current_password"])
         self.assertEqual("new", kwargs["new_password"])
 
+    def test_cli_mcp_help(self):
+        from altastata.cli import main
+
+        with self.assertRaises(SystemExit) as cm:
+            main(["mcp", "--help"])
+        self.assertEqual(0, cm.exception.code)
+
+    @patch("altastata.mcp_server.find_bundled_grpc_uber_jar", return_value="/tmp/altastata-services-1.0.0-uber.jar")
+    @patch("altastata.mcp_server.shutil.which", return_value="/usr/bin/java")
+    def test_cli_mcp_dry_run(self, _which, _jar):
+        from altastata.cli import main
+
+        code = main(["mcp", "--dry-run", "--account-dir", "/tmp/acct"])
+        self.assertEqual(0, code)
+
 
 if __name__ == "__main__":
     unittest.main()

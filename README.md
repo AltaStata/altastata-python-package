@@ -16,6 +16,7 @@ pip install altastata
 - **Data Warehousing:** Snowflake external stages (S3 Gateway) or Snowpark Python (fsspec)
 - **AWS Ecosystem:** S3 tools like boto3, aws CLI, and s3fs (S3-compatible API on port **9876**)
 - **Distributed apps:** gRPC API (Python client + JS clients via port **9877**)
+- **Agents / AI:** Use `AltaStataFunctions` from Python agents (LangGraph, notebooks, …) — gateway auto-starts; no extra process
 - **Real-time:** Real-time share/delete events (gRPC EventsService or Web UI)
 - **Web UI:** Finder-style file manager in the browser (http://127.0.0.1:9877)
 
@@ -178,6 +179,35 @@ docker compose -f docker-compose.yml -f docker-compose-ghcr.yml up -d
 - **Web UI** / gRPC: http://127.0.0.1:9877  
 
 Images: ghcr.io/altastata/altastata/jupyter-datascience-{arm64,amd64}:latest
+
+---
+
+## Agents (Python)
+
+From a notebook, LangGraph tool, or script — open an account and call the same
+APIs as everywhere else. `from_account_dir` **auto-starts** the bundled gateway;
+you do not launch a second process.
+
+```python
+from altastata import AltaStataFunctions
+from altastata.fsspec import create_filesystem
+
+f = AltaStataFunctions.from_account_dir(
+    "~/.altastata/accounts/amazon.rsa.bob",
+    password="your_password",
+)
+fs = create_filesystem(f, "bob")
+
+print(fs.ls("Public/"))
+with fs.open("Public/notes.txt", "r") as fh:
+    print(fh.read())
+```
+
+Same stack as the rest of this README (fsspec, LangChain, boto3). For external
+agents that speak MCP over stdio (Claude Desktop, specialized industry agents,
+IDE assistants like Cursor/Windsurf), see
+[altastata-mcp](https://github.com/AltaStata/sovereign-data-fabric/tree/main/altastata-mcp)
+(`altastata mcp` is optional).
 
 ---
 

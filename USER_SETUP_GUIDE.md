@@ -125,7 +125,7 @@ result = create_account(
 )
 print(result.suggested_display_name, sorted(result.account_files))
 
-# Optional — only if you want to change the private-key password later
+# Optional — you can change the private-key password later
 # (no login / *user.properties needed)
 change_account_password(
     "~/.altastata/accounts/amazon.rsa.alice",

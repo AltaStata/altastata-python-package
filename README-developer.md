@@ -77,6 +77,10 @@ the gRPC path. See `AltaStata/sovereign-data-fabric (altastata-grpc)/CONSOLE_ACC
 
 ### Account setup CLI / SDK (no Desktop UI)
 
+CLI: `altastata help`, `altastata account create`, `altastata account change-password`,
+`altastata account types`, `altastata grpc-server`, `altastata mcp`.
+SDK: `create_account`, `change_account_password`.
+
 See **[USER_SETUP_GUIDE.md](https://github.com/AltaStata/altastata-python-package/blob/main/USER_SETUP_GUIDE.md)**. When `account_setup.proto`
 changes in mycloud, sync and regenerate:
 
@@ -85,6 +89,12 @@ cp ../mycloud/altastata-grpc/src/main/proto/altastata/grpc/v1/account_setup.prot
   proto/altastata/grpc/v1/
 python scripts/generate_grpc_stubs.py
 ```
+
+### Agents / MCP
+
+Python agents use `AltaStataFunctions.from_account_dir` (gateway auto-starts) —
+see **Agents (Python)** in [README.md](README.md). Optional Desktop MCP stdio:
+`altastata mcp` / `python -m altastata.mcp_server`.
 
 ### Logging Configuration
 - To customize logging, copy and modify the logback configuration:

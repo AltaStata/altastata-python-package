@@ -88,6 +88,13 @@ class AccountSetupTests(unittest.TestCase):
             main(["account", "create", "--help"])
         self.assertEqual(0, cm.exception.code)
 
+    def test_cli_account_change_password_help(self):
+        from altastata.cli import main
+
+        with self.assertRaises(SystemExit) as cm:
+            main(["account", "change-password", "--help"])
+        self.assertEqual(0, cm.exception.code)
+
     @patch("altastata.cli.create_account")
     def test_cli_account_create_invokes_sdk(self, mock_create):
         from altastata.account_setup import GenerateKeysResult
@@ -118,6 +125,79 @@ class AccountSetupTests(unittest.TestCase):
         kwargs = mock_create.call_args.kwargs
         self.assertEqual("secret", kwargs["password"])
         self.assertEqual("rsa.alice", kwargs["name"])
+
+    @patch("altastata.cli.change_account_password")
+    def test_cli_account_change_password_invokes_sdk(self, mock_change):
+        from pathlib import Path
+
+        from altastata.account_setup import ChangePasswordResult
+        from altastata.cli import main
+
+        with tempfile.TemporaryDirectory() as tmp:
+            mock_change.return_value = ChangePasswordResult(
+                account_dir=Path(tmp),
+                account_files={"private.key": b"reenc"},
+            )
+            code = main(
+                [
+                    "account",
+                    "change-password",
+                    "--account-dir",
+                    tmp,
+                    "--current-password",
+                    "old",
+                    "--new-password",
+                    "new",
+                    "--no-auto-start",
+                ]
+            )
+        self.assertEqual(0, code)
+        mock_change.assert_called_once()
+        kwargs = mock_change.call_args.kwargs
+        self.assertEqual("old", kwargs["current_password"])
+        self.assertEqual("new", kwargs["new_password"])
+
+    def test_cli_help_lists_commands(self):
+        from io import StringIO
+        from unittest.mock import patch
+
+        from altastata.cli import main
+
+        with patch("sys.stdout", new_callable=StringIO) as out:
+            code = main(["help"])
+        text = out.getvalue()
+        self.assertEqual(0, code)
+        self.assertIn("account create", text)
+        self.assertIn("account change-password", text)
+        self.assertIn("account types", text)
+        self.assertIn("grpc-server", text)
+        self.assertIn("mcp", text)
+
+    def test_cli_bare_shows_help(self):
+        from io import StringIO
+        from unittest.mock import patch
+
+        from altastata.cli import main
+
+        with patch("sys.stdout", new_callable=StringIO) as out:
+            code = main([])
+        self.assertEqual(0, code)
+        self.assertIn("Commands:", out.getvalue())
+
+    def test_cli_mcp_help(self):
+        from altastata.cli import main
+
+        with self.assertRaises(SystemExit) as cm:
+            main(["mcp", "--help"])
+        self.assertEqual(0, cm.exception.code)
+
+    @patch("altastata.mcp_server.find_bundled_grpc_uber_jar", return_value="/tmp/altastata-services-1.0.0-uber.jar")
+    @patch("altastata.mcp_server.shutil.which", return_value="/usr/bin/java")
+    def test_cli_mcp_dry_run(self, _which, _jar):
+        from altastata.cli import main
+
+        code = main(["mcp", "--dry-run", "--account-dir", "/tmp/acct"])
+        self.assertEqual(0, code)
 
 
 if __name__ == "__main__":

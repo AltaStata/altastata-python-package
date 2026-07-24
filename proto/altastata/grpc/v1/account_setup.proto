@@ -47,6 +47,9 @@ message GenerateKeysResponse {
 message ChangePasswordRequest {
   string current_password = 1;
   string new_password = 2;
+  // Co-located account directory with private key file(s). Bootstrap RPC
+  // (no Login): only re-encrypts keys on disk — same idea as GenerateKeys.
+  string user_account_directory = 3;
 }
 
 message ChangePasswordResponse {

@@ -12,13 +12,13 @@ pip install altastata
 - **Pythonic APIs:** Standard Python file I/O via fsspec (create_filesystem)
 - **ML & AI:** Datasets (AltaStataPyTorchDataset, AltaStataTensorFlowDataset)
 - **RAG:** LangChain document loading (fsspec + DirectoryLoader / TextLoader)
-- **Big Data:** Databricks / Apache Spark (AltaStata Hadoop FS JAR)
 - **Data Warehousing:** Snowflake external stages (S3 Gateway) or Snowpark Python (fsspec)
 - **AWS Ecosystem:** S3 tools like boto3, aws CLI, and s3fs (S3-compatible API on port **9876**)
 - **Distributed apps:** gRPC API (Python client + JS clients via port **9877**)
 - **Agents / AI:** Use `AltaStataFunctions` from Python agents (LangGraph, notebooks, …) — gateway auto-starts; no extra process
 - **Real-time:** Real-time share/delete events (gRPC EventsService or Web UI)
 - **Web UI:** Finder-style file manager in the browser (http://127.0.0.1:9877)
+- **Big Data:** Databricks / Apache Spark (AltaStata Hadoop FS JAR)
 
 ---
 

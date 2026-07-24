@@ -94,7 +94,7 @@ Works with pandas, dask, and other fsspec consumers.
 
 ---
 
-## LangChain, Databricks, Snowflake
+## LangChain & Snowflake
 
 ### LangChain / RAG
 
@@ -113,22 +113,6 @@ with fs.open("Public/docs/policy.txt", "r") as fh:
 ```
 
 TextLoader, DirectoryLoader, and other LangChain loaders work via the altastata:// fsspec protocol once the filesystem is registered — see [examples/fsspec-example/](https://github.com/AltaStata/altastata-python-package/tree/main/examples/fsspec-example/) and full RAG pipelines in [examples/rag-example/](https://github.com/AltaStata/altastata-python-package/tree/main/examples/rag-example/).
-
-### Databricks / Apache Spark
-
-Spark / Databricks use the AltaStata **Hadoop filesystem** JAR so jobs can read
-encrypted paths (`altastata://…` or a configured Hadoop URI).
-
-Neither the Hadoop JAR nor the **Bouncy Castle** crypto JARs are shipped inside
-the `altastata` pip wheel. Download or build them from the public BSL repo
-[AltaStata/sovereign-data-fabric](https://github.com/AltaStata/sovereign-data-fabric)
-(module `altastata-hadoop`, release assets / shadow JAR; also get the signed
-`bcprov` / `bcpkix` / `bcutil` JARs — they are often externalized from the
-shadow JAR). Put **all of them on the Spark / Databricks classpath**
-(`spark.driver.extraClassPath` / `spark.executor.extraClassPath`, or the
-cluster’s `jars` / init-script install path). Python notebooks still use this
-package for account setup and local gateway helpers; the cluster needs those
-JARs on the classpath separately.
 
 ### Snowflake
 
@@ -264,3 +248,21 @@ The Python / TypeScript sources in this repository are Apache 2.0. Bundled AltaS
 Java runtime JARs (when present under `altastata/lib/`) remain under the
 [Business Source License 1.1](https://github.com/AltaStata/sovereign-data-fabric/blob/main/LICENSE.md).
 See [NOTICE](NOTICE) for attribution of bundled components.
+
+---
+
+## Appendix: Databricks / Apache Spark
+
+Spark / Databricks use the AltaStata **Hadoop filesystem** JAR so jobs can read
+encrypted paths (`altastata://…` or a configured Hadoop URI).
+
+Neither the Hadoop JAR nor the **Bouncy Castle** crypto JARs are shipped inside
+the `altastata` pip wheel. Download or build them from the public BSL repo
+[AltaStata/sovereign-data-fabric](https://github.com/AltaStata/sovereign-data-fabric)
+(module `altastata-hadoop`, release assets / shadow JAR; also get the signed
+`bcprov` / `bcpkix` / `bcutil` JARs — they are often externalized from the
+shadow JAR). Put **all of them on the Spark / Databricks classpath**
+(`spark.driver.extraClassPath` / `spark.executor.extraClassPath`, or the
+cluster’s `jars` / init-script install path). Python notebooks still use this
+package for account setup and local gateway helpers; the cluster needs those
+JARs on the classpath separately.

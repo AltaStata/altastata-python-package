@@ -13,7 +13,8 @@ pip install altastata
 - **ML & AI:** Datasets (AltaStataPyTorchDataset, AltaStataTensorFlowDataset)
 - **RAG:** LangChain document loading (fsspec + DirectoryLoader / TextLoader)
 - **Big Data:** Databricks / Apache Spark via the AltaStata Hadoop FS JAR
-  (not in this pip package — download separately from
+  (not in this pip package — download the Hadoop JAR and Bouncy Castle JARs
+  separately from
   [sovereign-data-fabric](https://github.com/AltaStata/sovereign-data-fabric))
 - **Data Warehousing:** Snowflake external stages (S3 Gateway) or Snowpark Python (fsspec)
 - **AWS Ecosystem:** S3 tools like boto3, aws CLI, and s3fs (S3-compatible API on port **9876**)
@@ -121,13 +122,14 @@ TextLoader, DirectoryLoader, and other LangChain loaders work via the altastata:
 Spark / Databricks use the AltaStata **Hadoop filesystem** JAR so jobs can read
 encrypted paths (`altastata://…` or a configured Hadoop URI).
 
-That JAR is **not** shipped inside the `altastata` pip wheel. Download or build
-it from the public BSL repo
+Neither the Hadoop JAR nor the **Bouncy Castle** crypto JARs are shipped inside
+the `altastata` pip wheel. Download or build them from the public BSL repo
 [AltaStata/sovereign-data-fabric](https://github.com/AltaStata/sovereign-data-fabric)
-(module `altastata-hadoop`, release assets / shadow JAR), then deploy it on your
-Databricks / Spark cluster classpath. Python notebooks still use this package
-for account setup and local gateway helpers; the cluster needs the Hadoop JAR
-separately.
+(module `altastata-hadoop`, release assets / shadow JAR; co-locate the signed
+`bcprov` / `bcpkix` / `bcutil` JARs on the cluster classpath — they are often
+externalized from the shadow JAR). Deploy both on your Databricks / Spark
+cluster. Python notebooks still use this package for account setup and local
+gateway helpers; the cluster needs those JARs separately.
 
 ### Snowflake
 

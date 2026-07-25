@@ -1,8 +1,8 @@
 # Altastata Python Package
 
-Secure, encrypted cloud storage for Python — with **fsspec**, **PyTorch/TensorFlow**, **LangChain**, **Databricks**, **Snowflake**, **boto3/S3**, **gRPC**, and a bundled **Web UI** (AltaStata Console).
+Sovereign encrypted data fabric for any cloud Python SDK — with support for **fsspec**, **PyTorch**, **TensorFlow**, **LangChain**, **AI Agents**, **Databricks**, **Snowflake** (via S3), **boto3/S3 CLI**, **gRPC**, and a bundled **Web UI User Console**.
 
-**Package version `1.0.6.7`** is built on the Java/BSL runtime from
+**Package version `1.0.6.8`** is built on the Java/BSL runtime from
 [sovereign-data-fabric `v2026.07.25`](https://github.com/AltaStata/sovereign-data-fabric/releases/tag/v2026.07.25)
 (bundled `altastata-services` uber jar + MCP).
 
@@ -12,16 +12,15 @@ pip install altastata
 
 ## What you get
 
-- **Storage:** Encrypted files in S3, Azure, IBM COS, etc. (AltaStataFunctions)
-- **Pythonic APIs:** Standard Python file I/O via fsspec (create_filesystem)
-- **ML & AI:** Datasets (AltaStataPyTorchDataset, AltaStataTensorFlowDataset)
-- **RAG:** LangChain document loading (fsspec + DirectoryLoader / TextLoader)
-- **Data Warehousing:** Snowflake external stages (S3 Gateway) or Snowpark Python (fsspec)
-- **AWS Ecosystem:** S3 tools like boto3, aws CLI, and s3fs (S3-compatible API on port **9876**)
+- **Sovereign storage:** Encrypted files in S3, Azure, IBM COS, and other clouds (`AltaStataFunctions`)
+- **Pythonic APIs:** Standard Python file I/O via fsspec (`create_filesystem`)
+- **PyTorch:** Train and load datasets directly from encrypted cloud paths (`AltaStataPyTorchDataset`)
+- **TensorFlow:** Same for TensorFlow / `tf.data` (`AltaStataTensorFlowDataset`)
+- **LangChain & AI Agents:** RAG loaders and agent tools over encrypted data; gateway auto-starts
+- **S3-compatible API:** boto3, aws CLI, s3fs on port **9876** — including Snowflake external stages that read S3
 - **Distributed apps:** gRPC API (Python client + JS clients via port **9877**)
-- **Agents / AI:** Use `AltaStataFunctions` from Python agents (LangGraph, notebooks, …) — gateway auto-starts; no extra process
-- **Real-time:** Real-time share/delete events (gRPC EventsService or Web UI)
-- **Web UI:** Finder-style file manager in the browser (http://127.0.0.1:9877)
+- **Sharing & events:** Users share encrypted files with each other; Python apps subscribe to SHARE/DELETE notifications
+- **Web UI User Console:** Finder-style file manager in the browser (http://127.0.0.1:9877)
 - **Big Data:** Databricks / Apache Spark (AltaStata Hadoop FS JAR)
 
 ---
@@ -46,9 +45,9 @@ f = AltaStataFunctions.from_account_dir(
 
 ---
 
-## Quick start (gRPC — recommended)
+## Quick start
 
-`from_account_dir` / `from_credentials` auto-start the bundled Java gateway (Web UI + gRPC + S3).
+`from_account_dir` / `from_credentials` auto-start the bundled Java gateway (Web UI User Console + gRPC + S3).
 
 ```python
 from altastata import AltaStataFunctions
@@ -70,14 +69,10 @@ print(f.list_cloud_versions("Public/", True))
 
 ### Ports
 
-One bundled Java process (altastata-grpc-server / altastata-services) listens on:
+One bundled Java process (altastata-services) listens on:
 
-- **9877**: gRPC (file ops, auth, events) + Web UI static files
+- **9877**: gRPC (file ops, auth, events) + Web UI User Console
 - **9876**: S3-compatible REST API
-
-### HPCS in Docker / Jupyter
-
-Mount a populated grep11client.yaml (e.g. /etc/ep11client/grep11client.yaml) and hpcs-privkey.blob. See [containers/jupyter/README-Docker.md](https://github.com/AltaStata/altastata-python-package/tree/main/containers/jupyter/README-Docker.md).
 
 ---
 
@@ -98,7 +93,7 @@ Works with pandas, dask, and other fsspec consumers.
 
 ---
 
-## LangChain & Snowflake
+## LangChain & AI Agents
 
 ### LangChain / RAG
 
@@ -118,10 +113,13 @@ with fs.open("Public/docs/policy.txt", "r") as fh:
 
 TextLoader, DirectoryLoader, and other LangChain loaders work via the altastata:// fsspec protocol once the filesystem is registered — see [examples/fsspec-example/](https://github.com/AltaStata/altastata-python-package/tree/main/examples/fsspec-example/) and full RAG pipelines in [examples/rag-example/](https://github.com/AltaStata/altastata-python-package/tree/main/examples/rag-example/).
 
-### Snowflake
+### Integration with AI Agents
 
-- **External stage via S3:** point Snowflake at the bundled S3 Gateway (http://host:9876) as an S3-compatible endpoint for encrypted objects in your backing bucket.
-- **Snowpark Python:** use fsspec / create_filesystem in Snowpark notebooks to read AltaStata paths with the same account credentials.
+Python agents (LangGraph, notebooks, scripts) use the same `AltaStataFunctions` /
+fsspec APIs as above — `from_account_dir` auto-starts the gateway. For external
+agents that speak MCP over stdio (Claude Desktop, Cursor/Windsurf, …), see
+[altastata-mcp](https://github.com/AltaStata/sovereign-data-fabric/tree/main/altastata-mcp)
+(`altastata mcp` is optional).
 
 ---
 
@@ -136,9 +134,16 @@ s3.put_object(Bucket="altastata-bucket", Key="hello.txt", Body=b"hi")
 f.install_aws_env()   # AWS_* for !aws s3 ls in Jupyter
 ```
 
+### Snowflake
+
+Snowflake can read AltaStata-backed objects through the S3-compatible gateway:
+
+- **External stage via S3:** point Snowflake at the bundled S3 Gateway (`http://host:9876`) as an S3-compatible endpoint for encrypted objects in your backing bucket.
+- **Snowpark Python:** use fsspec / `create_filesystem` in Snowpark notebooks to read AltaStata paths with the same account credentials.
+
 ---
 
-## PyTorch & TensorFlow
+## PyTorch
 
 ```python
 from altastata import AltaStataFunctions, AltaStataPyTorchDataset
@@ -149,11 +154,32 @@ register_altastata_functions_for_pytorch(f, "my_account")
 dataset = AltaStataPyTorchDataset("my_account", root_dir="Public/", file_pattern="*.jpg")
 ```
 
-See [examples/pytorch-example/](https://github.com/AltaStata/altastata-python-package/tree/main/examples/pytorch-example/) and [examples/tensorflow-example/](https://github.com/AltaStata/altastata-python-package/tree/main/examples/tensorflow-example/).
+See [examples/pytorch-example/](https://github.com/AltaStata/altastata-python-package/tree/main/examples/pytorch-example/).
+
+---
+
+## TensorFlow
+
+```python
+from altastata import AltaStataFunctions, AltaStataTensorFlowDataset
+from altastata.altastata_tensorflow_dataset import register_altastata_functions_for_tensorflow
+
+f = AltaStataFunctions.from_account_dir("/path/to/account", password="secret")
+register_altastata_functions_for_tensorflow(f, "my_account")
+dataset = AltaStataTensorFlowDataset(
+    "my_account",
+    root_dir="Public/",
+    file_pattern="*.jpg",
+)
+```
+
+See [examples/tensorflow-example/](https://github.com/AltaStata/altastata-python-package/tree/main/examples/tensorflow-example/).
 
 ---
 
 ## Event notifications
+
+AltaStata lets users **share encrypted files with each other**. When files are shared or deleted, Python applications can catch those events in real time and react (refresh caches, notify users, trigger pipelines).
 
 ```python
 def on_event(name, data):
@@ -166,56 +192,13 @@ f = AltaStataFunctions.from_account_dir(
 f.add_event_listener(on_event)
 ```
 
-With gRPC / Web UI, SHARE and DELETE events also appear in the browser and via EventsService.Watch.
+SHARE and DELETE events also appear in the Web UI User Console and via gRPC `EventsService.Watch`.
 
 See [examples/event-listener-example/](https://github.com/AltaStata/altastata-python-package/tree/main/examples/event-listener-example/).
 
 ---
 
-## Docker Jupyter (optional)
-
-```bash
-cd containers/jupyter
-docker compose -f docker-compose.yml -f docker-compose-ghcr.yml up -d
-```
-
-- JupyterLab: http://127.0.0.1:8888  
-- **Web UI** / gRPC: http://127.0.0.1:9877  
-
-Images: ghcr.io/altastata/altastata/jupyter-datascience-{arm64,amd64}:latest
-
----
-
-## Agents (Python)
-
-From a notebook, LangGraph tool, or script — open an account and call the same
-APIs as everywhere else. `from_account_dir` **auto-starts** the bundled gateway;
-you do not launch a second process.
-
-```python
-from altastata import AltaStataFunctions
-from altastata.fsspec import create_filesystem
-
-f = AltaStataFunctions.from_account_dir(
-    "~/.altastata/accounts/amazon.rsa.bob",
-    password="your_password",
-)
-fs = create_filesystem(f, "bob")
-
-print(fs.ls("Public/"))
-with fs.open("Public/notes.txt", "r") as fh:
-    print(fh.read())
-```
-
-Same stack as the rest of this README (fsspec, LangChain, boto3). For external
-agents that speak MCP over stdio (Claude Desktop, specialized industry agents,
-IDE assistants like Cursor/Windsurf), see
-[altastata-mcp](https://github.com/AltaStata/sovereign-data-fabric/tree/main/altastata-mcp)
-(`altastata mcp` is optional).
-
----
-
-## Web UI (AltaStata Console)
+## Web UI User Console
 
 The wheel ships a browser file manager. Start the gateway:
 
@@ -260,13 +243,27 @@ See [NOTICE](NOTICE) for attribution of bundled components.
 Spark / Databricks use the AltaStata **Hadoop filesystem** JAR so jobs can read
 encrypted paths (`altastata://…` or a configured Hadoop URI).
 
-Neither the Hadoop JAR nor the **Bouncy Castle** crypto JARs are shipped inside
-the `altastata` pip wheel. Download or build them from the public BSL repo
-[AltaStata/sovereign-data-fabric](https://github.com/AltaStata/sovereign-data-fabric)
-(module `altastata-hadoop`, release assets / shadow JAR; also get the signed
-`bcprov` / `bcpkix` / `bcutil` JARs — they are often externalized from the
-shadow JAR). Put **all of them on the Spark / Databricks classpath**
+The Hadoop JAR is **not** inside the `altastata` pip wheel. Download it from the
+release assets:
+
+https://github.com/AltaStata/sovereign-data-fabric/releases/tag/v2026.07.25
+
+(`altastata-hadoop-*-uber.jar`).
+
+You also need the signed **Bouncy Castle** JARs on the Spark classpath. Use the
+same versions as in this package’s runtime lib (after `pip install altastata`,
+look under `…/site-packages/altastata/lib/`):
+
+- `bcprov-jdk18on-1.80.2.jar`
+- `bcpkix-jdk18on-1.80.jar`
+- `bcutil-jdk18on-1.80.2.jar`
+
+You can copy those files from the installed package, or take the matching `lib/`
+set from `altastata-services-*-uber.zip` on the same release page.
+
+Put **all of them** on the Spark / Databricks classpath
 (`spark.driver.extraClassPath` / `spark.executor.extraClassPath`, or the
-cluster’s `jars` / init-script install path). Python notebooks still use this
-package for account setup and local gateway helpers; the cluster needs those
-JARs on the classpath separately.
+cluster’s `jars` / init-script install path). On Databricks (or other Spark)
+Python notebooks you can still `pip install altastata` for account setup and
+local helpers; the cluster job itself needs the Hadoop + Bouncy Castle JARs on
+the Spark classpath separately.

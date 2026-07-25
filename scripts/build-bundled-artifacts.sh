@@ -78,6 +78,8 @@ if [[ -z "${SKIP_GRPC:-}" ]]; then
     # signing keeps working when Python launches the gateway from altastata/lib.
     SERVICES_LIB_DIR="$MYCLOUD_DIR/altastata-services/build/libs/lib"
     if [[ -d "$SERVICES_LIB_DIR" ]]; then
+        # Drop previous BC jars so a version bump cannot leave 1.80 beside 1.85.
+        find "$LIB_DIR" -maxdepth 1 -name 'bc*-jdk18on-*.jar' -print -delete || true
         for bc_jar in "$SERVICES_LIB_DIR"/bcpkix-*.jar "$SERVICES_LIB_DIR"/bcprov-*.jar "$SERVICES_LIB_DIR"/bcutil-*.jar; do
             [[ -f "$bc_jar" ]] || continue
             cp "$bc_jar" "$LIB_DIR/"

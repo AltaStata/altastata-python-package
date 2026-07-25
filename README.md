@@ -254,9 +254,9 @@ You also need the signed **Bouncy Castle** JARs on the Spark classpath. Use the
 same versions as in this package’s runtime lib (after `pip install altastata`,
 look under `…/site-packages/altastata/lib/`):
 
-- `bcprov-jdk18on-1.80.2.jar`
-- `bcpkix-jdk18on-1.80.jar`
-- `bcutil-jdk18on-1.80.2.jar`
+- `bcprov-jdk18on-1.85.jar`
+- `bcpkix-jdk18on-1.85.jar`
+- `bcutil-jdk18on-1.85.jar`
 
 You can copy those files from the installed package, or take the matching `lib/`
 set from `altastata-services-*-uber.zip` on the same release page.

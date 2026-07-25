@@ -71,7 +71,7 @@ print(f.list_cloud_versions("Public/", True))
 
 One bundled Java process (altastata-services) listens on:
 
-- **9877**: gRPC (file ops, auth, events) + Web UI User Console
+- **9877**: gRPC (file ops, auth, events) + Web UI User Console at http://127.0.0.1:9877
 - **9876**: S3-compatible REST API
 
 ---

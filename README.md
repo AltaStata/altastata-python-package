@@ -2,6 +2,10 @@
 
 Secure, encrypted cloud storage for Python — with **fsspec**, **PyTorch/TensorFlow**, **LangChain**, **Databricks**, **Snowflake**, **boto3/S3**, **gRPC**, and a bundled **Web UI** (AltaStata Console).
 
+**Package version `1.0.6.7`** is built on the Java/BSL runtime from
+[sovereign-data-fabric `v2026.07.25`](https://github.com/AltaStata/sovereign-data-fabric/releases/tag/v2026.07.25)
+(bundled `altastata-services` uber jar + MCP).
+
 ```bash
 pip install altastata
 ```

@@ -17,6 +17,9 @@ except _PkgNotFound:
     # package was renamed at install time) — fall back rather than crash.
     __version__ = "0.0.0+unknown"
 
+# Date tag of the bundled Java/BSL runtime (sovereign-data-fabric / mycloud VERSION).
+BUNDLED_JAVA_RELEASE = "2026.07.25"
+
 from .altastata_functions import AltaStataFunctions
 from .account_setup import (
     AccountSetupClient,

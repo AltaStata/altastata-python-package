@@ -43,6 +43,13 @@ def _default_client_hint() -> str:
     return f"altastata-python-package/{uuid.uuid4()}"
 
 
+_LOOPBACK_HOSTS = frozenset({"127.0.0.1", "localhost", "::1", "0:0:0:0:0:0:0:1"})
+
+
+def _is_loopback_host(host: str) -> bool:
+    return (host or "").strip().lower() in _LOOPBACK_HOSTS
+
+
 @dataclass
 class GrpcEndpoint:
     host: str = "127.0.0.1"
@@ -51,6 +58,9 @@ class GrpcEndpoint:
     # When set, connect over a Unix domain socket instead of TCP. Local-only,
     # so `secure` is ignored. Example: socket_path="/tmp/altastata.sock".
     socket_path: Optional[str] = None
+    # Opt-in for cleartext TCP to a non-loopback host (private LAN / lab only).
+    # Prefer TLS (``secure=True``) or a Unix socket for anything beyond localhost.
+    allow_insecure_remote: bool = False
 
     @property
     def target(self) -> str:
@@ -117,6 +127,7 @@ class AltaStataGrpcClient:
             from .grpc.v1 import users_pb2, users_pb2_grpc
             from .grpc.v1 import fileops_pb2, fileops_pb2_grpc
             from .grpc.v1 import events_pb2, events_pb2_grpc
+            from .grpc.v1 import s3_credentials_pb2, s3_credentials_pb2_grpc
         except Exception as exc:
             raise ImportError(
                 "gRPC stubs are missing. Run: python scripts/generate_grpc_stubs.py"
@@ -128,6 +139,7 @@ class AltaStataGrpcClient:
         self._attributes_pb2 = attributes_pb2
         self._fileops_pb2 = fileops_pb2
         self._events_pb2 = events_pb2
+        self._s3_credentials_pb2 = s3_credentials_pb2
 
         self._auth_stub = auth_pb2_grpc.AuthServiceStub(self._channel)
         self._users_stub = users_pb2_grpc.UsersServiceStub(self._channel)
@@ -135,6 +147,9 @@ class AltaStataGrpcClient:
         self._attributes_stub = attributes_pb2_grpc.AttributesServiceStub(self._channel)
         self._fileops_stub = fileops_pb2_grpc.FileOpsServiceStub(self._channel)
         self._events_stub = events_pb2_grpc.EventsServiceStub(self._channel)
+        self._s3_credentials_stub = s3_credentials_pb2_grpc.S3CredentialsServiceStub(
+            self._channel
+        )
         # Tracks handles returned from add_event_listener so
         # remove_all_event_listeners can stop every still-running worker.
         # Each handle owns its own stop_flag / call_ref; we just keep the
@@ -310,6 +325,21 @@ class AltaStataGrpcClient:
         if endpoint.secure and not endpoint.socket_path:
             creds = grpc.ssl_channel_credentials()
             return grpc.secure_channel(endpoint.target, creds, options=options)
+        # Cleartext is intentional for loopback / UDS (Java gateway defaults to
+        # 127.0.0.1). Refuse silent plaintext to remote hosts unless opted in.
+        if (
+            not endpoint.socket_path
+            and not _is_loopback_host(endpoint.host)
+            and not endpoint.allow_insecure_remote
+            and os.environ.get("ALTASTATA_ALLOW_INSECURE_REMOTE", "").strip().lower()
+            not in {"1", "true", "yes"}
+        ):
+            raise ValueError(
+                f"Refusing cleartext gRPC to non-loopback host {endpoint.host!r}. "
+                "Pass secure=True (TLS), use a Unix socket, set "
+                "GrpcEndpoint(allow_insecure_remote=True), or export "
+                "ALTASTATA_ALLOW_INSECURE_REMOTE=1."
+            )
         return grpc.insecure_channel(endpoint.target, options=options)
 
     def close(self) -> None:
@@ -648,6 +678,17 @@ class AltaStataGrpcClient:
             yield bytes(chunk.data)
 
     # ----- AltaStataFunctions compatibility aliases -----
+
+    def issue_s3_credentials(self, *, label: str = "python-sdk") -> Dict[str, str]:
+        """Issue temporary S3 SigV4 credentials for the current Bearer session."""
+        resp = self._s3_credentials_stub.IssueCredentials(
+            self._s3_credentials_pb2.IssueCredentialsRequest(label=label or ""),
+            metadata=self._metadata,
+        )
+        return {
+            "access_key_id": resp.access_key_id,
+            "secret_access_key": resp.secret_access_key,
+        }
 
     def set_password(self, account_password: str):
         """

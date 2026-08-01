@@ -16,23 +16,18 @@ cd $HOME/eclipse-workspace/mcloud/mycloud
 
 ### 2) Initialize gateway user/session with account files
 
-The three bootstrap PUTs used to live on Micronaut port 9880; after the
-`altastata-services` consolidation they are served by Armeria on port 9877
-alongside the gRPC server (see
-`mycloud/ALTASTATA_SERVICES_UBER_DESIGN.md` §3.1).
+Use gRPC `LoginV2` (account directory) — legacy HTTP admin PUTs
+(`setUserProperties` / `setPrivateKey` / `setPassword`) were removed.
 
 ```bash
-curl -sS -X PUT "http://127.0.0.1:9877/setUserProperties/bob123" \
-  -H "Content-Type: text/plain" \
-  --data-binary @"$HOME/.altastata/accounts/amazon.rsa.bob123/altastata-myorgrsa444-bob123.user.properties"
+# From mycloud (shell helper):
+export ALTASTATA_ACCOUNT_DIR=$HOME/.altastata/accounts/amazon.rsa.bob123
+export ALTASTATA_PASSWORD=123
+source altastata-s3-gateway/scripts/realuser/setup-user-properties.sh
+setup_grpc_s3_session
 
-curl -sS -X PUT "http://127.0.0.1:9877/setPrivateKey/bob123" \
-  -H "Content-Type: text/plain" \
-  --data-binary @"$HOME/.altastata/accounts/amazon.rsa.bob123/private.key"
-
-curl -sS -X PUT "http://127.0.0.1:9877/setPassword/bob123" \
-  -H "Content-Type: text/plain" \
-  --data "123"
+# Or from Python:
+# AltaStataFunctions.from_account_dir(ALTASTATA_ACCOUNT_DIR, password="123")
 ```
 
 ### 3) Generate Python gRPC stubs (from `altastata-python-package`)

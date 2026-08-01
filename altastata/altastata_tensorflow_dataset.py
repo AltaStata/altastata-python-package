@@ -13,6 +13,23 @@ import fnmatch
 _altastata_tensorflow_account_registry = {}
 _warned_accounts = set()  # Track which accounts we've warned about
 
+
+def _resolve_under_root(root_dir, path: str) -> str:
+    """Resolve ``path`` under ``root_dir``; reject absolute / ``..`` escapes."""
+    root = Path(root_dir).expanduser().resolve()
+    candidate = Path(path)
+    if candidate.is_absolute():
+        raise ValueError(f"Absolute path not allowed in local dataset I/O: {path!r}")
+    resolved = (root / candidate).resolve()
+    try:
+        resolved.relative_to(root)
+    except ValueError as exc:
+        raise ValueError(
+            f"Path {path!r} escapes dataset root {str(root)!r}"
+        ) from exc
+    return str(resolved)
+
+
 def register_altastata_functions_for_tensorflow(altastata_functions, account_id):
     _altastata_tensorflow_account_registry[account_id] = altastata_functions
 
@@ -229,7 +246,7 @@ class AltaStataTensorFlowDataset(tf.data.Dataset):
             altastata_functions.create_file(path, data)
         else:
             # Fall back to local file operations
-            local_path = str(self.root_dir / path)
+            local_path = _resolve_under_root(self.root_dir, path)
             print(f"Writing to local file: {local_path}")
             os.makedirs(os.path.dirname(local_path), exist_ok=True)
             with open(local_path, 'wb') as f:
@@ -250,7 +267,7 @@ class AltaStataTensorFlowDataset(tf.data.Dataset):
         if altastata_functions is not None:
             return self._read_from_altastata(altastata_functions, path)
         else:
-            local_path = os.path.join(self.root_dir, path)
+            local_path = _resolve_under_root(self.root_dir, path)
             with open(local_path, 'rb') as f:
                 return f.read()
 
@@ -265,11 +282,16 @@ class AltaStataTensorFlowDataset(tf.data.Dataset):
         config = model.get_config()
         weights = model.get_weights()
         
-        # Serialize to bytes using numpy
+        # Serialize without pickle: store JSON config as uint8 bytes.
         buffer = io.BytesIO()
-        np.savez(buffer, 
-                 config=json.dumps(config).encode('utf-8'),
-                 **{f'weight_{i}': w for i, w in enumerate(weights)})
+        config_bytes = np.frombuffer(
+            json.dumps(config).encode("utf-8"), dtype=np.uint8
+        )
+        np.savez(
+            buffer,
+            config=config_bytes,
+            **{f"weight_{i}": w for i, w in enumerate(weights)},
+        )
         
         # Save to AltaStata using the working _write_file method
         buffer.seek(0)
@@ -299,9 +321,9 @@ class AltaStataTensorFlowDataset(tf.data.Dataset):
         model_data = self._read_file(filename)
         print(f"Model data loaded: {len(model_data)} bytes")
         
-        # Load from bytes
+        # Load from bytes — never allow_pickle (RCE via object arrays).
         buffer = io.BytesIO(model_data)
-        data = np.load(buffer, allow_pickle=True)
+        data = np.load(buffer, allow_pickle=False)
         
         # Get config and weights
         config = json.loads(data['config'].tobytes().decode('utf-8'))
@@ -333,29 +355,10 @@ class AltaStataTensorFlowDataset(tf.data.Dataset):
         config = fix_config_recursive(config)
         
         # Reconstruct model - handle Sequential models correctly
-        try:
-            if config.get('name') == 'sequential':
-                # For Sequential models, use Sequential.from_config
-                model = tf.keras.Sequential.from_config(config)
-            else:
-                # For other models, use Model.from_config
-                model = tf.keras.Model.from_config(config)
-        except Exception as e:
-            print(f"Error loading with from_config: {e}")
-            # Fallback: Try to save to temporary file and load with tf.keras.models.load_model
-            import tempfile
-            with tempfile.NamedTemporaryFile(suffix='.keras', delete=False) as tmp_file:
-                tmp_file.write(model_data)
-                tmp_file_path = tmp_file.name
-            
-            try:
-                # Try loading as a standard Keras file
-                model = tf.keras.models.load_model(tmp_file_path)
-                os.unlink(tmp_file_path)  # Clean up
-                return model
-            except Exception as e2:
-                os.unlink(tmp_file_path)  # Clean up
-                raise Exception(f"Could not load model. Original error: {e}, Fallback error: {e2}")
+        if config.get('name') == 'sequential':
+            model = tf.keras.Sequential.from_config(config)
+        else:
+            model = tf.keras.Model.from_config(config)
         
         model.set_weights(weights)
         

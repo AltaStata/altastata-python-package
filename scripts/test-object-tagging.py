@@ -33,24 +33,17 @@ def _tag_map(tagging_response: dict) -> dict[str, str]:
 
 
 def _current_user_name(alt) -> str:
-    """Logged-in AltaStata user via AltaStataFunctions (same path as s3_credentials)."""
-    if alt.transport == "grpc" and alt.grpc_client is not None:
-        return str(alt.grpc_client.get_my_account()["user_name"])
-    user_name, _, _ = alt._read_bootstrap_material()
-    return user_name
+    """Logged-in AltaStata user via AltaStataFunctions (gRPC get_my_account)."""
+    if alt.grpc_client is None:
+        raise RuntimeError("gRPC client not initialized")
+    return str(alt.grpc_client.get_my_account()["user_name"])
 
 
 def _list_account_user_names(alt) -> list[str]:
-    """Org users via AltaStata API (py4j listUsers or gRPC ListUsers)."""
-    if alt.transport == "grpc":
-        if alt.grpc_client is None:
-            raise RuntimeError("gRPC client not initialized")
-        return [u["user_name"] for u in alt.grpc_client.list_users()]
-
-    if alt.altastata_file_system is None:
-        raise RuntimeError("AltaStata filesystem not initialized")
-    java_list = alt.altastata_file_system.listUsers()
-    return [str(u) for u in java_list]
+    """Org users via gRPC ListUsers."""
+    if alt.grpc_client is None:
+        raise RuntimeError("gRPC client not initialized")
+    return [u["user_name"] for u in alt.grpc_client.list_users()]
 
 
 def _pick_peer_principal(alt, self_name: str) -> str:

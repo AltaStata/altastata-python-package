@@ -13,6 +13,22 @@ import fnmatch
 # Global hashmap to store altastata function instances by ID for PyTorch
 _altastata_pytorch_account_registry = {}
 
+
+def _resolve_under_root(root_dir: Path, path: str) -> Path:
+    """Resolve ``path`` under ``root_dir``; reject absolute / ``..`` escapes."""
+    root = Path(root_dir).expanduser().resolve()
+    candidate = Path(path)
+    if candidate.is_absolute():
+        raise ValueError(f"Absolute path not allowed in local dataset I/O: {path!r}")
+    resolved = (root / candidate).resolve()
+    try:
+        resolved.relative_to(root)
+    except ValueError as exc:
+        raise ValueError(
+            f"Path {path!r} escapes dataset root {str(root)!r}"
+        ) from exc
+    return resolved
+
 # Optional torchvision for image tensor conversion
 try:
     import torchvision.transforms.functional as _tv_f
@@ -173,9 +189,9 @@ class AltaStataPyTorchDataset(Dataset):
             altastata_functions.create_file(path, data)
         else:
             # Fall back to local file operations
-            local_path = str(self.root_dir / path)
+            local_path = _resolve_under_root(self.root_dir, path)
             print(f"Writing to local file: {local_path}")
-            os.makedirs(os.path.dirname(local_path), exist_ok=True)
+            local_path.parent.mkdir(parents=True, exist_ok=True)
             with open(local_path, 'wb') as f:
                 f.write(data)
 
@@ -204,7 +220,7 @@ class AltaStataPyTorchDataset(Dataset):
                 size = 0
             return altastata_functions.get_buffer(path, None, 0, 4, size)
         else:
-            local_path = str(self.root_dir / path)
+            local_path = _resolve_under_root(self.root_dir, path)
             with open(local_path, 'rb') as f:
                 return f.read()
 
@@ -234,5 +250,11 @@ class AltaStataPyTorchDataset(Dataset):
         serialized_data = self._read_file(filename)
         print(f"Loaded model data length: {len(serialized_data)} bytes")
 
-        # Deserialize using PyTorch
-        return torch.load(io.BytesIO(serialized_data))
+        # Deserialize using PyTorch. Prefer weights_only to block pickle RCE
+        # from untrusted shared model blobs (PyTorch ≥ 2.0).
+        buffer = io.BytesIO(serialized_data)
+        try:
+            return torch.load(buffer, weights_only=True)
+        except TypeError:
+            # Older torch without weights_only=
+            return torch.load(buffer)

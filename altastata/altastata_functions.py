@@ -92,17 +92,14 @@ class AltaStataFunctions(S3BridgeMixin):
         self.grpc_client = grpc_client
         self._event_listeners = []  # Track registered listeners
 
-        # Material the S3 boto3 helper needs to drive the admin bootstrap
-        # PUTs (setUserProperties / setPrivateKey / setPassword) without
-        # asking the caller to repeat what they already gave us.
+        # Account material retained for helpers / re-login. S3 credentials are
+        # issued via gRPC IssueCredentials on the active Bearer session.
         # Populated by from_account_dir / from_credentials below.
         self._account_dir_path: Optional[str] = None
         self._user_properties: Optional[str] = None
         self._private_key_encrypted: Optional[str] = None
         self._cached_password: Optional[str] = None
-        # Cache of bootstrapped S3 credentials keyed by endpoint URL. The
-        # access/secret pair never changes for a given (endpoint, user) so a
-        # second `s3_credentials()` / `boto3_s3()` call is a dict lookup.
+        # Cache of issued S3 credentials keyed by endpoint URL.
         self._s3_credentials_cache: dict = {}
 
     @classmethod
@@ -226,8 +223,8 @@ class AltaStataFunctions(S3BridgeMixin):
         return list(java_list) if java_list is not None else []
 
     def set_password(self, account_password: str):
-        # Remember the plaintext so s3_credentials() / boto3_s3() / install_aws_env()
-        # can drive the S3 admin PUTs without forcing the caller to retype it.
+        # Cache kept for API compatibility / re-login helpers. S3 credentials
+        # are issued via authenticated gRPC IssueCredentials (no password PUT).
         self._cached_password = account_password
         return self.grpc_client.set_password(account_password)
 

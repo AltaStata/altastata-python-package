@@ -113,17 +113,19 @@ def build_bundled_grpc_classpath(bundled_uber_jar: str) -> str:
     """
     Build classpath for packaged gRPC server.
 
-    Uses all jars under altastata/lib so we can support the Hadoop-style build
-    where Bouncy Castle remains in separate signed jars (excluded from uber).
+    Allowlists the services uber jar plus signed Bouncy Castle jars only —
+    never every ``*.jar`` under ``altastata/lib`` (planted jars would execute
+    on auto-start).
     """
     jar_dir = Path(bundled_uber_jar).resolve().parent
-    jars = sorted(str(p) for p in jar_dir.iterdir() if p.suffix == ".jar")
-    # Prefer signed BC jars before uber if both are present.
-    bc_jars = [
-        p for p in jars if os.path.basename(p).startswith(("bcprov", "bcpkix", "bcutil"))
-    ]
-    others = [p for p in jars if p not in bc_jars and p != os.path.abspath(bundled_uber_jar)]
-    ordered = bc_jars + others + [os.path.abspath(bundled_uber_jar)]
+    uber = os.path.abspath(bundled_uber_jar)
+    bc_jars = sorted(
+        str(p.resolve())
+        for p in jar_dir.iterdir()
+        if p.suffix == ".jar"
+        and p.name.startswith(("bcprov", "bcpkix", "bcutil"))
+    )
+    ordered = bc_jars + [uber]
     return (";" if platform.system() == "Windows" else ":").join(ordered)
 
 

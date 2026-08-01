@@ -95,7 +95,7 @@ Same instance; uses the S3-compatible API on port **9876** (auto-started with th
 
 | Method | Role |
 |--------|------|
-| `s3_credentials(*, password=None, endpoint=None, region="us-east-1")` | Dict of boto3-ready credentials |
+| `s3_credentials(*, endpoint=None, region="us-east-1", label="python-sdk")` | Dict of boto3-ready credentials via gRPC `IssueCredentials` (do not pass `password=`; deprecated) |
 | `boto3_s3(**overrides)` | `boto3` S3 client (`pip install boto3`) |
 | `install_aws_env(…)` | Export `AWS_*` for shell / Jupyter `!aws` |
 

@@ -36,6 +36,11 @@ class DummyAuthStub:
         self._channel = channel
 
 
+class DummyS3CredentialsStub:
+    def __init__(self, channel):
+        self._channel = channel
+
+
 class GrpcClientTests(unittest.TestCase):
     def setUp(self):
         # Create fake generated modules so client can be instantiated in unit tests.
@@ -47,12 +52,14 @@ class GrpcClientTests(unittest.TestCase):
         attributes_pb2 = types.ModuleType("attributes_pb2")
         fileops_pb2 = types.ModuleType("fileops_pb2")
         events_pb2 = types.ModuleType("events_pb2")
+        s3_credentials_pb2 = types.ModuleType("s3_credentials_pb2")
         auth_pb2_grpc = types.ModuleType("auth_pb2_grpc")
         users_pb2_grpc = types.ModuleType("users_pb2_grpc")
         sharing_pb2_grpc = types.ModuleType("sharing_pb2_grpc")
         attributes_pb2_grpc = types.ModuleType("attributes_pb2_grpc")
         fileops_pb2_grpc = types.ModuleType("fileops_pb2_grpc")
         events_pb2_grpc = types.ModuleType("events_pb2_grpc")
+        s3_credentials_pb2_grpc = types.ModuleType("s3_credentials_pb2_grpc")
 
         auth_pb2_grpc.AuthServiceStub = DummyAuthStub
         users_pb2_grpc.UsersServiceStub = DummyUsersStub
@@ -60,6 +67,8 @@ class GrpcClientTests(unittest.TestCase):
         attributes_pb2_grpc.AttributesServiceStub = DummyAttributesStub
         fileops_pb2_grpc.FileOpsServiceStub = DummyFileOpsStub
         events_pb2_grpc.EventsServiceStub = DummyEventsStub
+        s3_credentials_pb2_grpc.S3CredentialsServiceStub = DummyS3CredentialsStub
+        s3_credentials_pb2.IssueCredentialsRequest = MagicMock(return_value=object())
 
         sys.modules["altastata.grpc"] = grpc_pkg
         sys.modules["altastata.grpc.v1"] = pkg
@@ -69,12 +78,30 @@ class GrpcClientTests(unittest.TestCase):
         sys.modules["altastata.grpc.v1.attributes_pb2"] = attributes_pb2
         sys.modules["altastata.grpc.v1.fileops_pb2"] = fileops_pb2
         sys.modules["altastata.grpc.v1.events_pb2"] = events_pb2
+        sys.modules["altastata.grpc.v1.s3_credentials_pb2"] = s3_credentials_pb2
         sys.modules["altastata.grpc.v1.auth_pb2_grpc"] = auth_pb2_grpc
         sys.modules["altastata.grpc.v1.users_pb2_grpc"] = users_pb2_grpc
         sys.modules["altastata.grpc.v1.sharing_pb2_grpc"] = sharing_pb2_grpc
         sys.modules["altastata.grpc.v1.attributes_pb2_grpc"] = attributes_pb2_grpc
         sys.modules["altastata.grpc.v1.fileops_pb2_grpc"] = fileops_pb2_grpc
         sys.modules["altastata.grpc.v1.events_pb2_grpc"] = events_pb2_grpc
+        sys.modules["altastata.grpc.v1.s3_credentials_pb2_grpc"] = s3_credentials_pb2_grpc
+
+        # Relative imports also resolve attributes on the package module.
+        pkg.auth_pb2 = auth_pb2
+        pkg.users_pb2 = users_pb2
+        pkg.sharing_pb2 = sharing_pb2
+        pkg.attributes_pb2 = attributes_pb2
+        pkg.fileops_pb2 = fileops_pb2
+        pkg.events_pb2 = events_pb2
+        pkg.s3_credentials_pb2 = s3_credentials_pb2
+        pkg.auth_pb2_grpc = auth_pb2_grpc
+        pkg.users_pb2_grpc = users_pb2_grpc
+        pkg.sharing_pb2_grpc = sharing_pb2_grpc
+        pkg.attributes_pb2_grpc = attributes_pb2_grpc
+        pkg.fileops_pb2_grpc = fileops_pb2_grpc
+        pkg.events_pb2_grpc = events_pb2_grpc
+        pkg.s3_credentials_pb2_grpc = s3_credentials_pb2_grpc
 
     def tearDown(self):
         for name in list(sys.modules.keys()):
@@ -240,6 +267,7 @@ class GrpcClientTests(unittest.TestCase):
         auth_pb2.LoginV2Request = MagicMock(side_effect=lambda **kw: MagicMock(**kw))
         auth_pb2.LoginV2Upload = MagicMock(side_effect=lambda **kw: MagicMock(**kw))
         sys.modules["altastata.grpc.v1.auth_pb2"] = auth_pb2
+        sys.modules["altastata.grpc.v1"].auth_pb2 = auth_pb2
         sys.modules["altastata.grpc.v1.auth_pb2_grpc"].AuthServiceStub = MagicMock(
             return_value=auth_stub_mock,
         )
@@ -267,6 +295,7 @@ class GrpcClientTests(unittest.TestCase):
         auth_pb2.LoginV2Request = MagicMock(side_effect=lambda **kw: MagicMock(**kw))
         auth_pb2.LoginV2Upload = MagicMock(side_effect=lambda **kw: MagicMock(**kw))
         sys.modules["altastata.grpc.v1.auth_pb2"] = auth_pb2
+        sys.modules["altastata.grpc.v1"].auth_pb2 = auth_pb2
         sys.modules["altastata.grpc.v1.auth_pb2_grpc"].AuthServiceStub = MagicMock(
             return_value=auth_stub_mock,
         )

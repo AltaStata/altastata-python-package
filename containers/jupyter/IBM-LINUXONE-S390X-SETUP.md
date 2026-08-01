@@ -411,64 +411,48 @@ curl http://localhost:9876/status
 curl http://169.63.190.94:9876/status
 ```
 
-Expected response:
+Expected response (shape may vary by build):
 ```json
-{"status": "running", "message": "S3 Gateway is running. Set password via PUT /setPassword if needed."}
+{"status": "running"}
 ```
 
 ### Step 5: Configure User for Production Use
 
-To use the S3 Gateway with real credentials (not test mode), you need to set up a user with properties, private key, and password:
+S3 auth uses **gRPC `LoginV2` → `IssueCredentials`**. Legacy HTTP admin PUTs
+(`setUserProperties` / `setPrivateKey` / `setPassword`) were removed from the
+gateway. gRPC and S3 must run in the **same** `altastata-services` process.
 
-**Option A: Using the setup script (Recommended)**
+**Recommended: setup script**
 
 ```bash
-# On the IBM machine (ubuntu@169.63.190.94)
-# First, transfer the setup script to the VM (or clone the repository)
+# On the IBM machine — clone/copy mycloud so scripts are available
+export ALTASTATA_ACCOUNT_DIR=$HOME/.altastata/accounts/amazon.rsa.youruser
+export ALTASTATA_PASSWORD='your-account-password'
+export GATEWAY_URL=http://localhost:9876
+export ALTASTATA_GRPC_PORT=9877
 
-# Source the setup script
 source altastata-s3-gateway/scripts/realuser/setup-user-properties.sh
-
-# Set up a user with properties, private key, and password
-# Replace with your actual user properties and private key
-setup_user_properties http://localhost:9876 your_username your_password
-
-# Or use environment variables
-GATEWAY_URL="http://localhost:9876" \
-USER_NAME="your_username" \
-PASSWORD="your_password" \
-setup_user_properties
+setup_grpc_s3_session
+# exports AWS_ACCESS_KEY_ID / AWS_SECRET_ACCESS_KEY for boto3 / aws CLI
 ```
 
-**Option B: Manual setup using curl**
+**Python equivalent (same machine as the gateway):**
 
-```bash
-# Step 1: Set user properties
-curl -X PUT "http://localhost:9876/setUserProperties/your_username" \
-  -H "Content-Type: text/plain" \
-  -d "#your_account properties
-myuser=youruser
-accounttype=your-account-type
-..."
+```python
+from altastata import AltaStataFunctions
 
-# Step 2: Set private key
-curl -X PUT "http://localhost:9876/setPrivateKey/your_username" \
-  -H "Content-Type: text/plain" \
-  -d "-----BEGIN RSA PRIVATE KEY-----
-...
------END RSA PRIVATE KEY-----"
-
-# Step 3: Set password (this generates S3 credentials)
-curl -X PUT "http://localhost:9876/setPassword/your_username?regenerateKeys=true" \
-  -H "Content-Type: text/plain" \
-  -d "your_password"
+alt = AltaStataFunctions.from_account_dir(
+    "/path/to/account",
+    password="your-account-password",
+)
+creds = alt.s3_credentials()          # IssueCredentials over gRPC
+# or: alt.install_aws_env()
 ```
 
 **Important Notes:**
-- After any container restart, you must run `set_password` again to re-initialize the runtime services
-- The setup script is located at `altastata-s3-gateway/scripts/realuser/setup-user-properties.sh`
-- For production use, replace the example credentials with your actual user properties and private key
-- The S3 Gateway will generate access keys and secret keys after setting the password
+- After a container restart, run `setup_grpc_s3_session` (or `s3_credentials()`) again — issued keys are per session
+- Script: `altastata-s3-gateway/scripts/realuser/setup-user-properties.sh`
+- Do **not** call `PUT /setPassword?...` — those routes no longer exist
 
 ## Filestash Installation (Building from Source)
 

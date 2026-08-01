@@ -28,6 +28,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Dict, List, Optional, Sequence, Union
 
+import os
+
 import grpc
 
 from .grpc_client import (
@@ -51,12 +53,20 @@ def _write_account_files(
     if out.exists() and not out.is_dir():
         raise NotADirectoryError(f"Not a directory: {out}")
     out.mkdir(parents=True, exist_ok=exist_ok)
+    try:
+        out.chmod(0o700)
+    except OSError:
+        pass
     for name, data in account_files.items():
         # Basenames only — reject path traversal from a hostile gateway.
         basename = Path(name).name
         if not basename or basename != name:
             raise ValueError(f"Refusing to write unsafe account file name: {name!r}")
-        (out / basename).write_bytes(data)
+        target = out / basename
+        # Restrictive mode for private key material on multi-user hosts.
+        fd = os.open(str(target), os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
+        with os.fdopen(fd, "wb") as fh:
+            fh.write(data)
     return out
 
 

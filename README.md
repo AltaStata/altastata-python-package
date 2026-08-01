@@ -2,13 +2,17 @@
 
 Sovereign encrypted data fabric for any cloud Python SDK — with support for **fsspec**, **PyTorch**, **TensorFlow**, **LangChain**, **AI Agents**, **Databricks**, **Snowflake** (via S3), **boto3/S3 CLI**, **gRPC**, and a bundled **Web UI User Console**.
 
-**Package version `1.0.6.9`** is built on the Java/BSL runtime from
+**Package version `1.0.6.10`** is built on the Java/BSL runtime from
 [sovereign-data-fabric `v2026.07.25`](https://github.com/AltaStata/sovereign-data-fabric/releases/tag/v2026.07.25)
 (bundled `altastata-services` uber jar + MCP).
 
 ```bash
 pip install altastata
 ```
+
+## Python API
+
+SDK reference for `AltaStataFunctions`: **[PYTHON_API.md](https://github.com/AltaStata/altastata-python-package/blob/main/PYTHON_API.md)**
 
 ## What you get
 
@@ -64,7 +68,7 @@ f = AltaStataFunctions.from_account_dir(
     password="",
 )
 
-print(f.list_cloud_versions("Public/", True))
+print(f.list_cloud_files_versions("Public/", True, None, None))
 ```
 
 ### Ports
@@ -220,6 +224,7 @@ Set ALTASTATA_WEB_UI_DIR= (empty) to disable the UI and run gRPC-only.
 
 ## More documentation
 
+- **Python API** (`AltaStataFunctions`): [PYTHON_API.md](https://github.com/AltaStata/altastata-python-package/blob/main/PYTHON_API.md)
 - **Developers** (build wheel, bundle JAR + Console SPA, PyPI): [README-developer.md](https://github.com/AltaStata/altastata-python-package/blob/main/README-developer.md)
 - **Examples**: [examples/](https://github.com/AltaStata/altastata-python-package/tree/main/examples/)
 

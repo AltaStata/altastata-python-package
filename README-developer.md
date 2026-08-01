@@ -1,7 +1,7 @@
 # AltaStata Python Package Developer Guide
 
 > Package version is tracked in `setup.py` (`pip show altastata` to inspect).
-> Wheel **1.0.6.9** bundles the gateway built from sovereign-data-fabric / mycloud **`2026.07.25`**
+> Wheel **1.0.6.11** bundles the gateway built from sovereign-data-fabric / mycloud **`2026.07.25`**
 > ([release](https://github.com/AltaStata/sovereign-data-fabric/releases/tag/v2026.07.25)).
 
 ## Prerequisites

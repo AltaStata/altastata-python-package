@@ -19,11 +19,17 @@ def main() -> int:
         print("No proto files found.", file=sys.stderr)
         return 1
 
+    # Well-known types (e.g. google/protobuf/timestamp.proto for s3_credentials).
+    import grpc_tools
+
+    grpc_include = str(Path(grpc_tools.__file__).resolve().parent / "_proto")
+
     cmd = [
         sys.executable,
         "-m",
         "grpc_tools.protoc",
         f"-I{proto_root}",
+        f"-I{grpc_include}",
         f"--python_out={out_root}",
         f"--grpc_python_out={out_root}",
     ] + [str(p) for p in proto_files]

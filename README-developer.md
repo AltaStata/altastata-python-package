@@ -114,17 +114,20 @@ to the **same** `AltaStataFileSystem` instance the Python API uses, via the
 shared `AccountRegistry`. See
 `mycloud/ALTASTATA_SERVICES_UBER_DESIGN.md` §3.1 for the wiring.
 
-`AltaStataFunctions` exposes three helpers that drive the S3 admin bootstrap
-PUTs (`setUserProperties` → `setPrivateKey` → `setPassword`) and surface the
-generated access/secret pair:
+`AltaStataFunctions` exposes three helpers that call gRPC
+`S3CredentialsService.IssueCredentials` on the logged-in Bearer session
+(legacy HTTP admin PUTs with `?password=` were removed from the gateway)
+and surface the issued access/secret pair:
 
 ```python
 from altastata import AltaStataFunctions
 
-alt = AltaStataFunctions.from_account_dir("/home/jovyan/.altastata/accounts/amazon.rsa.bob123")
-alt.set_password("your-account-password")
+alt = AltaStataFunctions.from_account_dir(
+    "/home/jovyan/.altastata/accounts/amazon.rsa.bob123",
+    password="your-account-password",
+)
 
-# One-liner — bootstrap on first call, dict-lookup on subsequent calls.
+# One-liner — IssueCredentials on first call, dict-lookup on subsequent calls.
 s3 = alt.boto3_s3()
 print(s3.list_buckets())
 
@@ -141,8 +144,8 @@ alt.install_aws_env()
 ```
 
 `boto3` is not in `install_requires` — pip-install it separately when you
-want the convenience wrapper (`pip install boto3`). The other two helpers
-(`s3_credentials`, `install_aws_env`) only use stdlib.
+want the convenience wrapper (`pip install boto3`). `s3_credentials` /
+`install_aws_env` use the authenticated gRPC client (no password-in-URL).
 
 ## Local Development
 

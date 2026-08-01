@@ -1,166 +1,143 @@
 """S3 / boto3 bridge for the bundled AltaStata S3 gateway (port 9876).
 
-Extracted from :mod:`altastata.altastata_functions` so the file-ops facade
-stays focused on gRPC while S3 admin bootstrap lives here.
+Credentials are issued over the authenticated gRPC session
+(``S3CredentialsService.IssueCredentials``). Legacy HTTP admin PUTs
+(``/setUserProperties``, ``/setPrivateKey``, ``/setPassword`` with
+``?password=``) were removed from the Java gateway and are no longer used.
 """
 
 from __future__ import annotations
 
-import json
 import os
-import urllib.error
+import re
 import urllib.parse
-import urllib.request
-from typing import Any, Dict, Optional, Tuple
+import warnings
+from typing import Dict, Optional, Tuple
+
+_LOOPBACK_HOSTS = frozenset({"127.0.0.1", "localhost", "::1", "0:0:0:0:0:0:0:1"})
+_SAFE_MYUSER = re.compile(r"^[A-Za-z0-9._-]+$")
 
 
 def _parse_user_name_from_properties(text: str) -> str:
     """Extract the ``myuser`` value from a user.properties text blob.
 
     Mirrors what {@code com.altastata.utils.Account} does on the Java side
-    so the boto3 helper can derive the same user name that
-    ``AccountRegistry.getOrCreate`` / ``getOrCreateFromDir`` would have
+    so helpers can derive the same user name that account load would have
     chosen.
 
     Raises:
-        ValueError: if no ``myuser=...`` line is present.
+        ValueError: if no ``myuser=...`` line is present or the value is unsafe.
     """
     for raw in text.splitlines():
         line = raw.split("#", 1)[0].strip()
         if line.startswith("myuser="):
             value = line.split("=", 1)[1].strip()
             if value:
+                if not _SAFE_MYUSER.fullmatch(value):
+                    raise ValueError(
+                        f"Unsafe myuser value {value!r}: only [A-Za-z0-9._-] allowed"
+                    )
                 return value
     raise ValueError("user_properties does not contain a non-empty 'myuser=' line")
 
 
-def _http_put_text(url: str, body: str, timeout_s: float = 30.0) -> Tuple[int, bytes]:
-    """Issue a ``PUT`` with a plain-text body using stdlib urllib.
+def _is_loopback_host(host: str) -> bool:
+    return (host or "").strip().lower() in _LOOPBACK_HOSTS
 
-    Used by the S3 boto3 helper to drive the three admin bootstrap PUTs
-    (setUserProperties / setPrivateKey / setPassword). Kept on stdlib so we
-    don't have to pull ``requests`` into install_requires just for this one
-    code path.
 
-    Returns:
-        (status_code, body_bytes). Caller decides how to handle non-2xx.
-    """
-    req = urllib.request.Request(
-        url=url,
-        data=body.encode("utf-8"),
-        method="PUT",
-        headers={"Content-Type": "text/plain"},
+def _assert_s3_endpoint_allowed(endpoint: str) -> None:
+    """Refuse cleartext S3 admin/data URLs aimed at non-loopback hosts."""
+    parsed = urllib.parse.urlparse(endpoint)
+    host = (parsed.hostname or "").lower()
+    scheme = (parsed.scheme or "").lower()
+    if scheme == "https":
+        return
+    if scheme == "http" and _is_loopback_host(host):
+        return
+    allow = os.environ.get("ALTASTATA_ALLOW_INSECURE_REMOTE", "").strip().lower() in {
+        "1",
+        "true",
+        "yes",
+    }
+    if allow:
+        return
+    raise ValueError(
+        f"Refusing cleartext S3 endpoint {endpoint!r} for non-loopback host. "
+        "Use https://, a loopback URL, or set ALTASTATA_ALLOW_INSECURE_REMOTE=1."
     )
-    try:
-        with urllib.request.urlopen(req, timeout=timeout_s) as resp:
-            return resp.status, resp.read()
-    except urllib.error.HTTPError as e:
-        return e.code, e.read() or b""
 
 
 class S3BridgeMixin:
     """Mixin providing :meth:`s3_credentials` / :meth:`boto3_s3` / :meth:`install_aws_env`.
 
-    Expects the host class to populate (via constructors / :meth:`set_password`):
+    Expects the host class to populate:
 
-    - ``_account_dir_path``, ``_user_properties``, ``_private_key_encrypted``
-    - ``_cached_password``, ``_s3_credentials_cache``
-    - ``grpc_client`` (optional; used to derive the default S3 endpoint host)
+    - ``grpc_client`` (required for credential issuance)
+    - ``_s3_credentials_cache``
+    - optionally ``_cached_password`` (kept for API compatibility; unused for issue)
     """
 
     def s3_credentials(
         self,
         *,
-        password: Optional[str] = None,
         endpoint: Optional[str] = None,
         region: str = "us-east-1",
+        label: str = "python-sdk",
+        password: Optional[str] = None,
     ) -> Dict[str, str]:
-        """Bootstrap and return boto3-ready S3 credentials.
+        """Issue and return boto3-ready S3 credentials via gRPC.
 
-        Drives the three admin PUTs against the S3 gateway running inside the
-        same ``altastata-services`` JVM that backs this Python session
-        (setUserProperties → setPrivateKey → setPassword), then returns the
-        access/secret pair the gateway generated.
+        Calls ``S3CredentialsService.IssueCredentials`` on the already
+        authenticated session (``LoginV2``), then returns the access/secret
+        pair for the co-hosted S3 gateway on port 9876.
 
         Args:
-            password: Plaintext account password used to unlock the encrypted
-                private key on the gateway side. Falls back to the value
-                cached by :meth:`set_password` (or the ``password`` kwarg
-                passed to :meth:`from_account_dir` / :meth:`from_credentials`).
-                Required for non-HSM users; HSM/HPCS users can pass ``""``.
             endpoint: Base URL of the S3 gateway. Defaults to
-                ``http://<grpc-host>:9876`` for remote gRPC endpoints, or
-                ``http://127.0.0.1:9876`` for a local co-hosted gateway.
+                ``http://<grpc-host>:9876`` for loopback gRPC hosts, or
+                ``http://127.0.0.1:9876`` when no gRPC client is set.
             region: AWS region for SigV4. The gateway is region-agnostic but
                 boto3 still demands a value; ``us-east-1`` is the safe default.
+            label: Optional label stored with the issued credential on the
+                gateway (visible via ``ListMyCredentials``).
+            password: Deprecated / ignored. Credentials come from the Bearer
+                session, not an HTTP ``?password=`` bootstrap.
 
         Returns:
             Dict with keys ``endpoint_url``, ``aws_access_key_id``,
             ``aws_secret_access_key``, ``region_name`` — directly usable as
             ``boto3.client('s3', **result)``.
-
-        Caveat:
-            The third PUT (``setPassword``) calls
-            ``AltaStataFileSystem.setPassword(...)`` on the shared instance
-            stored in ``AccountRegistry``. Passing the same password you
-            already used for this session is a no-op; passing a different
-            one mutates the shared instance. The planned unified
-            ``UserAdminRegistry`` (see
-            ``mycloud/ALTASTATA_SERVICES_UBER_DESIGN.md`` §3.1) will close
-            this gap.
         """
+        if password is not None:
+            warnings.warn(
+                "password= is ignored for s3_credentials(); credentials come "
+                "from the authenticated gRPC session (IssueCredentials). "
+                "Remove the argument from your call site.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+
         endpoint = (endpoint or self._resolve_s3_endpoint()).rstrip("/")
+        _assert_s3_endpoint_allowed(endpoint)
 
         cached = self._s3_credentials_cache.get(endpoint)
         if cached is not None and cached.get("region_name") == region:
             return dict(cached)
 
-        pw = password if password is not None else self._cached_password
-        if pw is None:
-            raise ValueError(
-                "s3_credentials() requires a password. Either pass "
-                "password=... explicitly, or call set_password() (or pass "
-                "password=... to from_account_dir / from_credentials) first."
+        grpc_client = getattr(self, "grpc_client", None)
+        if grpc_client is None:
+            raise RuntimeError(
+                "s3_credentials() requires a logged-in gRPC client. "
+                "Construct AltaStataFunctions via from_account_dir / "
+                "from_credentials / from_upload first."
             )
 
-        user_name, user_properties, private_key_encrypted = (
-            self._read_bootstrap_material()
-        )
-
-        def _put(path: str, body: str) -> Dict[str, Any]:
-            status, raw = _http_put_text(f"{endpoint}{path}", body)
-            if status < 200 or status >= 300:
-                raise RuntimeError(
-                    f"S3 admin PUT {path} failed with HTTP {status}: "
-                    f"{raw[:500].decode('utf-8', errors='replace')}"
-                )
-            if not raw:
-                return {}
-            try:
-                return json.loads(raw)
-            except ValueError:
-                return {"_raw": raw.decode("utf-8", errors="replace")}
-
-        # setUserProperties / setPrivateKey are idempotent on the S3 side
-        # ONLY when no UserData exists yet. Once the user has been bootstrapped
-        # in this JVM (this same wheel call, an earlier wheel call, the
-        # standalone S3 daemon, or external admin tooling), the gateway
-        # refuses both PUTs with HTTP 400 unless `?password=<current>` is
-        # supplied so it can validate the caller against the existing private
-        # key (S3Controller.setUserProperties / setPrivateKey). Always send
-        # the password as query — for fresh users it is ignored, for known
-        # users it unblocks re-bootstrap with the same credentials.
-        pw_q = "?password=" + urllib.parse.quote(pw, safe="")
-        _put(f"/setUserProperties/{user_name}{pw_q}", user_properties)
-        _put(f"/setPrivateKey/{user_name}{pw_q}", private_key_encrypted)
-        body = _put(f"/setPassword/{user_name}", pw)
-
-        access_key = body.get("accessKey")
-        secret_key = body.get("secretKey")
+        issued = grpc_client.issue_s3_credentials(label=label)
+        access_key = issued.get("access_key_id")
+        secret_key = issued.get("secret_access_key")
         if not access_key or not secret_key:
             raise RuntimeError(
-                "S3 gateway did not return accessKey/secretKey from "
-                f"setPassword; response was: {body}"
+                "S3CredentialsService.IssueCredentials did not return "
+                f"access_key_id/secret_access_key; response was: {issued}"
             )
 
         creds = {
@@ -201,9 +178,9 @@ class S3BridgeMixin:
     def install_aws_env(
         self,
         *,
-        password: Optional[str] = None,
         endpoint: Optional[str] = None,
         region: str = "us-east-1",
+        password: Optional[str] = None,
     ) -> Dict[str, str]:
         """Bootstrap S3 credentials and export them as ``AWS_*`` env vars.
 
@@ -217,11 +194,21 @@ class S3BridgeMixin:
         - ``AWS_ENDPOINT_URL_S3`` (picked up by boto3 ≥ 1.30 and the
           ``aws`` CLI v2 via ``--endpoint-url`` shorthand)
 
+        ``password`` is deprecated/ignored (same as :meth:`s3_credentials`).
+
         Returns:
             The dict that was applied to ``os.environ`` — handy for
             eval-exporting into a parent shell.
         """
-        creds = self.s3_credentials(password=password, endpoint=endpoint, region=region)
+        if password is not None:
+            warnings.warn(
+                "password= is ignored for install_aws_env(); credentials come "
+                "from the authenticated gRPC session (IssueCredentials). "
+                "Remove the argument from your call site.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+        creds = self.s3_credentials(endpoint=endpoint, region=region)
         aws_env = {
             "AWS_ACCESS_KEY_ID": creds["aws_access_key_id"],
             "AWS_SECRET_ACCESS_KEY": creds["aws_secret_access_key"],
@@ -245,11 +232,8 @@ class S3BridgeMixin:
     def _read_bootstrap_material(self) -> Tuple[str, str, str]:
         """Resolve ``(user_name, user_properties, private_key_encrypted)``.
 
-        For instances built via :meth:`from_account_dir`, reads the
-        ``*user.properties`` file and ``private.key`` from disk on each call
-        so updates to those files take effect on the next bootstrap.
-        For :meth:`from_credentials` instances, returns the strings supplied
-        at construction.
+        Retained for callers that inspect account material. S3 credential
+        issuance no longer depends on these HTTP PUT payloads.
         """
         if self._account_dir_path is not None:
             props_path = None

@@ -116,6 +116,16 @@ def main(argv: Optional[List[str]] = None) -> int:
         help="gRPC port (default: 9877)",
     )
     create.add_argument(
+        "--secure",
+        action="store_true",
+        help="Use TLS for the gRPC channel (required for non-loopback hosts)",
+    )
+    create.add_argument(
+        "--allow-insecure",
+        action="store_true",
+        help="Allow cleartext gRPC to a non-loopback host (lab only)",
+    )
+    create.add_argument(
         "--no-auto-start",
         action="store_true",
         help="Do not auto-start the local gateway if the port is closed",
@@ -152,6 +162,16 @@ def main(argv: Optional[List[str]] = None) -> int:
     )
     change_pw.add_argument("--host", default="127.0.0.1")
     change_pw.add_argument("--port", type=int, default=9877)
+    change_pw.add_argument(
+        "--secure",
+        action="store_true",
+        help="Use TLS for the gRPC channel (required for non-loopback hosts)",
+    )
+    change_pw.add_argument(
+        "--allow-insecure",
+        action="store_true",
+        help="Allow cleartext gRPC to a non-loopback host (lab only)",
+    )
     change_pw.add_argument("--no-auto-start", action="store_true")
 
     types_cmd = account_sub.add_parser(
@@ -160,6 +180,16 @@ def main(argv: Optional[List[str]] = None) -> int:
     )
     types_cmd.add_argument("--host", default="127.0.0.1")
     types_cmd.add_argument("--port", type=int, default=9877)
+    types_cmd.add_argument(
+        "--secure",
+        action="store_true",
+        help="Use TLS for the gRPC channel (required for non-loopback hosts)",
+    )
+    types_cmd.add_argument(
+        "--allow-insecure",
+        action="store_true",
+        help="Allow cleartext gRPC to a non-loopback host (lab only)",
+    )
     types_cmd.add_argument("--no-auto-start", action="store_true")
 
     server = sub.add_parser(
@@ -225,6 +255,15 @@ def main(argv: Optional[List[str]] = None) -> int:
     return 2
 
 
+def _endpoint_from_args(args: argparse.Namespace) -> GrpcEndpoint:
+    return GrpcEndpoint(
+        host=args.host,
+        port=args.port,
+        secure=bool(getattr(args, "secure", False)),
+        allow_insecure_remote=bool(getattr(args, "allow_insecure", False)),
+    )
+
+
 def _cmd_account_create(args: argparse.Namespace) -> int:
     password = _resolve_password(
         args.password,
@@ -232,7 +271,7 @@ def _cmd_account_create(args: argparse.Namespace) -> int:
         required=args.account_type in ("rsa", "pqc"),
         prompt="Account password: ",
     )
-    endpoint = GrpcEndpoint(host=args.host, port=args.port, secure=False)
+    endpoint = _endpoint_from_args(args)
     try:
         result = create_account(
             args.account_type,
@@ -281,7 +320,7 @@ def _cmd_account_change_password(args: argparse.Namespace) -> int:
             print("New passwords do not match", file=sys.stderr)
             return 1
 
-    endpoint = GrpcEndpoint(host=args.host, port=args.port, secure=False)
+    endpoint = _endpoint_from_args(args)
     try:
         result = change_account_password(
             args.account_dir,
@@ -304,7 +343,7 @@ def _cmd_account_change_password(args: argparse.Namespace) -> int:
 
 
 def _cmd_account_types(args: argparse.Namespace) -> int:
-    endpoint = GrpcEndpoint(host=args.host, port=args.port, secure=False)
+    endpoint = _endpoint_from_args(args)
     try:
         with AccountSetupClient.connect(
             endpoint=endpoint,

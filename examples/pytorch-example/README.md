@@ -65,7 +65,12 @@ import torchvision.transforms as transforms
 import torch
 
 # Create a global AltaStataPyTorch instance
-altastata = AltaStataPyTorch(AltaStataFunctions(...))
+altastata = AltaStataPyTorch(
+    AltaStataFunctions.from_account_dir(
+        "~/.altastata/accounts/amazon.rsa.bob123",
+        password="your_password",
+    )
+)
 
 # Create dataset with transforms
 transform = transforms.Compose([

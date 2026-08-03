@@ -22,21 +22,30 @@ f = AltaStataFunctions.from_account_dir(
 )
 
 # Inline Community credentials (*user.properties + private.key)
-f = AltaStataFunctions.from_credentials(user_properties, private_key, password="…")
+f = AltaStataFunctions.from_credentials(
+    user_properties,
+    private_key,
+    password="your_password",
+)
 
-# Enterprise / eval: properties + map of files (private.key, license.jwt, org-ca.pem, …)
-f = AltaStataFunctions.from_upload(user_properties, account_files, password="…")
+# Enterprise / eval: properties + map of files
+# (e.g. private.key, license.jwt, org-ca.pem)
+f = AltaStataFunctions.from_upload(
+    user_properties,
+    account_files,
+    password="your_password",
+)
 ```
 
 | Factory | When |
 |---------|------|
 | `from_account_dir(path, *, password, user_name=None, grpc_endpoint=None, grpc_auto_start_server=True)` | Normal local account folder |
-| `from_credentials(user_properties, private_key_encrypted, …)` | Community shorthand → `from_upload` with `private.key` only |
-| `from_upload(user_properties, account_files, …)` | Full LoginV2 upload map |
+| `from_credentials(user_properties, private_key_encrypted, *, password, user_name=None, grpc_endpoint=None, grpc_auto_start_server=True)` | Community shorthand → `from_upload` with `private.key` only |
+| `from_upload(user_properties, account_files, *, password, user_name=None, grpc_endpoint=None, grpc_auto_start_server=True)` | Full LoginV2 upload map |
 
 Do not call `AltaStataFunctions()` directly.
 
-Optional: `grpc_endpoint=GrpcEndpoint(host=…, port=9877)` to point at an already running gateway; set `grpc_auto_start_server=False` if you manage the process yourself.
+Optional: `grpc_endpoint=GrpcEndpoint(host="127.0.0.1", port=9877, secure=False)` to point at an already running gateway; set `grpc_auto_start_server=False` if you manage the process yourself.
 
 ---
 
@@ -86,7 +95,7 @@ def on_event(name, data):
     print(name, data)  # e.g. SHARE, DELETE
 
 listener = f.add_event_listener(on_event)
-# …
+# later, when done listening:
 f.remove_event_listener(listener)
 # or f.remove_all_event_listeners()
 ```
@@ -101,7 +110,7 @@ Same instance; uses the S3-compatible API on port **9876** (auto-started with th
 |--------|------|
 | `s3_credentials(*, endpoint=None, region="us-east-1", label="python-sdk")` | Dict of boto3-ready credentials via gRPC `IssueCredentials` (do not pass `password=`; deprecated) |
 | `boto3_s3(**overrides)` | `boto3` S3 client (`pip install boto3`) |
-| `install_aws_env(…)` | Export `AWS_*` for shell / Jupyter `!aws` |
+| `install_aws_env(*, endpoint=None, region="us-east-1")` | Export `AWS_*` for shell / Jupyter `!aws` |
 
 ```python
 s3 = f.boto3_s3()

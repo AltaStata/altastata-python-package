@@ -95,8 +95,6 @@ altastata account create --type rsa --password 'secret' \
 altastata account create --type pqc --password 'secret' \
   --out ~/.altastata/accounts/amazon.pqc.bob --name amazon.pqc.bob
 
-altastata account key-types
-
 # Optional — change private-key password later (RSA/PQC; no login)
 altastata account change-password \
   --account-dir ~/.altastata/accounts/amazon.rsa.alice

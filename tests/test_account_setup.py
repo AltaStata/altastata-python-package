@@ -169,7 +169,7 @@ class AccountSetupTests(unittest.TestCase):
         self.assertEqual(0, code)
         self.assertIn("account create", text)
         self.assertIn("account change-password", text)
-        self.assertIn("account key-types", text)
+        self.assertNotIn("key-types", text)
         self.assertIn("grpc-server", text)
         self.assertIn("mcp", text)
 

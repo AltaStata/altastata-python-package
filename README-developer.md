@@ -1,7 +1,7 @@
 # AltaStata Python Package Developer Guide
 
 > Package version is tracked in `setup.py` (`pip show altastata` to inspect).
-> Wheel **1.0.6.12** bundles the gateway built from sovereign-data-fabric / mycloud **`2026.07.25`**
+> Wheel **1.0.6.13** bundles the gateway built from sovereign-data-fabric / mycloud **`2026.07.25`**
 > ([release](https://github.com/AltaStata/sovereign-data-fabric/releases/tag/v2026.07.25)).
 
 ## Prerequisites
@@ -80,7 +80,7 @@ the gRPC path. See `AltaStata/sovereign-data-fabric (altastata-grpc)/CONSOLE_ACC
 ### Account setup CLI / SDK (no Desktop UI)
 
 CLI: `altastata help`, `altastata account create`, `altastata account change-password`,
-`altastata account types`, `altastata grpc-server`, `altastata mcp`.
+`altastata account key-types`, `altastata grpc-server`, `altastata mcp`.
 SDK: `create_account`, `change_account_password`.
 
 See **[USER_SETUP_GUIDE.md](https://github.com/AltaStata/altastata-python-package/blob/main/USER_SETUP_GUIDE.md)**. When `account_setup.proto`

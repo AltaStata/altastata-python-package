@@ -172,8 +172,14 @@ class AccountSetupClient:
     def __exit__(self, exc_type, exc, tb) -> None:
         self.close()
 
-    def get_supported_account_types(self, *, timeout_s: float = 30.0) -> List[str]:
-        """Return supported types as lower-case names: ``rsa``, ``pqc``, ``hpcs``."""
+    def list_generatable_key_types(self, *, timeout_s: float = 30.0) -> List[str]:
+        """Key types that ``GenerateKeys`` / ``account create`` can generate.
+
+        Returns lower-case names: ``rsa``, ``pqc``, ``hpcs``.
+        Does not include Admin-provisioned modes such as cloud HSM
+        (``metadata-encryption=HSM``).
+        """
+        # Wire RPC name is legacy ("Supported"); semantics are generatable keys.
         resp = self._stub.GetSupportedAccountTypes(
             self._pb2.GetSupportedAccountTypesRequest(),
             timeout=timeout_s,

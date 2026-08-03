@@ -7,7 +7,7 @@ AltaStata command-line interface.
     altastata account create --type rsa --password 'secret' --out ~/.altastata/accounts/amazon.rsa.alice
     altastata account create --type pqc --password 'secret' --out ~/.altastata/accounts/amazon.pqc.bob --name amazon.pqc.bob
     altastata account change-password --account-dir ~/.altastata/accounts/amazon.rsa.alice
-    altastata account types
+    altastata account key-types
     altastata grpc-server
     altastata mcp
 """
@@ -34,7 +34,7 @@ Commands:
   account create       Generate RSA/PQC/HPCS account keys (no Desktop UI)
   account change-password
                        Re-encrypt private keys under a new password (RSA/PQC)
-  account types        List account types supported by the local gateway
+  account key-types    List key types that can be generated (rsa/pqc/hpcs)
   grpc-server          Start the bundled gRPC / Console gateway (:9877)
   mcp                  Run the bundled services jar as an MCP stdio server
 
@@ -45,7 +45,7 @@ Examples:
   altastata account change-password \\
     --account-dir ~/.altastata/accounts/amazon.rsa.alice
 
-  altastata account types
+  altastata account key-types
   altastata grpc-server
   altastata mcp --account-dir ~/.altastata/accounts/amazon.rsa.alice
 
@@ -174,23 +174,26 @@ def main(argv: Optional[List[str]] = None) -> int:
     )
     change_pw.add_argument("--no-auto-start", action="store_true")
 
-    types_cmd = account_sub.add_parser(
-        "types",
-        help="List account types supported by the gateway",
+    key_types_cmd = account_sub.add_parser(
+        "key-types",
+        help=(
+            "List key types that can be generated via account create "
+            "(rsa/pqc/hpcs; not cloud-HSM accounts provisioned by Admin)"
+        ),
     )
-    types_cmd.add_argument("--host", default="127.0.0.1")
-    types_cmd.add_argument("--port", type=int, default=9877)
-    types_cmd.add_argument(
+    key_types_cmd.add_argument("--host", default="127.0.0.1")
+    key_types_cmd.add_argument("--port", type=int, default=9877)
+    key_types_cmd.add_argument(
         "--secure",
         action="store_true",
         help="Use TLS for the gRPC channel (required for non-loopback hosts)",
     )
-    types_cmd.add_argument(
+    key_types_cmd.add_argument(
         "--allow-insecure",
         action="store_true",
         help="Allow cleartext gRPC to a non-loopback host (lab only)",
     )
-    types_cmd.add_argument("--no-auto-start", action="store_true")
+    key_types_cmd.add_argument("--no-auto-start", action="store_true")
 
     server = sub.add_parser(
         "grpc-server",
@@ -233,8 +236,8 @@ def main(argv: Optional[List[str]] = None) -> int:
             return _cmd_account_create(args)
         if args.account_command == "change-password":
             return _cmd_account_change_password(args)
-        if args.account_command == "types":
-            return _cmd_account_types(args)
+        if args.account_command == "key-types":
+            return _cmd_account_key_types(args)
     if args.command == "grpc-server":
         from .grpc_server import main as grpc_server_main
 
@@ -342,18 +345,28 @@ def _cmd_account_change_password(args: argparse.Namespace) -> int:
     return 0
 
 
-def _cmd_account_types(args: argparse.Namespace) -> int:
+def _cmd_account_key_types(args: argparse.Namespace) -> int:
     endpoint = _endpoint_from_args(args)
     try:
         with AccountSetupClient.connect(
             endpoint=endpoint,
             auto_start_server=not args.no_auto_start,
         ) as client:
-            types = client.get_supported_account_types()
+            key_types = client.list_generatable_key_types()
     except Exception as exc:
-        print(f"account types failed: {exc}", file=sys.stderr)
+        print(f"account key-types failed: {exc}", file=sys.stderr)
         return 1
-    for t in types:
+    # Keep stdout machine-readable (one type per line); explain on stderr.
+    print(
+        "Key types that can be generated with: "
+        "altastata account create --type <name>",
+        file=sys.stderr,
+    )
+    print(
+        "(Cloud HSM accounts are provisioned by Admin, not listed here.)",
+        file=sys.stderr,
+    )
+    for t in key_types:
         print(t)
     return 0
 

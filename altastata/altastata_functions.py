@@ -350,10 +350,35 @@ class AltaStataFunctions(S3BridgeMixin):
             trust_cached_size=trust_cached_size,
         )
 
-    def get_java_input_stream(self, cloud_file_path, snapshot_time, start_position, how_many_chunks_in_parallel):
-        """Open a stream iterator for the given cloud file."""
-        return self.grpc_client.get_java_input_stream(
-            cloud_file_path, snapshot_time, start_position, how_many_chunks_in_parallel,
+    def get_input_stream(
+        self,
+        cloud_file_path,
+        snapshot_time=None,
+        start_position=0,
+        parallel_chunks=4,
+        chunk_size=8 * 1024 * 1024,
+        trust_cached_size=False,
+    ):
+        """Yield file content as ``bytes`` chunks (no full in-memory buffer).
+
+        Args:
+            cloud_file_path: Cloud file path (may include version suffix).
+            snapshot_time: Version timestamp, or None for latest.
+            start_position: Byte offset to start reading from.
+            parallel_chunks: Number of chunks to download concurrently.
+            chunk_size: Target size of each streamed chunk in bytes.
+            trust_cached_size: When True, skip a fresh size GET (immutable files).
+
+        Yields:
+            bytes: Successive chunks of the file.
+        """
+        return self.grpc_client.read_stream(
+            cloud_file_path=cloud_file_path,
+            snapshot_time=snapshot_time,
+            start_position=start_position,
+            parallel_chunks=parallel_chunks,
+            chunk_size=chunk_size,
+            trust_cached_size=trust_cached_size,
         )
 
     def get_file_attribute(self, cloud_file_path, snapshot_time, name):

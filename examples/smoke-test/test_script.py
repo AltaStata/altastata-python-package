@@ -56,20 +56,15 @@ for java_array in iterator:
 buffer = altastata_functions.get_buffer('StoreTest/meeting_saved_chat.txt', file_create_time_id, 0, 4, 100)
 print("buffer: " + buffer.decode('utf-8'))
 
-# Read File as a stream
-input_stream = altastata_functions.get_java_input_stream('StoreTest/meeting_saved_chat.txt', file_create_time_id, 0, 100)
-
+# Read File as a stream (chunk iterator — no full in-memory buffer)
 print("Input Stream: ")
-
-# Read data using Java readBufferFromInputStream directly
-chunk_size = 32
-while True:
-    data = altastata_functions.altastata_file_system.readBufferFromInputStream(input_stream, chunk_size)
-    if data is None or len(data) == 0:
-        break
-    print(bytes(data).decode('utf-8'), end="")
-
-input_stream.close()
+for chunk in altastata_functions.get_input_stream(
+    "StoreTest/meeting_saved_chat.txt",
+    snapshot_time=file_create_time_id,
+    start_position=0,
+    parallel_chunks=4,
+):
+    print(chunk.decode("utf-8"), end="")
 
 result = altastata_functions.get_file_attribute('StoreTest/meeting_saved_chat.txt', file_create_time_id, "readers")
 print(f"readers: {result}")

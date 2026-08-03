@@ -2,7 +2,7 @@
 
 Sovereign encrypted data fabric for any cloud Python SDK — with support for **fsspec**, **PyTorch**, **TensorFlow**, **LangChain**, **AI Agents**, **Databricks**, **Snowflake** (via S3), **boto3/S3 CLI**, **gRPC**, and a bundled **Web UI User Console**.
 
-**Package version `1.0.6.11`** is built on the Java/BSL runtime from
+**Package version `1.0.6.12`** is built on the Java/BSL runtime from
 [sovereign-data-fabric `v2026.07.25`](https://github.com/AltaStata/sovereign-data-fabric/releases/tag/v2026.07.25)
 (bundled `altastata-services` uber jar + MCP).
 
@@ -10,13 +10,16 @@ Sovereign encrypted data fabric for any cloud Python SDK — with support for **
 pip install altastata
 ```
 
+## Supported clouds
+
+Works on **AWS**, **Azure**, **GCP**, **IBM**, **Fusion**, **MinIO**, **POSIX** (local / NFS-style paths), and **hybrid** setups — any S3-compatible or cloud object store the account is configured for.
+
 ## Python API
 
 SDK reference for `AltaStataFunctions`: **[PYTHON_API.md](https://github.com/AltaStata/altastata-python-package/blob/main/PYTHON_API.md)**
 
 ## What you get
 
-- **Sovereign storage:** Encrypted files in S3, Azure, IBM COS, and other clouds (`AltaStataFunctions`)
 - **Pythonic APIs:** Standard Python file I/O via fsspec (`create_filesystem`)
 - **PyTorch:** Train and load datasets directly from encrypted cloud paths (`AltaStataPyTorchDataset`)
 - **TensorFlow:** Same for TensorFlow / `tf.data` (`AltaStataTensorFlowDataset`)

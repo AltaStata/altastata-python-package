@@ -42,7 +42,7 @@ Cloud Storage
 │  •     ≤8 MB: single Base64 call │
 │  •     8–64 MB: streaming chunks │
 │  •     >64 MB: temp file         │
-│  •   get_java_input_stream()     │
+│  •   get_input_stream()     │
 │  • PyTorch / TensorFlow datasets │
 │  •   LRU cache (_cache_put)      │
 │  • fsspec filesystem             │
@@ -178,7 +178,7 @@ if (snapshotTime == null) {
     snapshotTime = System.currentTimeMillis();
 }
 ```
-Python-side methods (`get_buffer`, `get_file_attribute`, `get_java_input_stream`) also explicitly convert `None` to `int(time.time() * 1000)` before calling Java. This belt-and-suspenders approach prevents `NullPointerException` when the Scala `AltaStataChunkedInputStream` unboxes `Long` to `long`.
+Python-side methods (`get_buffer`, `get_file_attribute`, `get_input_stream`) also explicitly convert `None` to `int(time.time() * 1000)` before calling Java. This belt-and-suspenders approach prevents `NullPointerException` when the Scala `AltaStataChunkedInputStream` unboxes `Long` to `long`.
 
 #### Background prefetch in `SecureCloudStream.scala` — removed
 
@@ -246,7 +246,7 @@ def _ensure_content(self):
         self._content = af.get_buffer(self.path, None, 0, 4, size)
 ```
 
-For callers that need true streaming without loading everything into memory, `get_java_input_stream` is available as a low-level API.
+For callers that need true streaming without loading everything into memory, `get_input_stream` is available as a low-level API.
 
 ## Performance Impact
 

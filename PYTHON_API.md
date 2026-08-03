@@ -47,7 +47,7 @@ Optional: `grpc_endpoint=GrpcEndpoint(host=…, port=9877)` to point at an alrea
 | `create_file(cloud_file_path, buffer=None)` | Create new cloud file version; optional initial `bytes` |
 | `append_buffer_to_file(cloud_file_path, buffer, snapshot_time=None)` | Append bytes to a version |
 | `get_buffer(path, snapshot_time, start_position, how_many_chunks_in_parallel, size, trust_cached_size=False)` | Read file as `bytes` |
-| `get_java_input_stream(…)` | Stream iterator for large reads |
+| `get_input_stream(path, snapshot_time=None, start_position=0, parallel_chunks=4, chunk_size=8MiB, trust_cached_size=False)` | Yield `bytes` chunks (no full in-memory buffer) |
 | `get_file_attribute(path, snapshot_time, name)` | Read a file attribute |
 | `copy_file(from_path, to_path)` | Copy cloud → cloud |
 | `store(local_paths, local_fs_prefix, cloud_path_prefix, wait_until_done)` | Upload local files/dirs |
@@ -62,6 +62,10 @@ f.create_file("Public/hello.txt", b"hi")
 # size must match the bytes you intend to read (or the known object size)
 data = f.get_buffer("Public/hello.txt", None, 0, 4, 2)
 versions = f.list_cloud_files_versions("Public/", True, None, None)
+
+# Large files: stream chunks without buffering the whole object
+for chunk in f.get_input_stream("Public/hello.txt"):
+    process(chunk)
 ```
 
 ---

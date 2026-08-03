@@ -196,7 +196,7 @@ class AltaStataFile(io.IOBase):
     Subsequent reads and seeks operate on the in-memory buffer.
 
     For true chunk-by-chunk streaming without full buffering, use
-    ``AltaStataFunctions.get_java_input_stream`` directly.
+    ``AltaStataFunctions.get_input_stream`` directly.
     """
 
     def __init__(self, filesystem: AltaStataFileSystem, path: str, mode: str):

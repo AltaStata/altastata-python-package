@@ -798,18 +798,23 @@ class AltaStataGrpcClient:
         except grpc.RpcError:
             return None
 
-    def get_java_input_stream(
+    def get_input_stream(
         self,
         cloud_file_path: str,
-        snapshot_time: Optional[int],
-        start_position: int,
-        how_many_chunks_in_parallel: int,
+        snapshot_time: Optional[int] = None,
+        start_position: int = 0,
+        parallel_chunks: int = 4,
+        chunk_size: int = 8 * 1024 * 1024,
+        trust_cached_size: bool = False,
     ):
+        """Yield file content as ``bytes`` chunks. Alias of :meth:`read_stream`."""
         return self.read_stream(
             cloud_file_path=cloud_file_path,
             snapshot_time=snapshot_time,
             start_position=start_position,
-            parallel_chunks=how_many_chunks_in_parallel,
+            parallel_chunks=parallel_chunks,
+            chunk_size=chunk_size,
+            trust_cached_size=trust_cached_size,
         )
 
     # Watch is the sole event RPC; FileSharedEvent / FileUnsharedEvent

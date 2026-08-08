@@ -3,8 +3,8 @@
 > Package version is tracked in `setup.py` (`pip show altastata` to inspect).
 > Wheel **1.0.6.16** bundles the gateway built from mycloud with Windows UTF-8 metadata
 > signature fixes (`-Dfile.encoding=UTF-8` on auto-start + core verify/sign charset alignment).
-> Base lineage: sovereign-data-fabric / mycloud **`2026.07.25`**
-> ([release](https://github.com/AltaStata/sovereign-data-fabric/releases/tag/v2026.07.25)).
+> Base lineage: sovereign-data-fabric / mycloud **`2026.08.08`**
+> ([release](https://github.com/AltaStata/sovereign-data-fabric/releases/tag/v2026.08.08)).
 
 ## Prerequisites
 

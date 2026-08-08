@@ -367,6 +367,7 @@ class GrpcClientTests(unittest.TestCase):
         mock_popen.assert_called_once_with(
             [
                 "java",
+                "-Dfile.encoding=UTF-8",
                 "-Xms1g",
                 "-Xmx4g",
                 "-XX:ThreadStackSize=256k",
@@ -500,6 +501,7 @@ class GrpcClientTests(unittest.TestCase):
         mock_popen.assert_called_once_with(
             [
                 "java",
+                "-Dfile.encoding=UTF-8",
                 "-cp",
                 "/tmp/altastata-services-1.0.0-uber.jar",
                 "com.altastata.services.AltaStataServicesApplication",

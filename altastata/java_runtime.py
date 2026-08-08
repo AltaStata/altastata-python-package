@@ -22,6 +22,9 @@ DEFAULT_JAVA_MEMORY_OPTS = [
     "-XX:ThreadStackSize=256k",
 ]
 
+# Metadata signatures are UTF-8; Windows JVMs often default to Cp1252 and mangle ✹ in paths.
+DEFAULT_JAVA_ENCODING_OPT = "-Dfile.encoding=UTF-8"
+
 
 def resolve_java_memory_opts() -> List[str]:
     """Heap/stack flags to pass on the ``java`` command line.
@@ -171,6 +174,10 @@ def build_grpc_subprocess_env() -> Dict[str, str]:
         if ui_dir is not None:
             env["ALTASTATA_WEB_UI_DIR"] = ui_dir
             print(f"Bundled AltaStata Console UI: {ui_dir}")
+    # Gradle fallback and any pre-patched jars still need UTF-8 default charset on Windows.
+    jto = env.get("JAVA_TOOL_OPTIONS", "")
+    if "file.encoding" not in jto:
+        env["JAVA_TOOL_OPTIONS"] = f"{jto} {DEFAULT_JAVA_ENCODING_OPT}".strip()
     return env
 
 
@@ -186,6 +193,7 @@ def resolve_local_grpc_startup_command(
             main_class = grpc_main_class_for_jar(bundled_uber_jar)
             grpc_server_command = [
                 "java",
+                DEFAULT_JAVA_ENCODING_OPT,
                 *resolve_java_memory_opts(),
                 "-cp",
                 classpath,

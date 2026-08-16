@@ -32,7 +32,7 @@ The Docker image version is centrally managed in `version.sh`. To update the ver
 1. Edit `version.sh` and update the relevant variable:
    ```bash
    JUPYTER_VERSION="2026l_latest"   # Bump on real Jupyter image changes
-   RAG_VERSION="2026k_latest"       # Bump on RAG image changes (zDNN variant is :${RAG_VERSION}_zdnn)
+   RAG_VERSION="2026l_latest"       # Bump on RAG image changes (zDNN variant is :${RAG_VERSION}_zdnn)
    ```
 
 2. Run the update script to sync the version to all configuration files:

@@ -172,12 +172,12 @@ class OpenRAGIndexer:
         from altastata.altastata_functions import AltaStataFunctions
         from altastata.fsspec import create_filesystem
 
-        print("[indexer] Connecting to AltaStata (from_account_dir + set_password)...")
+        print("[indexer] Connecting to AltaStata (from_account_dir)...")
+        effective_password = "" if ALTASTATA_USE_HPCS else ALTASTATA_PASSWORD
         self.altastata = AltaStataFunctions.from_account_dir(
             ALTASTATA_ACCOUNT_DIR,
+            password=effective_password,
         )
-        if not ALTASTATA_USE_HPCS:
-            self.altastata.set_password(ALTASTATA_PASSWORD)
         self.fs = create_filesystem(self.altastata, ALTASTATA_ACCOUNT_ID)
         print("✅ AltaStata connected")
 

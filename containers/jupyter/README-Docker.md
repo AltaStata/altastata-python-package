@@ -756,6 +756,6 @@ For more details, see:
 - PyTorch CPU-only version is installed to reduce image size
 - Jupyter token is auto-generated at container startup (see [Jupyter Token Authentication](#jupyter-token-authentication))
 - All examples and source code are mounted as volumes for live editing
-- The package includes large JAR files (83MB altastata-hadoop-all.jar)
+- The package includes the bundled `altastata-services-<VERSION>-uber.jar` (Hadoop Spark JAR is separate; see UBER_JARS.md)
 - Symbolic links provide easy access to examples from Jupyter interface
 - Jupyter uses the `altastata-network` Docker network 

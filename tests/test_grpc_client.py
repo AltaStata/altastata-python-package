@@ -355,8 +355,8 @@ class GrpcClientTests(unittest.TestCase):
         mock_find_uber,
         mock_popen,
     ):
-        mock_find_uber.return_value = "/tmp/altastata-services-1.0.0-uber.jar"
-        mock_build_cp.return_value = "/tmp/a.jar:/tmp/b.jar:/tmp/altastata-services-1.0.0-uber.jar"
+        mock_find_uber.return_value = "/tmp/altastata-services-2026.08.16-uber.jar"
+        mock_build_cp.return_value = "/tmp/a.jar:/tmp/b.jar:/tmp/altastata-services-2026.08.16-uber.jar"
         mock_popen.return_value = MagicMock()
 
         from altastata.java_runtime import start_local_grpc_service
@@ -372,7 +372,7 @@ class GrpcClientTests(unittest.TestCase):
                 "-Xmx4g",
                 "-XX:ThreadStackSize=256k",
                 "-cp",
-                "/tmp/a.jar:/tmp/b.jar:/tmp/altastata-services-1.0.0-uber.jar",
+                "/tmp/a.jar:/tmp/b.jar:/tmp/altastata-services-2026.08.16-uber.jar",
                 "com.altastata.services.AltaStataServicesApplication",
             ],
             cwd="/tmp",
@@ -486,8 +486,8 @@ class GrpcClientTests(unittest.TestCase):
         mock_find_uber,
         mock_popen,
     ):
-        mock_find_uber.return_value = "/tmp/altastata-services-1.0.0-uber.jar"
-        mock_build_cp.return_value = "/tmp/altastata-services-1.0.0-uber.jar"
+        mock_find_uber.return_value = "/tmp/altastata-services-2026.08.16-uber.jar"
+        mock_build_cp.return_value = "/tmp/altastata-services-2026.08.16-uber.jar"
         mock_popen.return_value = MagicMock()
 
         from altastata.java_runtime import start_local_grpc_service
@@ -503,7 +503,7 @@ class GrpcClientTests(unittest.TestCase):
                 "java",
                 "-Dfile.encoding=UTF-8",
                 "-cp",
-                "/tmp/altastata-services-1.0.0-uber.jar",
+                "/tmp/altastata-services-2026.08.16-uber.jar",
                 "com.altastata.services.AltaStataServicesApplication",
             ],
             cwd="/tmp",

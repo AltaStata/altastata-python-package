@@ -191,7 +191,7 @@ class AccountSetupTests(unittest.TestCase):
             main(["mcp", "--help"])
         self.assertEqual(0, cm.exception.code)
 
-    @patch("altastata.mcp_server.find_bundled_grpc_uber_jar", return_value="/tmp/altastata-services-1.0.0-uber.jar")
+    @patch("altastata.mcp_server.find_bundled_grpc_uber_jar", return_value="/tmp/altastata-services-2026.08.16-uber.jar")
     @patch("altastata.mcp_server.shutil.which", return_value="/usr/bin/java")
     def test_cli_mcp_dry_run(self, _which, _jar):
         from altastata.cli import main

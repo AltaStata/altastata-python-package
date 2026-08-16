@@ -18,7 +18,7 @@ except _PkgNotFound:
     __version__ = "0.0.0+unknown"
 
 # Date tag of the bundled Java/BSL runtime (sovereign-data-fabric / mycloud VERSION).
-BUNDLED_JAVA_RELEASE = "2026.08.08"
+BUNDLED_JAVA_RELEASE = "2026.08.16"
 
 from .altastata_functions import AltaStataFunctions
 from .account_setup import (

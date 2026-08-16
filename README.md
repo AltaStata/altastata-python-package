@@ -2,9 +2,10 @@
 
 Sovereign encrypted data fabric for any cloud Python SDK — with support for **fsspec**, **PyTorch**, **TensorFlow**, **LangChain**, **AI Agents**, **Databricks**, **Snowflake** (via S3), **boto3/S3 CLI**, **gRPC**, and a bundled **Web UI User Console**.
 
-**Package version `1.0.6.16`** is built on the Java/BSL runtime from
-[sovereign-data-fabric `v2026.08.08`](https://github.com/AltaStata/sovereign-data-fabric/releases/tag/v2026.08.08)
-(bundled `altastata-services` uber jar + MCP).
+**Package version `1.0.20260816.1`** (`1.0.YYYYMMDD.N` — see [VERSIONING.md](VERSIONING.md))
+is built on the Java/BSL runtime from
+[sovereign-data-fabric `v2026.08.16`](https://github.com/AltaStata/sovereign-data-fabric/releases/tag/v2026.08.16)
+(bundled `altastata-services` uber jar + MCP). The last `1.0.6.x` wheel was `1.0.6.16`.
 
 ```bash
 pip install altastata
@@ -254,7 +255,7 @@ encrypted paths (`altastata://…` or a configured Hadoop URI).
 The Hadoop JAR is **not** inside the `altastata` pip wheel. Download it from the
 release assets:
 
-https://github.com/AltaStata/sovereign-data-fabric/releases/tag/v2026.08.08
+https://github.com/AltaStata/sovereign-data-fabric/releases/tag/v2026.08.16
 
 (`altastata-hadoop-*-uber.jar`).
 

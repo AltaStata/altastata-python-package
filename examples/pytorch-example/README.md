@@ -1,17 +1,13 @@
 # PyTorch Dataset Example
 
-Examples for using the `altastata` package with `AltaStataPyTorch` - a high-level class that provides a unified interface for PyTorch dataset operations and AltaStata functionality.
+Examples for using the `altastata` package with `AltaStataPyTorchDataset` - a dataset class that integrates PyTorch workflows with encrypted AltaStata storage.
 
 ## Package Installation
 
-The implementation has been moved to the main `altastata` package. To install it:
+Install the `altastata` package:
 
 ```bash
-# Navigate to the altastata package directory
-cd altastata-python-package
-
-# Install in development mode
-pip install -e .
+pip install altastata torch torchvision
 ```
 
 ### Dependencies
@@ -59,18 +55,19 @@ The examples demonstrate how to use the dataset with various file types:
 
 ```python
 # Import the required classes from the altastata package
-from altastata import AltaStataPyTorch, AltaStataFunctions
+from altastata import AltaStataFunctions, AltaStataPyTorchDataset
+from altastata.altastata_pytorch_dataset import register_altastata_functions_for_pytorch
 from torch.utils.data import DataLoader
 import torchvision.transforms as transforms
 import torch
 
-# Create a global AltaStataPyTorch instance
-altastata = AltaStataPyTorch(
-    AltaStataFunctions.from_account_dir(
-        "~/.altastata/accounts/amazon.rsa.bob123",
-        password="your_password",
-    )
+# Initialize AltaStata and register for PyTorch
+functions = AltaStataFunctions.from_account_dir(
+    "~/.altastata/accounts/amazon.rsa.bob123",
+    password="your_password",
 )
+account_id = "my_account"
+register_altastata_functions_for_pytorch(functions, account_id)
 
 # Create dataset with transforms
 transform = transforms.Compose([
@@ -79,8 +76,9 @@ transform = transforms.Compose([
     transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
 ])
 
-# Create dataset using the global instance
-dataset = altastata.create_dataset(
+# Create dataset
+dataset = AltaStataPyTorchDataset(
+    account_id=account_id,
     root_dir="pytorch_test/data/images",
     file_pattern="*.jpg",  # or *.npy, *.csv
     transform=transform
@@ -99,6 +97,8 @@ for data, labels in dataloader:
     # labels are automatically generated based on filenames (1 for 'circle', 0 for others)
     pass
 ```
+
+> **Note on Multi-Worker DataLoaders:** When using `DataLoader(..., num_workers > 0)` with `spawn` multiprocessing (default on macOS and Windows), ensure `register_altastata_functions_for_pytorch` is invoked in the worker initialization or main guard so worker processes can access the account registry.
 
 ### Training Example
 The package includes a training example that demonstrates:
@@ -133,10 +133,10 @@ examples/pytorch-example/     # Examples using the altastata package
         models/              # Saved model checkpoints
     README.md                 # This documentation file
 
-altastata/                    # Main package (separate location)
-    __init__.py               # Exports classes including AltaStataPyTorch
-    altastata_functions.py    # Original altastata functionality
-    altastata_pytorch_dataset.py # Implementation of the dataset class
+altastata/                    # Main package
+    __init__.py               # Exports classes including AltaStataPyTorchDataset
+    altastata_functions.py    # Core functionality
+    altastata_pytorch_dataset.py # PyTorch dataset implementation
 ```
 
 ## License

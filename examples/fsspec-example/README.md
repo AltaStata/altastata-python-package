@@ -42,50 +42,41 @@ pip install altastata fsspec
 
 ```python
 import fsspec
-from altastata import AltaStataFileSystem
+from altastata import AltaStataFunctions
+from altastata.fsspec import create_filesystem, register_filesystem
 
-# Register filesystem
-AltaStataFileSystem.register()
+# 1. Initialize AltaStata session
+functions = AltaStataFunctions.from_account_dir(
+    "~/.altastata/accounts/amazon.rsa.alice222",
+    password="your_password"
+)
 
-# Use with fsspec
-fs = fsspec.filesystem("altastata", account_id="my_account")
+# 2. Create fsspec filesystem instance
+fs = create_filesystem(functions, account_id="alice222")
 files = fs.ls("Public/")
 
-# Read file (always latest version)
-with fs.open("Public/Documents/file.txt", "r") as f:
+# 3. Read file (always latest version)
+with fs.open("Public/Documents/file.txt", "rb") as f:
     content = f.read()
 ```
+
+> **Note on File I/O:** `fsspec` provides read access to the encrypted fabric. For creating or uploading files, use `functions.create_file(...)` or the S3 compatibility layer (`functions.boto3_s3()`).
 
 ## LangChain Integration
 
 ```python
+from altastata import AltaStataFunctions
+from altastata.fsspec import register_filesystem
 from langchain_community.document_loaders import TextLoader
 
-# Register filesystem
-AltaStataFileSystem.register()
+# Initialize AltaStata and register global filesystem protocol
+functions = AltaStataFunctions.from_account_dir(
+    "~/.altastata/accounts/amazon.rsa.alice222",
+    password="your_password"
+)
+register_filesystem(functions)
 
-# Load document
+# Load document directly via altastata:// URI
 loader = TextLoader("altastata://Public/Documents/file.txt")
 documents = loader.load()
-```
-
-## Configuration
-
-```python
-from altastata import AltaStataFileSystem
-
-# Option 1: Account directory
-fs = AltaStataFileSystem(
-    account_id="my_account",
-    account_dir="/path/to/.altastata/accounts/my_account",
-    password="your_password"
-)
-
-# Option 2: Credentials
-fs = AltaStataFileSystem(
-    account_id="my_account",
-    user_properties="your_user_properties",
-    private_key_encrypted="your_private_key",
-    password="your_password"
-)
 ```

@@ -35,7 +35,7 @@ docker rm "$CONTAINER_NAME" 2>/dev/null || true
 
 ACCOUNT_PARENT="$(dirname "$ALTASTATA_ACCOUNT_DIR")"
 ACCOUNT_BASENAME="$(basename "$ALTASTATA_ACCOUNT_DIR")"
-CONTAINER_ACCOUNT_DIR="/altastata_account/$ACCOUNT_BASENAME"
+CONTAINER_ACCOUNT_DIR="/root/.altastata/accounts/$ACCOUNT_BASENAME"
 # Named volume so the index persists across container restarts (no "No index found" after rebuild)
 INDEX_VOLUME="${INDEX_VOLUME:-rag-mac-index}"
 RUN_OPTS=(
@@ -44,7 +44,7 @@ RUN_OPTS=(
   --name "$CONTAINER_NAME"
   -e "ALTASTATA_ACCOUNT_DIR=$CONTAINER_ACCOUNT_DIR"
   -e "ALTASTATA_ACCOUNT_ID=${ALTASTATA_ACCOUNT_ID:-bob123}"
-  -v "$ACCOUNT_PARENT:/altastata_account:ro"
+  -v "$ACCOUNT_PARENT:/root/.altastata/accounts:ro"
   -v "$INDEX_VOLUME:/app/open_llm/local_index"
 )
 # Console UI on by default. Host port defaults to 9878 so RAG can co-exist with
@@ -74,7 +74,7 @@ fi
 [ -n "${RAG_INDEX_PATH:-}" ] && RUN_OPTS+=(-e "RAG_INDEX_PATH=$RAG_INDEX_PATH")
 
 echo "Container env (account): ALTASTATA_ACCOUNT_DIR=$CONTAINER_ACCOUNT_DIR, ALTASTATA_ACCOUNT_ID=${ALTASTATA_ACCOUNT_ID:-bob123}"
-echo "Container mounts: $ACCOUNT_PARENT -> /altastata_account:ro, $INDEX_VOLUME -> /app/open_llm/local_index"
+echo "Container mounts: $ACCOUNT_PARENT -> /root/.altastata/accounts:ro, $INDEX_VOLUME -> /app/open_llm/local_index"
 echo "RAG_INDEX_PATH (in container): ${RAG_INDEX_PATH:-RAGDocs/policies}"
 echo "Running container: $CONTAINER_NAME (port $WEB_PORT)..."
 docker run "${RUN_OPTS[@]}" "$IMAGE_NAME"

@@ -16,8 +16,8 @@
 #   bash scripts/build-bundled-artifacts.sh
 #
 # Optional environment variables:
-#   ALTASTATA_MYCLOUD_DIR   override path to the mycloud checkout
-#                           (default: ../mycloud relative to this repo)
+#   ALTASTATA_MYCLOUD_DIR   override path to the Java checkout
+#                           (default: ../sovereign-data-fabric or ../mycloud)
 #   ALTASTATA_CONSOLE_DIR   override path to the altastata-console checkout
 #                           (default: ../altastata-console sibling of this repo)
 #   SKIP_GRPC=1             skip the altastata-services Gradle build (use existing
@@ -39,7 +39,17 @@ PKG_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 LIB_DIR="$PKG_DIR/altastata/lib"
 STATIC_DIR="$LIB_DIR/altastata-console-static"
 
-MYCLOUD_DIR="${ALTASTATA_MYCLOUD_DIR:-$(cd "$PKG_DIR/../mycloud" 2>/dev/null && pwd || true)}"
+if [[ -n "${ALTASTATA_MYCLOUD_DIR:-}" ]]; then
+    MYCLOUD_DIR="$(cd "$ALTASTATA_MYCLOUD_DIR" 2>/dev/null && pwd || true)"
+else
+    MYCLOUD_DIR=""
+    for candidate in "$PKG_DIR/../sovereign-data-fabric" "$PKG_DIR/../mycloud"; do
+        if [[ -d "$candidate" ]]; then
+            MYCLOUD_DIR="$(cd "$candidate" && pwd)"
+            break
+        fi
+    done
+fi
 # Canonical Console source is the sibling AltaStata/altastata-console checkout
 # (https://github.com/AltaStata/altastata-console). Do not vendor a second copy
 # under this repo — it drifts and can ship a stale SPA in the wheel.
@@ -53,8 +63,8 @@ mkdir -p "$LIB_DIR"
 
 if [[ -z "${SKIP_GRPC:-}" ]]; then
     if [[ -z "$MYCLOUD_DIR" || ! -d "$MYCLOUD_DIR" ]]; then
-        echo "ERROR: mycloud directory not found." >&2
-        echo "       Set ALTASTATA_MYCLOUD_DIR or place mycloud next to this repo." >&2
+        echo "ERROR: Java source tree not found." >&2
+        echo "       Set ALTASTATA_MYCLOUD_DIR or place sovereign-data-fabric next to this repo." >&2
         exit 1
     fi
     echo "==> Building altastata-services uber jar in $MYCLOUD_DIR"

@@ -32,7 +32,7 @@ The Docker image version is centrally managed in `version.sh`. To update the ver
 1. Edit `version.sh` and update the relevant variable:
    ```bash
    JUPYTER_VERSION="2026l_latest"   # Bump on real Jupyter image changes
-   RAG_VERSION="2026k_latest"       # Bump on RAG image changes (zDNN variant is :${RAG_VERSION}_zdnn)
+   RAG_VERSION="2026l_latest"       # Bump on RAG image changes (zDNN variant is :${RAG_VERSION}_zdnn)
    ```
 
 2. Run the update script to sync the version to all configuration files:
@@ -628,75 +628,48 @@ open http://localhost:8888
 - Focused development environment
 - No port conflicts with main project
 
-### Scenario 2: Full Stack Development (Both Projects)
+### Scenario 2: Jupyter plus the Java services
 
-**Use Case**: Developing machine learning applications that need to interact with the main Altastata APIs.
+**Use Case**: Notebooks that talk to the bundled gRPC / S3 gateway (`altastata-services`).
 
 ```bash
-# Terminal 1: Start main Altastata project
-cd $HOME/eclipse-workspace/mcloud/mycloud
-./containers/jupyter/build-all-images.sh
-docker compose -f containers/jupyter/docker-compose.yml up -d
-
-# Terminal 2: Start Python package
+# Terminal 1: start the Python Jupyter environment
 cd .
 ./containers/jupyter/build-all-images.sh
 docker compose -f containers/jupyter/docker-compose.yml up -d
 
-# Access all services:
-# - Web UI: http://localhost:3000
-# - Admin UI: http://localhost:3500
-# - Jupyter Lab: http://localhost:8888
-# - Web API: http://localhost:8080
-# - Admin API: http://localhost:8084
+# Terminal 2 (optional): run the Java services locally from a
+# sovereign-data-fabric checkout, or use the JAR bundled in this wheel.
+# Provision users with the Admin Tool installer — see ADMIN_TOOL_GUIDE.md
+# in that Java repo. Jupyter Lab: http://localhost:8888
 ```
 
-**Cross-Service Communication:**
 ```python
-# In Jupyter notebook, test API connectivity
-import requests
-
-# Test Web API health
-web_api_health = requests.get('http://altastata-web-api:8080/health')
-print(f"Web API Status: {web_api_health.status_code}")
-
-# Test Admin API health  
-admin_api_health = requests.get('http://altastata-admin-api:8084/health')
-print(f"Admin API Status: {admin_api_health.status_code}")
-
-# Use Altastata functions with live backend
 from altastata import AltaStataFunctions
-# Configure to use running admin API for certificate management
+
+fns = AltaStataFunctions.from_account_dir("/path/to/account")
+print(fns.list_files("/"))
 ```
 
 ### Scenario 3: Machine Learning Pipeline with Live Data
 
-**Use Case**: Training ML models using data from the running Altastata system.
+**Use Case**: Training ML models using data stored in AltaStata.
 
 ```bash
-# 1. Start both projects (as in Scenario 2)
-
-# 2. Initialize organization and users via Admin UI
-open http://localhost:3500
-
-# 3. Upload training data via Web UI
-open http://localhost:3000
-
-# 4. Develop ML pipeline in Jupyter
+# 1. Start Jupyter (Scenario 1 or 2)
+# 2. Provision the org with the Admin Tool (desktop installer)
+# 3. Develop the ML pipeline in Jupyter
 open http://localhost:8888
 ```
 
 **Jupyter Notebook Example:**
 ```python
-# Connect to live Altastata system
 from altastata import AltaStataFunctions, AltaStataPyTorchDataset
+from altastata.pytorch_dataset import register_altastata_functions_for_pytorch
 
-# Use credentials from running admin system
-altastata_functions = AltaStataFunctions.from_credentials(
-    user_properties, private_key
-)
+fns = AltaStataFunctions.from_account_dir("/path/to/account")
+register_altastata_functions_for_pytorch(fns)
 
-# Create dataset pointing to live data
 dataset = AltaStataPyTorchDataset(
     "myorg_user",
     root_dir="s3://my-bucket/training-data/",
@@ -704,27 +677,17 @@ dataset = AltaStataPyTorchDataset(
     transform=transforms
 )
 
-# Train model with live data
 for batch in DataLoader(dataset):
-    # Training loop...
+    ...
 ```
 
 ### Scenario 4: Production ML Inference
 
-**Use Case**: Running inference services alongside the main Altastata system.
+**Use Case**: Running inference next to Jupyter.
 
 ```bash
-# Deploy both projects from GHCR
-cd $HOME/eclipse-workspace/mcloud/mycloud
 docker compose -f containers/jupyter/docker-compose-ghcr.yml up -d
-
-cd .
-docker compose -f containers/jupyter/docker-compose-ghcr.yml up -d
-
-# Configure Jupyter for inference workloads
 docker exec altastata-jupyter pip install fastapi uvicorn
-
-# Deploy inference API from Jupyter
 ```
 
 ### Scenario 5: Development with Hot Reloading
@@ -748,76 +711,19 @@ docker exec altastata-jupyter pip install -e /home/jovyan/altastata-source
 
 ### Scenario 6: Multi-User Development
 
-**Use Case**: Multiple developers working on different aspects.
+**Use Case**: Several people sharing the Jupyter environment.
 
 ```bash
-# Developer 1: Backend APIs
-cd $HOME/eclipse-workspace/mcloud/mycloud
-docker-compose up -d altastata-web-api altastata-admin-api
-
-# Developer 2: Frontend UIs  
-docker-compose up -d altastata-web-ui altastata-admin-ui
-
-# Developer 3: ML/Python package
-cd .
 docker compose -f containers/jupyter/docker-compose.yml up -d
-
-# All share the same altastata-network for communication
+# Each developer uses their own AltaStata account directory
+# (created with the Admin Tool or `altastata account create`).
 ```
 
-## Network Connectivity Testing
-
-### Verify Cross-Project Communication
+## Network Inspection
 
 ```bash
-# From Jupyter container, test all main project services
-docker exec altastata-jupyter ping altastata-web-api
-docker exec altastata-jupyter ping altastata-admin-api
-docker exec altastata-jupyter ping altastata-web-ui
-docker exec altastata-jupyter ping altastata-admin-ui
-
-# Test HTTP connectivity
-docker exec altastata-jupyter curl -s http://altastata-web-api:8080/health
-docker exec altastata-jupyter curl -s http://altastata-admin-api:8084/health
-
-# Test from main project to Jupyter (if needed)
-docker exec altastata-web-api ping altastata-jupyter
-```
-
-### Network Inspection
-
-```bash
-# View all containers on the shared network
 docker network inspect altastata-network
-
-# See which containers are connected
-docker network inspect altastata-network --format='{{range .Containers}}{{.Name}} {{.IPv4Address}}{{"\n"}}{{end}}'
-
-# Monitor network traffic (if needed)
 docker exec altastata-jupyter netstat -tuln
-```
-
-## Network Integration
-
-### Shared Network with Main Altastata Project
-
-Both the main Altastata project and this Python package use the same Docker network (`altastata-network`). This allows:
-
-- **Cross-project communication**: Jupyter notebooks can potentially communicate with the main Altastata APIs
-- **Shared network resources**: Both projects use the same network infrastructure
-- **Simplified deployment**: One network for all Altastata services
-
-If you have both projects running simultaneously:
-```bash
-# Main project services will be available from Jupyter as:
-# - altastata-web-api:8080
-# - altastata-admin-api:8084
-# - altastata-web-ui:28081
-# - altastata-admin-ui:3500
-
-# Test connectivity from Jupyter container
-docker exec altastata-jupyter ping altastata-web-api
-docker exec altastata-jupyter curl -s http://altastata-admin-api:8084/health
 ```
 
 ## Jupyter Token Authentication
@@ -850,6 +756,6 @@ For more details, see:
 - PyTorch CPU-only version is installed to reduce image size
 - Jupyter token is auto-generated at container startup (see [Jupyter Token Authentication](#jupyter-token-authentication))
 - All examples and source code are mounted as volumes for live editing
-- The package includes large JAR files (83MB altastata-hadoop-all.jar)
+- The package includes the bundled `altastata-services-YYYY.MM.DD-uber.jar` (Hadoop Spark JAR is separate; see UBER_JARS.md)
 - Symbolic links provide easy access to examples from Jupyter interface
-- **Shares `altastata-network` with the main Altastata project for cross-service communication** 
+- Jupyter uses the `altastata-network` Docker network 

@@ -59,11 +59,11 @@ def startup():
             from altastata.fsspec import create_filesystem
             from config import ALTASTATA_PASSWORD, ALTASTATA_ACCOUNT_ID
             print("[web_app] Connecting to AltaStata...")
+            effective_password = "" if ALTASTATA_USE_HPCS else ALTASTATA_PASSWORD
             _altastata_af = AltaStataFunctions.from_account_dir(
                 ALTASTATA_ACCOUNT_DIR,
+                password=effective_password,
             )
-            if not ALTASTATA_USE_HPCS:
-                _altastata_af.set_password(ALTASTATA_PASSWORD)
             _altastata_fs = create_filesystem(_altastata_af, ALTASTATA_ACCOUNT_ID)
             print("[web_app] AltaStata connected (used for reading chunk sources at query time)")
         except Exception as e:

@@ -62,10 +62,18 @@ The dataset is designed to work efficiently with TensorFlow's data pipeline:
 The examples demonstrate how to use the dataset with various file types:
 
 ```python
-# Import the dataset class from the altastata package
-from altastata import AltaStataTensorFlowDataset
+# Import the dataset class and registration helper
+from altastata import AltaStataFunctions, AltaStataTensorFlowDataset
+from altastata.altastata_tensorflow_dataset import register_altastata_functions_for_tensorflow
 import tensorflow as tf
 
+# Initialize session and register for TensorFlow
+functions = AltaStataFunctions.from_account_dir(
+    "~/.altastata/accounts/amazon.rsa.bob123",
+    password="your_password"
+)
+account_id = "bob123_rsa"
+register_altastata_functions_for_tensorflow(functions, account_id)
 
 # Create dataset with preprocessing
 def preprocess_image(image, label):
@@ -73,10 +81,9 @@ def preprocess_image(image, label):
     image = tf.image.resize(image, [96, 96])
     return image, label
 
-
 # Create dataset using account ID
 dataset = AltaStataTensorFlowDataset(
-    "bob123_rsa",  # Account ID for AltaStata
+    account_id=account_id,
     root_dir="tensorflow_test/data/images",
     file_pattern="*.png",
     preprocess_fn=preprocess_image

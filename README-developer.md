@@ -33,7 +33,7 @@ bash scripts/build-bundled-artifacts.sh
 
 The script assumes the sibling layout next to this repo:
 
-- `../mycloud` (or `ALTASTATA_MYCLOUD_DIR`) for the services uber jar
+- `../sovereign-data-fabric` (or `ALTASTATA_MYCLOUD_DIR`) for the services uber jar
 - `../altastata-console` (or `ALTASTATA_CONSOLE_DIR`) for the Console SPA
 
 Pass `SKIP_GRPC=1` / `SKIP_UI=1` to leave one side untouched.
@@ -42,13 +42,13 @@ Pass `SKIP_GRPC=1` / `SKIP_UI=1` to leave one side untouched.
 
 If you prefer to drive each build yourself:
 
-1. Build the unified services uber jar in `AltaStata/sovereign-data-fabric (altastata-services)`:
+1. Build the unified services uber jar in `altastata-services`:
    ```bash
-   (cd ../mycloud && ./gradlew :altastata-services:shadowJar)
-   cp ../AltaStata/sovereign-data-fabric (altastata-services)/build/libs/altastata-services-*-uber.jar altastata/lib/
+   (cd ../sovereign-data-fabric && ./gradlew :altastata-services:shadowJar)
+   cp ../sovereign-data-fabric/altastata-services/build/libs/altastata-services-*-uber.jar altastata/lib/
    # BouncyCastle is externalized as signed JCE jars referenced from the
    # uber jar manifest Class-Path; co-locate them alongside the uber jar:
-   cp ../AltaStata/sovereign-data-fabric (altastata-services)/build/libs/lib/bc*.jar altastata/lib/
+   cp ../sovereign-data-fabric/altastata-services/build/libs/lib/bc*.jar altastata/lib/
    ```
 
 2. Build the Console SPA from the sibling checkout:
@@ -77,7 +77,7 @@ If you prefer to drive each build yourself:
 with `user_account_directory` (account folder on the same host as the gateway).
 `from_credentials` uses the `upload` form (`user_properties` + private key
 bytes). Legacy `SetUserProperties` / `SetPrivateKey` bootstrap is not used on
-the gRPC path. See `AltaStata/sovereign-data-fabric (altastata-grpc)/CONSOLE_ACCOUNT_SETUP_DESIGN.md` §2.
+the gRPC path. See **[USER_SETUP_GUIDE.md](USER_SETUP_GUIDE.md)**.
 
 ### Account setup CLI / SDK (no Desktop UI)
 
@@ -86,10 +86,10 @@ CLI: `altastata help`, `altastata account create`, `altastata account change-pas
 SDK: `create_account`, `change_account_password`.
 
 See **[USER_SETUP_GUIDE.md](https://github.com/AltaStata/altastata-python-package/blob/main/USER_SETUP_GUIDE.md)**. When `account_setup.proto`
-changes in mycloud, sync and regenerate:
+changes in the Java repo, sync and regenerate:
 
 ```bash
-cp ../mycloud/altastata-grpc/src/main/proto/altastata/grpc/v1/account_setup.proto \
+cp ../sovereign-data-fabric/altastata-grpc/src/main/proto/altastata/grpc/v1/account_setup.proto \
   proto/altastata/grpc/v1/
 python scripts/generate_grpc_stubs.py
 ```
@@ -113,8 +113,7 @@ inside the same process that backs gRPC. When the S3 gate is on
 (`ALTASTATA_SERVICES_S3GATEWAY_ENABLED=true`, default in the Jupyter docker
 compose), `boto3` can hit the gateway directly and reads/writes will resolve
 to the **same** `AltaStataFileSystem` instance the Python API uses, via the
-shared `AccountRegistry`. See
-`mycloud/ALTASTATA_SERVICES_UBER_DESIGN.md` §3.1 for the wiring.
+shared `AccountRegistry`. See [UBER_JARS.md](https://github.com/AltaStata/sovereign-data-fabric/blob/main/UBER_JARS.md) for the wiring.
 
 `AltaStataFunctions` exposes three helpers that call gRPC
 `S3CredentialsService.IssueCredentials` on the logged-in Bearer session

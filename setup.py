@@ -6,8 +6,8 @@ with open("README.md", "r", encoding="utf-8") as fh:
 setup(
     name='altastata',
     version='1.0.20260816.1',
-    author='Serge Vilvovsky',
-    author_email='serge.vilvovsky@altastata.com',
+    author='AltaStata Inc.',
+    author_email='contact@altastata.com',
     description='A Python package for Altastata data processing and machine learning integration',
     long_description=long_description,
     long_description_content_type="text/markdown",

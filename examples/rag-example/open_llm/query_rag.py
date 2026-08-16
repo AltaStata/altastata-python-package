@@ -157,9 +157,9 @@ def _get_llm():
                     pipe = pipeline(
                         "text-generation",
                         model=model_to_use,
+                        torch_dtype=torch.float32,
                         max_new_tokens=HF_LLM_MAX_NEW_TOKENS,
-                        temperature=0.1,
-                        do_sample=True,
+                        do_sample=False,
                         device=device,
                         model_kwargs=model_kwargs,
                     )
@@ -333,12 +333,12 @@ def _connect_altastata():
     """AltaStata + fsspec for reading chunks (no callback server needed for query-only)."""
     from altastata.altastata_functions import AltaStataFunctions
     from altastata.fsspec import create_filesystem
-    from config import ALTASTATA_USE_HPCS
+    from config import ALTASTATA_USE_HPCS, ALTASTATA_PASSWORD
+    effective_password = "" if ALTASTATA_USE_HPCS else ALTASTATA_PASSWORD
     af = AltaStataFunctions.from_account_dir(
         ALTASTATA_ACCOUNT_DIR,
+        password=effective_password,
     )
-    if not ALTASTATA_USE_HPCS:
-        af.set_password(ALTASTATA_PASSWORD)
     return create_filesystem(af, ALTASTATA_ACCOUNT_ID), af
 
 
@@ -462,6 +462,17 @@ def query_rag(
         if not chunk_path:
             text = doc.page_content
             src = {"filename": meta.get("filename", "unknown"), "text": doc.page_content[:200]}
+        elif os.path.exists(chunk_path):
+            try:
+                with open(chunk_path, "r", encoding="utf-8", errors="replace") as f:
+                    text = f.read()
+            except Exception:
+                text = doc.page_content
+            src = {
+                "filename": meta.get("filename", os.path.basename(chunk_path)),
+                "chunk_path": chunk_path,
+                "text": text[:300],
+            }
         elif fs:
             try:
                 with fs.open(chunk_path, "r") as f:

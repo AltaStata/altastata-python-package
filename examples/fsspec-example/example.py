@@ -24,12 +24,11 @@ def main():
     
     # Use the same credentials pattern as examples/smoke-test/test_script.py
     account_dir = os.path.expanduser('~/.altastata/accounts/amazon.rsa.alice222')
-    password = os.environ.get("ALTASTATA_PASSWORD", "")
+    password = os.environ.get("ALTASTATA_PASSWORD", "123")
     
     # Create AltaStata connection
     try:
-        altastata = AltaStataFunctions.from_account_dir(account_dir)
-        altastata.set_password(password)
+        altastata = AltaStataFunctions.from_account_dir(account_dir, password=password)
         print("✓ AltaStata connection established")
     except Exception as e:
         print(f"❌ Failed to connect to AltaStata: {e}")
@@ -91,7 +90,7 @@ def main():
             if LANGCHAIN_AVAILABLE:
                 print("\n✓ LangChain integration available:")
                 print("from langchain_community.document_loaders import TextLoader")
-                print("loader = TextLoader('altastata://StoreTest/meeting_saved_chat.txt')")
+                print("loader = TextLoader('altastata://StoreTest/sample.txt')")
             else:
                 print("\n⚠ Install langchain-community for LangChain integration")
             

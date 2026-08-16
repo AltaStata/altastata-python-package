@@ -9,8 +9,11 @@ desktop = home / "Desktop"
 sample_ini = desktop / "desktop.ini"
 sample_reg = desktop / "sample.reg"
 
-altastata_functions = AltaStataFunctions.from_account_dir(str(account))
-altastata_functions.set_password(os.environ.get("ALTASTATA_PASSWORD", ""))
+password = os.environ.get("ALTASTATA_PASSWORD", "123")
+altastata_functions = AltaStataFunctions.from_account_dir(
+    str(account),
+    password=password,
+)
 
 # Store
 result = altastata_functions.store(

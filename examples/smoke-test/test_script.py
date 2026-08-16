@@ -2,8 +2,11 @@ import os
 from altastata import AltaStataFunctions
 import time
 
-altastata_functions = AltaStataFunctions.from_account_dir(os.path.expanduser('~/.altastata/accounts/amazon.rsa.alice222'))
-altastata_functions.set_password(os.environ.get("ALTASTATA_PASSWORD", ""));
+password = os.environ.get("ALTASTATA_PASSWORD", "123")
+altastata_functions = AltaStataFunctions.from_account_dir(
+    os.path.expanduser('~/.altastata/accounts/amazon.rsa.alice222'),
+    password=password,
+)
 
 # Test create_file and append_buffer_to_file
 print("\nTesting create_file and append_buffer_to_file:")

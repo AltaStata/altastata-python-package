@@ -251,4 +251,4 @@ See [NOTICE](NOTICE) for attribution of bundled components.
 
 The Hadoop filesystem JAR is **not** inside this pip wheel. Download it from
 the BSL release and put it on the Spark classpath — see
-[HADOOP_AND_SERVICES.md](https://github.com/AltaStata/sovereign-data-fabric/blob/main/HADOOP_AND_SERVICES.md).
+[how to use the Hadoop and Services uber JARs](https://github.com/AltaStata/sovereign-data-fabric/blob/main/UBER_JARS.md).

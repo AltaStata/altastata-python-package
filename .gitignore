@@ -31,6 +31,8 @@ ENV/
 # IDE
 .idea/
 .vscode/
+.cm_project
+**/.cm_project
 *.swp
 *.swo
 *.iml

@@ -247,32 +247,8 @@ See [NOTICE](NOTICE) for attribution of bundled components.
 
 ---
 
-## Appendix: Databricks / Apache Spark
+## Spark / Databricks
 
-Spark / Databricks use the AltaStata **Hadoop filesystem** JAR so jobs can read
-encrypted paths (`altastata://…` or a configured Hadoop URI).
-
-The Hadoop JAR is **not** inside the `altastata` pip wheel. Download it from the
-release assets:
-
-https://github.com/AltaStata/sovereign-data-fabric/releases/tag/v2026.08.16
-
-(`altastata-hadoop-*-uber.jar`).
-
-You also need the signed **Bouncy Castle** JARs on the Spark classpath. Use the
-same versions as in this package’s runtime lib (after `pip install altastata`,
-look under `…/site-packages/altastata/lib/`):
-
-- `bcprov-jdk18on-1.85.jar`
-- `bcpkix-jdk18on-1.85.jar`
-- `bcutil-jdk18on-1.85.jar`
-
-You can copy those files from the installed package, or take the matching `lib/`
-set from `altastata-services-*-uber.zip` on the same release page.
-
-Put **all of them** on the Spark / Databricks classpath
-(`spark.driver.extraClassPath` / `spark.executor.extraClassPath`, or the
-cluster’s `jars` / init-script install path). On Databricks (or other Spark)
-Python notebooks you can still `pip install altastata` for account setup and
-local helpers; the cluster job itself needs the Hadoop + Bouncy Castle JARs on
-the Spark classpath separately.
+The Hadoop filesystem JAR is **not** inside this pip wheel. Download it from
+the BSL release and put it on the Spark classpath — see
+[HADOOP_AND_SERVICES.md](https://github.com/AltaStata/sovereign-data-fabric/blob/main/HADOOP_AND_SERVICES.md).

@@ -282,13 +282,13 @@ sudo docker exec -it altastata-jupyter-s390x jupyter server list
 
 # Example output:
 # Currently running servers:
-# http://localhost:8888/?token=ua5nw5fwkdzseqpp5apj :: /home/jovyan
+# http://localhost:8888/?token=<generated-token> :: /home/jovyan
 
 # Method 2: From container logs
 sudo docker logs altastata-jupyter-s390x | grep token
 ```
 
-The token is the string after `token=` (e.g., `ua5nw5fwkdzseqpp5apj`).
+The token is the string after `token=` (e.g., `<generated-token>`).
 
 For more details, see [RunPod Token Authentication Guide](https://docs.runpod.io/references/troubleshooting/token-authentication-enabled).
 
@@ -408,7 +408,7 @@ docker logs altastata-s3-gateway
 curl http://localhost:9876/status
 
 # Test from external machine (use your Floating IP)
-curl http://169.63.190.94:9876/status
+curl http://<FLOATING_IP>:9876/status
 ```
 
 Expected response (shape may vary by build):
@@ -515,7 +515,7 @@ cd ~/filestash
 ./dist/filestash
 ```
 
-**Note**: When running as a Docker container, use `http://altastata-s3-gateway:9876` as the S3 endpoint (Docker network name). When running the binary directly, use `http://localhost:9876` or `http://169.63.190.94:9876` (Floating IP).
+**Note**: When running as a Docker container, use `http://altastata-s3-gateway:9876` as the S3 endpoint (Docker network name). When running the binary directly, use `http://localhost:9876` or `http://<FLOATING_IP>:9876` (Floating IP).
 
 ### Step 5: Configure Filestash to Use S3 Gateway
 
@@ -523,7 +523,7 @@ cd ~/filestash
 - Filestash will automatically use `http://altastata-s3-gateway:9876` (via Docker network)
 
 **If running binary directly:**
-- Configure Filestash to use `http://localhost:9876` or `http://169.63.190.94:9876`
+- Configure Filestash to use `http://localhost:9876` or `http://<FLOATING_IP>:9876`
 - Set the `S3_ENDPOINT_URL` environment variable accordingly
 
 ### Step 6: Access Filestash
@@ -534,7 +534,7 @@ curl http://localhost:8334
 
 # From external machine (use your Floating IP)
 # Note: You may need to configure security group to allow port 8334
-curl http://169.63.190.94:8334
+curl http://<FLOATING_IP>:8334
 ```
 
 **Build Status**: ✅ Filestash has been successfully built from source on s390x. The build process requires several C library development packages (brotli, sqlite3, libraw, gif, webp, jpeg, png) which are installed as part of Step 1.

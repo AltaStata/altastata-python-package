@@ -39,13 +39,15 @@ f = AltaStataFunctions.from_upload(
 
 | Factory | When |
 |---------|------|
-| `from_account_dir(path, *, password, user_name=None, grpc_endpoint=None, grpc_auto_start_server=True)` | Normal local account folder |
-| `from_credentials(user_properties, private_key_encrypted, *, password, user_name=None, grpc_endpoint=None, grpc_auto_start_server=True)` | Community shorthand → `from_upload` with `private.key` only |
-| `from_upload(user_properties, account_files, *, password, user_name=None, grpc_endpoint=None, grpc_auto_start_server=True)` | Full LoginV2 upload map |
+| `from_account_dir(path, *, password, user_name=None, grpc_endpoint=None, grpc_auto_start_server=True)` | Local host: spawns or connects to gateway with local account folder |
+| `from_credentials(user_properties, private_key_encrypted, *, password, user_name=None, grpc_endpoint=None, grpc_auto_start_server=True)` | Remote/Cloud: sends properties + encrypted private key over gRPC payload |
+| `from_upload(user_properties, account_files, *, password, user_name=None, grpc_endpoint=None, grpc_auto_start_server=True)` | Enterprise/Cloud: sends properties + full account files map over gRPC |
 
 Do not call `AltaStataFunctions()` directly.
 
-Optional: `grpc_endpoint=GrpcEndpoint(host="127.0.0.1", port=9877, secure=False)` to point at an already running gateway; set `grpc_auto_start_server=False` if you manage the process yourself.
+> **Local vs Remote Gateway:**
+> - When running on the **local machine** (default), `from_account_dir` automatically starts the co-hosted `altastata-services` JAR and references `~/.altastata/accounts/...`.
+> - When connecting to a **remote gateway** (`grpc_endpoint=GrpcEndpoint(host="...", port=9877)`), use `from_credentials` or `from_upload` so your encrypted keys and properties are transmitted to the remote server during authentication.
 
 ---
 

@@ -91,7 +91,7 @@ def main():
             if LANGCHAIN_AVAILABLE:
                 print("\n✓ LangChain integration available:")
                 print("from langchain_community.document_loaders import TextLoader")
-                print("loader = TextLoader('altastata://StoreTest/meeting_saved_chat.txt')")
+                print("loader = TextLoader('altastata://StoreTest/sample.txt')")
             else:
                 print("\n⚠ Install langchain-community for LangChain integration")
             

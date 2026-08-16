@@ -28,8 +28,8 @@ buffer = altastata_functions.get_buffer('StoreTest/empty_file.txt', file_create_
 print("Appended file content: " + buffer.decode('utf-8'))
 
 # Store
-result = altastata_functions.store([os.path.expanduser('~/Desktop/serge.png'),
-                                    os.path.expanduser('~/Desktop/meeting_saved_chat.txt')],
+result = altastata_functions.store([os.path.expanduser('~/Desktop/sample.png'),
+                                    os.path.expanduser('~/Desktop/sample.txt')],
                                    os.path.expanduser('~/Desktop'), 'StoreTest', True)
 
 # Get the first CloudFileOperationStatus object
@@ -38,11 +38,11 @@ print('store: ' + str(result[0].getOperationStateValue()) + " " + result[0].getC
 file_create_time_id = int(result[0].getCloudFileCreateTime())
 
 users = ["bob123", "catrina777"]
-result = altastata_functions.share_files('StoreTest/meeting_saved_chat', True, None, None, users)
+result = altastata_functions.share_files('StoreTest/sample.txt', True, None, None, users)
 print('share_files:' + str(result[0].getOperationStateValue()))
 
 # Retrieve file
-result = altastata_functions.retrieve_files(os.path.expanduser('~/Desktop/tmp'), 'StoreTest/meeting_saved', True, file_create_time_id, False, True)
+result = altastata_functions.retrieve_files(os.path.expanduser('~/Desktop/tmp'), 'StoreTest/sample.txt', True, file_create_time_id, False, True)
 print('retrieve_files:' + str(result[0].getOperationStateValue()))
 
 # Show list
@@ -53,28 +53,28 @@ for java_array in iterator:
     print(python_list)
 
 # Read File as a buffer
-buffer = altastata_functions.get_buffer('StoreTest/meeting_saved_chat.txt', file_create_time_id, 0, 4, 100)
+buffer = altastata_functions.get_buffer('StoreTest/sample.txt', file_create_time_id, 0, 4, 100)
 print("buffer: " + buffer.decode('utf-8'))
 
 # Read File as a stream (chunk iterator — no full in-memory buffer)
 print("Input Stream: ")
 for chunk in altastata_functions.get_input_stream(
-    "StoreTest/meeting_saved_chat.txt",
+    "StoreTest/sample.txt",
     snapshot_time=file_create_time_id,
     start_position=0,
     parallel_chunks=4,
 ):
     print(chunk.decode("utf-8"), end="")
 
-result = altastata_functions.get_file_attribute('StoreTest/meeting_saved_chat.txt', file_create_time_id, "readers")
+result = altastata_functions.get_file_attribute('StoreTest/sample.txt', file_create_time_id, "readers")
 print(f"readers: {result}")
 
-result = altastata_functions.get_file_attribute('StoreTest/meeting_saved_chat.txt', file_create_time_id, "size")
+result = altastata_functions.get_file_attribute('StoreTest/sample.txt', file_create_time_id, "size")
 print(f"size: {result}")
 
 # Test copy_file
 print("\nTesting copy_file:")
-copy_result = altastata_functions.copy_file('StoreTest/meeting_saved_chat.txt', 'StoreTest/meeting_saved_chat_copy.txt')
+copy_result = altastata_functions.copy_file('StoreTest/sample.txt', 'StoreTest/sample_copy.txt')
 print('copy_file: ' + str(copy_result.getOperationStateValue()))
 
 # Copy operation completed successfully (DONE status)

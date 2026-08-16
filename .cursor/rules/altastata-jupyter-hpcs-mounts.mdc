@@ -33,8 +33,9 @@ Before mounting, verify the YAML is populated:
 rg -c '<your-' /path/to/grep11client.yaml   # should print 0
 ```
 
-For Serge's accounts, the populated file is
-`mycloud/altastata-admin/grep11client.yaml` (NOT `altastata-core/...`).
+Mount the host file that actually contains instance ID, address, and API key
+(never a template with `<your-...>` placeholders). That file lives outside
+this repo.
 
 ## Always use BOTH compose files
 

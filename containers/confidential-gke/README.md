@@ -39,7 +39,7 @@ This setup provides:
 
 | Action | Command |
 |--------|---------|
-| **Access Jupyter** | `http://34.66.100.250:8888/lab` |
+| **Access Jupyter** | `http://<EXTERNAL_IP>:8888/lab` |
 | **Stop Container** | `kubectl scale deployment altastata-jupyter-confidential --replicas=0` |
 | **Start Container** | `kubectl scale deployment altastata-jupyter-confidential --replicas=1` |
 | **Check Status** | `kubectl get pods -l app=altastata-jupyter` |
@@ -132,7 +132,7 @@ After deployment, get the external IP:
 kubectl get service altastata-jupyter-service
 ```
 
-**Current deployment URL**: `http://34.66.100.250:8888/lab`
+**Current deployment URL**: `http://<EXTERNAL_IP>:8888/lab`
 
 Open your browser to: `http://EXTERNAL_IP:8888/lab`
 
@@ -416,7 +416,7 @@ This will delete:
 ## Next Steps
 
 1. ✅ **Cluster created** - `altastata-confidential-cluster` (deleted to save costs)
-2. ✅ **Jupyter Lab** - Successfully tested at `http://34.66.100.250:8888/lab`
+2. ✅ **Jupyter Lab** - Successfully tested at `http://<EXTERNAL_IP>:8888/lab`
 3. ✅ **Multi-architecture support** - Works on AMD64 (GCP) and ARM64 (Mac)
 4. ✅ **AMD64 Architecture** - Confirmed running on AMD SEV confidential computing
 5. ✅ **Cost optimization** - Cluster deleted to avoid charges

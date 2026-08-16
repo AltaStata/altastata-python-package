@@ -157,9 +157,9 @@ def _get_llm():
                     pipe = pipeline(
                         "text-generation",
                         model=model_to_use,
+                        torch_dtype=torch.float32,
                         max_new_tokens=HF_LLM_MAX_NEW_TOKENS,
-                        temperature=0.1,
-                        do_sample=True,
+                        do_sample=False,
                         device=device,
                         model_kwargs=model_kwargs,
                     )

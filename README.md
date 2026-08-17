@@ -2,6 +2,13 @@
 
 Sovereign encrypted data fabric for any cloud Python SDK — with support for **fsspec**, **PyTorch**, **TensorFlow**, **LangChain**, **AI Agents**, **Databricks**, **Snowflake** (via S3), **boto3/S3 CLI**, **gRPC**, and a bundled **Web UI User Console**.
 
+When two organizations exchange files in the usual way, the sender **loses
+control** once a copy leaves their boundary. With AltaStata, a user who puts a
+**file** into the fabric **keeps cryptographic control of that file** even
+after sharing it with a partner. They know **which humans or applications**
+— in their own organization or a partner’s — have access, and they can
+revoke it.
+
 **Package version `1.0.20260817.2`** (`1.0.YYYYMMDD.N` — see [VERSIONING.md](VERSIONING.md))
 is built on the Java/BSL runtime from
 [sovereign-data-fabric `v2026.08.17`](https://github.com/AltaStata/sovereign-data-fabric/releases/tag/v2026.08.17)
@@ -17,8 +24,8 @@ With **data compression**, you can even **boost throughput** and **lower
 storage costs**.
 
 Each uploaded file is **immutable**. That is **cryptographically guaranteed**
-by **AES-256-GCM**: even Bob (the owner) cannot modify the file in place.
-If a change is needed, Bob creates a **new version**.
+by **AES-256-GCM**: even the owner cannot modify the file in place.
+If a change is needed, the owner creates a **new version**.
 
 ## Integration
 
@@ -33,13 +40,6 @@ We collaborate with **Red Hat** and **IBM** on **confidential computing**:
 ## How to use
 
 With the **Admin Tool**, you turn ordinary cloud or local storage into this sovereign fabric.
-
-When two organizations exchange files in the usual way, the sender **loses
-control** once a copy leaves their boundary. With AltaStata, a user who puts a
-**file** into the fabric **keeps cryptographic control of that file** even
-after sharing it with a partner. They know **which humans or applications**
-— in their own organization or a partner’s — have access, and they can
-revoke it.
 
 **Bob** uploads a report and shares access with **Alice** (a person or an
 application). In **Community** mode, Bob stays the **owner of that file**. Alice

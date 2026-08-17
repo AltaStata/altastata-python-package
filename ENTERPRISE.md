@@ -32,15 +32,16 @@ with readers and controls who has access.
 Bob stays the owner. Alice is a **reader**: she can open the file and
 **observe** who has access, but she does not grant or revoke sharing.
 
-### Enterprise (Custodian as access manager)
+### Enterprise (CISO / security as access manager)
 
-A special **Custodian** user is the **access manager** for files. All sharing
-goes through the Custodian. The Custodian **does not see the plaintext** —
-only manages access (share / revoke / delete).
+The access manager is **not** the user who created the file. It is the
+organization’s **CISO / security team**, acting through a special
+**Custodian** user. All sharing goes through the Custodian.
 
-The organization’s **CISO / security team**, via the Custodian, can not only
-**observe** who has access but **fully manage and control** access to the
-file — even after Bob shared it with Alice.
+CISO / security can **observe** who has access and **fully manage** it
+(share / revoke / delete) — including across partner organizations — but
+they do **not** have access to plaintext. The Custodian only manages access;
+it never decrypts the file.
 
 When `enterprise-custodian-mode=true` is stamped on the account, peer SHARE /
 DELETE from ordinary users is rejected. The Custodian routes share, revoke,
@@ -48,8 +49,8 @@ and delete. Login needs `license.jwt` with feature `custodian`.
 
 ### Example — Bob shares a file with Alice
 
-1. Bob uploads the file. In Enterprise mode the **Custodian becomes the
-   access manager**.
+1. Bob uploads the file. He is **not** the access manager: CISO / security
+   already is, via the Custodian.
 2. Bob asks the Custodian to share it with Alice (human or application).
 3. The Custodian checks organization policy (automatically, or via an app
    where the CISO approves) and then grants **read** access to Alice.

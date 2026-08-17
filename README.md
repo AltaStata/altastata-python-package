@@ -19,13 +19,14 @@ after sharing it with a partner. They know **which humans or applications**
 revoke it.
 
 **Bob** uploads a report and shares access with **Alice** (a person or an
-application). Bob stays the **owner of that file**. Alice is a **reader**:
-she can open it and see who has access, but she does not grant or revoke
-sharing.
+application). In **Community**, Bob stays the **owner of that file**. Alice
+is a **reader**: she can open it and see who has access, but she does not
+grant or revoke sharing.
 
-In **Enterprise** mode the organization’s CISO / security team, via the
-**Custodian**, can not only observe access but **fully manage** it.
-See **[ENTERPRISE.md](ENTERPRISE.md)**.
+In **Enterprise** mode the access manager is **not** the user who created
+the file. It is the organization’s **CISO / security team**, acting through
+the **Custodian**. They fully manage access (share, revoke, delete) and they
+do **not** have access to plaintext. See **[ENTERPRISE.md](ENTERPRISE.md)**.
 
 ## Supported clouds
 

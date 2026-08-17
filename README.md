@@ -16,6 +16,12 @@ data. AltaStata keeps per-file cryptographic control **without losing speed**.
 With **data compression**, you can even **boost throughput** and **lower
 storage costs**.
 
+Each uploaded file is **immutable**. That is **cryptographically guaranteed**
+by **AES-256-GCM**: even Bob (the owner) cannot modify the file in place.
+If a change is needed, Bob creates a **new version**.
+
+## Integration
+
 AltaStata is **seamlessly integrated** with **AI/ML** tools for **model training
 and use** — PyTorch, TensorFlow, LangChain, agents (`pip install altastata`).
 
@@ -23,6 +29,10 @@ We collaborate with **Red Hat** and **IBM** on **confidential computing**:
 
 - [Red Hat: end-to-end security for AI (OpenShift confidential containers)](https://www.redhat.com/en/blog/end-end-security-ai-integrating-altastata-storage-red-hat-openshift-confidential-containers)
 - [IBM: data sovereignty for AI (LinuxONE Confidential Computing)](https://community.ibm.com/community/user/blogs/savita-kumari/2026/06/24/data-sovereignty-for-ai-integrating-alta-stata)
+
+## How to use
+
+With the **Admin Tool**, you turn ordinary cloud or local storage into this sovereign fabric.
 
 When two organizations exchange files in the usual way, the sender **loses
 control** once a copy leaves their boundary. With AltaStata, a user who puts a
@@ -40,10 +50,6 @@ In **Enterprise** mode the access manager is **not** the user who created
 the file. It is the organization’s **CISO / security team**, acting through
 the **Custodian**. They fully manage access (share, revoke, delete) without
 having access to plaintext. See **[ENTERPRISE.md](ENTERPRISE.md)**.
-
-Each uploaded file is **immutable**. That is **cryptographically guaranteed**
-by **AES-256-GCM**: even Bob (the owner) cannot modify the file in place.
-If a change is needed, Bob creates a **new version**.
 
 ## Supported clouds
 

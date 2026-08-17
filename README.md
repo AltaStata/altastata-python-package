@@ -57,12 +57,12 @@ having access to plaintext. See **[ENTERPRISE.md](https://github.com/AltaStata/a
 | Step | What to do |
 |------|------------|
 | **1. User account** | Create keys in the Desktop UI or with the CLI/SDK in this package (`pip install altastata`). See **[USER_SETUP_GUIDE.md](https://github.com/AltaStata/altastata-python-package/blob/main/USER_SETUP_GUIDE.md)**. |
-| **2. Admin Tool** | Org admin provisions the fabric and returns `*user.properties`. See **[ADMIN_TOOL_GUIDE.md](https://github.com/AltaStata/sovereign-data-fabric/blob/main/ADMIN_TOOL_GUIDE.md)**. |
+| **2. Admin Tool** | Org admin provisions the fabric and returns `*user.properties`. See **[ADMIN_TOOL_GUIDE.md](https://github.com/AltaStata/sovereign-data-fabric/blob/main/docs/guides/ADMIN_TOOL_GUIDE.md)**. |
 
 Then use the SDK below.
 
 No cloud subscription yet? Provision the fabric on a local directory instead —
-[evaluate on local disk (POSIX / LocalFS)](https://github.com/AltaStata/sovereign-data-fabric/blob/main/ADMIN_TOOL_GUIDE.md#evaluate-on-local-disk-posix--localfs).
+[evaluate on local disk (POSIX / LocalFS)](https://github.com/AltaStata/sovereign-data-fabric/blob/main/docs/guides/ADMIN_TOOL_GUIDE.md#33-evaluate-on-local-disk-posix--localfs).
 
 ## Supported clouds
 
@@ -311,4 +311,4 @@ See [NOTICE](https://github.com/AltaStata/altastata-python-package/blob/main/NOT
 
 The Hadoop filesystem JAR is **not** inside this pip wheel. Download it from
 the BSL release and put it on the Spark classpath — see
-[how to use the Hadoop and Services uber JARs](https://github.com/AltaStata/sovereign-data-fabric/blob/main/UBER_JARS.md).
+[how to use the Hadoop and Services uber JARs](https://github.com/AltaStata/sovereign-data-fabric/blob/main/docs/guides/UBER_JARS.md).

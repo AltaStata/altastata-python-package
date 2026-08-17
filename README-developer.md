@@ -114,7 +114,7 @@ inside the same process that backs gRPC. When the S3 gate is on
 (`ALTASTATA_SERVICES_S3GATEWAY_ENABLED=true`, default in the Jupyter docker
 compose), `boto3` can hit the gateway directly and reads/writes will resolve
 to the **same** `AltaStataFileSystem` instance the Python API uses, via the
-shared `AccountRegistry`. See [UBER_JARS.md](https://github.com/AltaStata/sovereign-data-fabric/blob/main/UBER_JARS.md) for the wiring.
+shared `AccountRegistry`. See [UBER_JARS.md](https://github.com/AltaStata/sovereign-data-fabric/blob/main/docs/guides/UBER_JARS.md) for the wiring.
 
 `AltaStataFunctions` exposes three helpers that call gRPC
 `S3CredentialsService.IssueCredentials` on the logged-in Bearer session

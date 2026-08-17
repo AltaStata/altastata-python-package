@@ -2,7 +2,7 @@
 
 How to **create** keys and **connect** from Python. For Desktop UI screenshots
 (Public Key → admin → properties), see also
-[USER_SETUP_GUIDE.md in sovereign-data-fabric](https://github.com/AltaStata/sovereign-data-fabric/blob/main/USER_SETUP_GUIDE.md).
+[USER_SETUP_GUIDE.md in sovereign-data-fabric](https://github.com/AltaStata/sovereign-data-fabric/blob/main/docs/guides/USER_SETUP_GUIDE.md).
 
 ---
 

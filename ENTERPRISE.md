@@ -6,9 +6,9 @@ access** and **which crypto / CA features** a commercial license unlocks.
 
 Account files and CLI: [USER_SETUP_GUIDE.md](USER_SETUP_GUIDE.md).
 Admin provisioning (Java tree):
-[ADMIN_TOOL_GUIDE](https://github.com/AltaStata/sovereign-data-fabric/blob/main/ADMIN_TOOL_GUIDE.md).
+[ADMIN_TOOL_GUIDE](https://github.com/AltaStata/sovereign-data-fabric/blob/main/docs/guides/ADMIN_TOOL_GUIDE.md).
 Full Enterprise write-up on the BSL tree:
-[ENTERPRISE.md](https://github.com/AltaStata/sovereign-data-fabric/blob/main/ENTERPRISE.md).
+[ENTERPRISE.md](https://github.com/AltaStata/sovereign-data-fabric/blob/main/docs/guides/ENTERPRISE.md).
 
 ---
 

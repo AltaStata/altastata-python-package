@@ -1,9 +1,9 @@
 # How to work with AltaStata (Python)
 
 One page, organized by **what you want to do**. Same tasks as the Java
-[HOWTO](https://github.com/AltaStata/sovereign-data-fabric/blob/main/HOWTO.md)
+[HOWTO](https://github.com/AltaStata/sovereign-data-fabric/blob/main/docs/guides/HOWTO.md)
 and Scala
-[Low-level-Scala-API](https://github.com/AltaStata/sovereign-data-fabric/blob/main/Low-level-Scala-API.md),
+[Low-level-Scala-API](https://github.com/AltaStata/sovereign-data-fabric/blob/main/docs/guides/Low-level-Scala-API.md),
 using `AltaStataFunctions` after `pip install altastata`.
 
 Create an account first: [USER_SETUP_GUIDE.md](USER_SETUP_GUIDE.md). Method
@@ -249,5 +249,5 @@ f.remove_event_listener(listener)
 | Create account (CLI/SDK) | [USER_SETUP_GUIDE.md](USER_SETUP_GUIDE.md) |
 | Enterprise / Custodian / PQC | [ENTERPRISE.md](ENTERPRISE.md) |
 | fsspec / PyTorch / S3 | [README.md](README.md) |
-| Java / Desktop / S3 how-to | [sovereign-data-fabric HOWTO](https://github.com/AltaStata/sovereign-data-fabric/blob/main/HOWTO.md) |
-| Scala `CloudFile` API | [Low-level-Scala-API](https://github.com/AltaStata/sovereign-data-fabric/blob/main/Low-level-Scala-API.md) |
+| Java / Desktop / S3 how-to | [sovereign-data-fabric HOWTO](https://github.com/AltaStata/sovereign-data-fabric/blob/main/docs/guides/HOWTO.md) |
+| Scala `CloudFile` API | [Low-level-Scala-API](https://github.com/AltaStata/sovereign-data-fabric/blob/main/docs/guides/Low-level-Scala-API.md) |

@@ -19,7 +19,7 @@ storage costs**.
 AltaStata is **seamlessly integrated** with **AI/ML** tools for **model training
 and use** — PyTorch, TensorFlow, LangChain, agents (`pip install altastata`).
 
-We collaborate with **confidential computing** from **Red Hat** and **IBM**:
+We collaborate with **Red Hat** and **IBM** on **confidential computing**:
 
 - [Red Hat: end-to-end security for AI (OpenShift confidential containers)](https://www.redhat.com/en/blog/end-end-security-ai-integrating-altastata-storage-red-hat-openshift-confidential-containers)
 - [IBM: data sovereignty for AI (LinuxONE Confidential Computing)](https://community.ibm.com/community/user/blogs/savita-kumari/2026/06/24/data-sovereignty-for-ai-integrating-alta-stata)

@@ -11,6 +11,22 @@ is built on the Java/BSL runtime from
 pip install altastata
 ```
 
+When two organizations exchange files in the usual way, the sender **loses
+control** once a copy leaves their boundary. With AltaStata, a user who puts a
+**file** into the fabric **keeps cryptographic control of that file** even
+after sharing it with a partner. They know **which humans or applications**
+— in their own organization or a partner’s — have access, and they can
+revoke it.
+
+**Bob** uploads a report and shares access with **Alice** (a person or an
+application). Bob stays the **owner of that file**. Alice is a **reader**:
+she can open it and see who has access, but she does not grant or revoke
+sharing.
+
+In **Enterprise** mode the organization’s CISO / security team, via the
+**Custodian**, can not only observe access but **fully manage** it.
+See **[ENTERPRISE.md](ENTERPRISE.md)**.
+
 ## Supported clouds
 
 Works on **AWS**, **Azure**, **GCP**, **IBM**, **Fusion**, **MinIO**, **POSIX** (local / NFS-style paths), and **hybrid** setups — any S3-compatible or cloud object store the account is configured for.

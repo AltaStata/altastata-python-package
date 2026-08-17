@@ -12,16 +12,25 @@ Full Enterprise write-up on the BSL tree:
 
 ---
 
-## Community vs Enterprise (sharing)
+## Who controls a shared file
+
+When two organizations exchange files in the usual way, the sender **loses
+control** once a copy leaves their boundary. With AltaStata, a user who puts a
+**file** into the fabric **keeps cryptographic control of that file** even
+after sharing it across organizational boundaries. They know **which humans
+or applications** — in their own organization or a partner’s — have access.
+
+**Bob** puts a file in AltaStata and wants to **share access** with **Alice**
+(another user: a person or an application). The rest of this page is who
+**owns** that file and who may **grant or revoke** access.
 
 ### Community
 
-Whoever **uploads** the file is the **owner**. The owner shares with readers
-and controls who has access.
+Whoever **uploads** the file is the **owner of that file**. The owner shares
+with readers and controls who has access.
 
-If an **AI-powered service** creates a report, that service stays the owner
-and the organization is a **reader**. A reader can see who has access
-(observation) but does not control sharing.
+Bob stays the owner. Alice is a **reader**: she can open the file and
+**observe** who has access, but she does not grant or revoke sharing.
 
 ### Enterprise (Custodian as access manager)
 
@@ -29,13 +38,24 @@ A special **Custodian** user is the **access manager** for files. All sharing
 goes through the Custodian. The Custodian **does not see the plaintext** —
 only manages access (share / revoke / delete).
 
-There is nothing to “transfer” for control: the organization’s security
-owner, via the Custodian, already governs the file even if an AI-powered
-service uploaded it.
+The organization’s **CISO / security team**, via the Custodian, can not only
+**observe** who has access but **fully manage and control** access to the
+file — even after Bob shared it with Alice.
 
 When `enterprise-custodian-mode=true` is stamped on the account, peer SHARE /
 DELETE from ordinary users is rejected. The Custodian routes share, revoke,
 and delete. Login needs `license.jwt` with feature `custodian`.
+
+### Example — Bob shares a file with Alice
+
+1. Bob uploads the file. In Enterprise mode the **Custodian becomes the
+   access manager**.
+2. Bob asks the Custodian to share it with Alice (human or application).
+3. The Custodian checks organization policy (automatically, or via an app
+   where the CISO approves) and then grants **read** access to Alice.
+4. The Custodian can **revoke Bob’s access** while Alice **keeps** the file —
+   or revoke Alice while Bob keeps it.
+
 
 ### Policies, graph, and compliance audit
 
@@ -51,20 +71,6 @@ DORA, AI Act, and similar). The Custodian does **not** see plaintext.
 You can also run **your own** program as the Custodian (including Python).
 Listen as an organization user with [HOWTO.md](HOWTO.md#events-share--delete).
 For the commercial product: `contact@altastata.com`.
-
-### Example — AI-powered service sends an encrypted report
-
-Material produced **inside a confidential container** stays in the AltaStata
-fabric; it is not shared as plaintext outside it.
-
-1. The AI-powered service uploads the encrypted JSON to the
-   AltaStata-protected cloud. The **Custodian becomes the access manager**.
-2. The service asks the Custodian to share it with the organization user
-   (human or application).
-3. The Custodian checks organization policy (automatically, or via an app
-   where the CISO approves) and then grants **read** access to that user.
-4. The Custodian can **revoke the AI-powered service’s access** while the
-   organization user **keeps** access to the file.
 
 ---
 

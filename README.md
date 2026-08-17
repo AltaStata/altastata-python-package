@@ -33,6 +33,10 @@ the file. It is the organization’s **CISO / security team**, acting through
 the **Custodian**. They fully manage access (share, revoke, delete) without
 having access to plaintext. See **[ENTERPRISE.md](ENTERPRISE.md)**.
 
+Each uploaded file is **immutable**. That is **cryptographically guaranteed**
+by **AES-256-GCM**: even Bob (the owner) cannot modify the file in place.
+If a change is needed, Bob creates a **new version**.
+
 ## Supported clouds
 
 Works on **AWS**, **Azure**, **GCP**, **IBM**, **Fusion**, **MinIO**, **POSIX** (local / NFS-style paths), and **hybrid** setups — any S3-compatible or cloud object store the account is configured for.

@@ -308,10 +308,6 @@ twine check dist/*
 twine upload dist/*
 ```
 
-**Before every upload:** confirm `README.md` uses absolute GitHub links for
-docs (see [VERSIONING.md](VERSIONING.md) checklist item 5). Relative `.md`
-links 404 on the PyPI project page.
-
 ### PyPI Configuration
 1. Create a PyPI account if you don't have one
 2. Generate an API token:

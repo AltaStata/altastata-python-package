@@ -42,15 +42,3 @@ works.
 2. `setup.py` `version=` → `1.0.YYYYMMDD.N`.
 3. `BUNDLED_JAVA_RELEASE` → `YYYY.MM.DD`.
 4. README / release notes name both the wheel and the Java tag.
-5. **PyPI README links:** PyPI renders `README.md` but does **not** host sibling
-   files. Relative links like `[ENTERPRISE.md](ENTERPRISE.md)` become
-   `https://pypi.org/project/altastata/…/ENTERPRISE.md` and **404**.
-   Before upload, every doc / LICENSE / examples link in `README.md` must be an
-   absolute GitHub URL, e.g.
-   `https://github.com/AltaStata/altastata-python-package/blob/main/ENTERPRISE.md`
-   (same pattern for `HOWTO.md`, `PYTHON_API.md`, `VERSIONING.md`,
-   `USER_SETUP_GUIDE.md`, `README-developer.md`, `LICENSE`, `NOTICE`, `examples/`).
-6. After `twine upload`, create GitHub Release for tag `v1.0.YYYYMMDD.N`
-   (`gh release create …`). Retry if GitHub returns 503.
-7. Optional: bump `JUPYTER_VERSION` / push GHCR only when the image itself changes;
-   a docs-only wheel bump does not require new Docker tags.

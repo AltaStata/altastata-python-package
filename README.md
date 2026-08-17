@@ -22,6 +22,8 @@ SDK reference for `AltaStataFunctions`: **[PYTHON_API.md](PYTHON_API.md)**
 Day-to-day operations (upload, download, share, streams, events):
 **[HOWTO.md](HOWTO.md)**
 
+Enterprise (Custodian, PQC, HSM/HPCS): **[ENTERPRISE.md](ENTERPRISE.md)**
+
 ## What you get
 
 - **Pythonic APIs:** Standard Python file I/O via fsspec (`create_filesystem`)
@@ -232,6 +234,7 @@ Set ALTASTATA_WEB_UI_DIR= (empty) to disable the UI and run gRPC-only.
 ## More documentation
 
 - **Python HOWTO** (upload, download, share, streams, events): [HOWTO.md](HOWTO.md)
+- **Enterprise mode** (Custodian, PQC, HSM/HPCS): [ENTERPRISE.md](ENTERPRISE.md)
 - **Python API** (`AltaStataFunctions`): [PYTHON_API.md](PYTHON_API.md)
 - **Developers** (build wheel, bundle JAR + Console SPA, PyPI): [README-developer.md](README-developer.md)
 - **Examples**: [examples/](examples/)

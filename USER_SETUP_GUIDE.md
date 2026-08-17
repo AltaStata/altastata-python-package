@@ -150,3 +150,4 @@ with AccountSetupClient.connect() as client:
 
 Place the file in the same account directory, then connect with
 `AltaStataFunctions.from_account_dir` (see **Configure your account** above).
+Enterprise also needs `license.jwt` and `org-ca.pem` — [ENTERPRISE.md](ENTERPRISE.md).

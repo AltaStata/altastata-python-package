@@ -24,7 +24,7 @@ or applications** — in their own organization or a partner’s — have access
 (another user: a person or an application). The rest of this page is who
 **owns** that file and who may **grant or revoke** access.
 
-### Community
+### Community mode
 
 Whoever **uploads** the file is the **owner of that file**. The owner shares
 with readers and controls who has access.
@@ -39,8 +39,8 @@ organization’s **CISO / security team**, acting through a special
 **Custodian** user. All sharing goes through the Custodian.
 
 CISO / security can **observe** who has access and **fully manage** it
-(share / revoke / delete) — including across partner organizations — but
-they do **not** have access to plaintext. The Custodian only manages access;
+(share / revoke / delete) — including across partner organizations —
+without having access to plaintext. The Custodian only manages access;
 it never decrypts the file.
 
 When `enterprise-custodian-mode=true` is stamped on the account, peer SHARE /

@@ -258,7 +258,7 @@ Without requiring:
 2. **Add conversation memory** for multi-turn dialogues
 3. **Implement user authentication** (SSO via Azure AD)
 4. **Deploy to GKE** with Confidential Computing
-5. **Integrate with Daisy/Squeezy** workflows
+5. **Integrate with existing legal-assistant and broker** workflows
 6. **Add audit logging** for compliance
 
 ## Resources

@@ -391,7 +391,7 @@ chunker_b = RecursiveCharacterTextSplitter(chunk_size=3000)
 
 ## Summary: What Should Insurance Companies Use?
 
-### For Legal Document Summarization (Squeezy):
+### For legal document summarization:
 ```python
 chunk_size = 2000       # Full legal clauses
 chunk_overlap = 400     # 20% overlap

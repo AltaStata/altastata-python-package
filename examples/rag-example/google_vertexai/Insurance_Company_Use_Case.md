@@ -12,14 +12,14 @@
 
 ## Current Systems
 
-### Squeezy (Legal Assistant)
+### Legal assistant
 - **Challenge**: Azure → GCP processing requires secure data transfer
 - **Current Plan**: VPN or public internet with OAuth2
 - **Workflow**: Document Management (Azure) → Extract text → GCP Bucket → Cloud Function → Vertex AI
 
-### Daisy (Intermediary/Agent/Broker System)  
+### Broker / intermediary system
 - **Challenge**: Same Azure → GCP data transfer requirements
-- **Current Plan**: SpeedyPlus D4Next exposes backend via public internet
+- **Current Plan**: existing broker backend exposes APIs via public internet
 
 ## What AltaStata Solves
 
@@ -261,7 +261,7 @@ Before implementation, confirm:
 
 ### Phase 3: Scale
 1. Add conversation memory for multi-turn dialogues
-2. Integrate with Daisy/Squeezy workflows
+2. Integrate with existing legal-assistant and broker workflows
 3. Implement advanced retrieval strategies
 4. Deploy Confidential Computing for maximum security
 
@@ -271,7 +271,7 @@ Before implementation, confirm:
 
 - ✅ **Summarization**: 1-2 weeks, minimal complexity
 - ✅ **RAG System**: 2-4 weeks with LangChain
-- ✅ **Security**: Zero-trust, GDPR-compliant
+- ✅ **Security**: Zero-trust encryption and an audit trail for GDPR reporting
 - ✅ **Cost Savings**: €12k-21k/year infrastructure savings
 
 **Key Insight:** You CAN use Vertex AI's powerful capabilities (embeddings, Gemini) without using the RAG Engine. LangChain provides the orchestration layer that makes AltaStata and Vertex AI work together seamlessly.

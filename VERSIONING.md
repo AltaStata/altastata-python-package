@@ -32,9 +32,10 @@ using `.N` for the advertised latest.
 
 ## Last `1.0.6.x` wheels
 
-`1.0.6.16` and earlier stay on PyPI. Do not rename them.
-`1.0.20260816.1` sorts after `1.0.6.16` (`20260816 > 6`), so `pip install -U`
-works.
+The last `1.0.6.x` line was `1.0.6.16`. Those versions are **no longer on
+PyPI** (deleted, not yanked — the same numbers cannot be re-uploaded). Install
+the current `1.0.YYYYMMDD.N` (`pip install -U altastata`). Do not pin
+`1.0.6.x`. Going forward, **yank** a wheel instead of deleting it.
 
 ## Release checklist (version only)
 

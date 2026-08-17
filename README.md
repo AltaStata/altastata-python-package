@@ -12,7 +12,7 @@ revoke it.
 **Package version `1.0.20260817.4`** (`1.0.YYYYMMDD.N` — see [VERSIONING.md](https://github.com/AltaStata/altastata-python-package/blob/main/VERSIONING.md))
 is built on the Java/BSL runtime from
 [sovereign-data-fabric `v2026.08.17`](https://github.com/AltaStata/sovereign-data-fabric/releases/tag/v2026.08.17)
-(bundled `altastata-services` uber jar + MCP). The last `1.0.6.x` wheel was `1.0.6.16`.
+(bundled `altastata-services` uber jar + MCP). The last `1.0.6.x` line was `1.0.6.16` (no longer on PyPI).
 
 ```bash
 pip install altastata
@@ -20,8 +20,9 @@ pip install altastata
 
 Encryption usually slows pipelines — and most tools cannot work on encrypted
 data. AltaStata keeps per-file cryptographic control **without losing speed**.
-With **data compression**, you can even **boost throughput** and **lower
-storage costs**.
+**Post-quantum** cryptography (ML-KEM / ML-DSA) is available in **Enterprise**;
+Community uses RSA. With **data compression**, you can even **boost throughput**
+and **lower storage costs**.
 
 Each uploaded file is **immutable**. That is **cryptographically guaranteed**
 by **AES-256-GCM**: even the owner cannot modify the file in place.
@@ -55,7 +56,7 @@ having access to plaintext. See **[ENTERPRISE.md](https://github.com/AltaStata/a
 
 | Step | What to do |
 |------|------------|
-| **1. User account** | Create keys with the CLI/SDK in this package, or in the Desktop UI. See **[USER_SETUP_GUIDE.md](https://github.com/AltaStata/altastata-python-package/blob/main/USER_SETUP_GUIDE.md)**. |
+| **1. User account** | Create keys in the Desktop UI or with the CLI/SDK in this package (`pip install altastata`). See **[USER_SETUP_GUIDE.md](https://github.com/AltaStata/altastata-python-package/blob/main/USER_SETUP_GUIDE.md)**. |
 | **2. Admin Tool** | Org admin provisions the fabric and returns `*user.properties`. See **[ADMIN_TOOL_GUIDE.md](https://github.com/AltaStata/sovereign-data-fabric/blob/main/ADMIN_TOOL_GUIDE.md)**. |
 
 Then use the SDK below.

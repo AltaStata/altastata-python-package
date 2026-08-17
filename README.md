@@ -11,6 +11,11 @@ is built on the Java/BSL runtime from
 pip install altastata
 ```
 
+Encryption usually slows pipelines — and most tools cannot work on encrypted
+data. AltaStata keeps per-file cryptographic control **without losing speed**.
+With **data compression**, you can even **boost throughput** and **lower
+storage costs**.
+
 When two organizations exchange files in the usual way, the sender **loses
 control** once a copy leaves their boundary. With AltaStata, a user who puts a
 **file** into the fabric **keeps cryptographic control of that file** even

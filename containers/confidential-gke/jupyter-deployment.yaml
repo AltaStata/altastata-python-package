@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: jupyter-datascience
-        image: ghcr.io/altastata/altastata/jupyter-datascience-amd64:20260817
+        image: ghcr.io/altastata/altastata/jupyter-datascience-amd64:20260817.2
         ports:
         - containerPort: 8888
         env:

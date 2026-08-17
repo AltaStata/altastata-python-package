@@ -2,7 +2,7 @@
 
 Sovereign encrypted data fabric for any cloud Python SDK — with support for **fsspec**, **PyTorch**, **TensorFlow**, **LangChain**, **AI Agents**, **Databricks**, **Snowflake** (via S3), **boto3/S3 CLI**, **gRPC**, and a bundled **Web UI User Console**.
 
-**Package version `1.0.20260817.1`** (`1.0.YYYYMMDD.N` — see [VERSIONING.md](VERSIONING.md))
+**Package version `1.0.20260817.2`** (`1.0.YYYYMMDD.N` — see [VERSIONING.md](VERSIONING.md))
 is built on the Java/BSL runtime from
 [sovereign-data-fabric `v2026.08.17`](https://github.com/AltaStata/sovereign-data-fabric/releases/tag/v2026.08.17)
 (bundled `altastata-services` uber jar + MCP). The last `1.0.6.x` wheel was `1.0.6.16`.

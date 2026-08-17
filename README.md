@@ -9,7 +9,7 @@ after sharing it with a partner. They know **which humans or applications**
 — in their own organization or a partner’s — have access, and they can
 revoke it.
 
-**Package version `1.0.20260817.3`** (`1.0.YYYYMMDD.N` — see [VERSIONING.md](VERSIONING.md))
+**Package version `1.0.20260817.4`** (`1.0.YYYYMMDD.N` — see [VERSIONING.md](https://github.com/AltaStata/altastata-python-package/blob/main/VERSIONING.md))
 is built on the Java/BSL runtime from
 [sovereign-data-fabric `v2026.08.17`](https://github.com/AltaStata/sovereign-data-fabric/releases/tag/v2026.08.17)
 (bundled `altastata-services` uber jar + MCP). The last `1.0.6.x` wheel was `1.0.6.16`.
@@ -49,7 +49,7 @@ grant or revoke sharing.
 In **Enterprise** mode the access manager is **not** the user who created
 the file. It is the organization’s **CISO / security team**, acting through
 the **Custodian**. They fully manage access (share, revoke, delete) without
-having access to plaintext. See **[ENTERPRISE.md](ENTERPRISE.md)**.
+having access to plaintext. See **[ENTERPRISE.md](https://github.com/AltaStata/altastata-python-package/blob/main/ENTERPRISE.md)**.
 
 ## Supported clouds
 
@@ -57,12 +57,12 @@ Works on **AWS**, **Azure**, **GCP**, **IBM**, **Fusion**, **MinIO**, **POSIX** 
 
 ## Python API
 
-SDK reference for `AltaStataFunctions`: **[PYTHON_API.md](PYTHON_API.md)**
+SDK reference for `AltaStataFunctions`: **[PYTHON_API.md](https://github.com/AltaStata/altastata-python-package/blob/main/PYTHON_API.md)**
 
 Day-to-day operations (upload, download, share, streams, events):
-**[HOWTO.md](HOWTO.md)**
+**[HOWTO.md](https://github.com/AltaStata/altastata-python-package/blob/main/HOWTO.md)**
 
-Enterprise (Custodian, PQC, HSM/HPCS): **[ENTERPRISE.md](ENTERPRISE.md)**
+Enterprise (Custodian, PQC, HSM/HPCS): **[ENTERPRISE.md](https://github.com/AltaStata/altastata-python-package/blob/main/ENTERPRISE.md)**
 
 ## What you get
 
@@ -273,11 +273,11 @@ Set ALTASTATA_WEB_UI_DIR= (empty) to disable the UI and run gRPC-only.
 
 ## More documentation
 
-- **Python HOWTO** (upload, download, share, streams, events): [HOWTO.md](HOWTO.md)
-- **Enterprise mode** (Custodian, PQC, HSM/HPCS): [ENTERPRISE.md](ENTERPRISE.md)
-- **Python API** (`AltaStataFunctions`): [PYTHON_API.md](PYTHON_API.md)
-- **Developers** (build wheel, bundle JAR + Console SPA, PyPI): [README-developer.md](README-developer.md)
-- **Examples**: [examples/](examples/)
+- **Python HOWTO** (upload, download, share, streams, events): [HOWTO.md](https://github.com/AltaStata/altastata-python-package/blob/main/HOWTO.md)
+- **Enterprise mode** (Custodian, PQC, HSM/HPCS): [ENTERPRISE.md](https://github.com/AltaStata/altastata-python-package/blob/main/ENTERPRISE.md)
+- **Python API** (`AltaStataFunctions`): [PYTHON_API.md](https://github.com/AltaStata/altastata-python-package/blob/main/PYTHON_API.md)
+- **Developers** (build wheel, bundle JAR + Console SPA, PyPI): [README-developer.md](https://github.com/AltaStata/altastata-python-package/blob/main/README-developer.md)
+- **Examples**: [examples/](https://github.com/AltaStata/altastata-python-package/tree/main/examples)
 
 ## Questions?
 
@@ -285,12 +285,12 @@ Email [contact@altastata.com](mailto:contact@altastata.com).
 
 ## License
 
-Licensed under the **Apache License, Version 2.0** — see [LICENSE](LICENSE).
+Licensed under the **Apache License, Version 2.0** — see [LICENSE](https://github.com/AltaStata/altastata-python-package/blob/main/LICENSE).
 
 The Python / TypeScript sources in this repository are Apache 2.0. Bundled AltaStata
 Java runtime JARs (when present under `altastata/lib/`) remain under the
 [Business Source License 1.1](https://github.com/AltaStata/sovereign-data-fabric/blob/main/LICENSE.md).
-See [NOTICE](NOTICE) for attribution of bundled components.
+See [NOTICE](https://github.com/AltaStata/altastata-python-package/blob/main/NOTICE) for attribution of bundled components.
 
 ---
 

@@ -17,7 +17,10 @@ Works on **AWS**, **Azure**, **GCP**, **IBM**, **Fusion**, **MinIO**, **POSIX** 
 
 ## Python API
 
-SDK reference for `AltaStataFunctions`: **[PYTHON_API.md](https://github.com/AltaStata/altastata-python-package/blob/main/PYTHON_API.md)**
+SDK reference for `AltaStataFunctions`: **[PYTHON_API.md](PYTHON_API.md)**
+
+Day-to-day operations (upload, download, share, streams, events):
+**[HOWTO.md](HOWTO.md)**
 
 ## What you get
 
@@ -228,9 +231,10 @@ Set ALTASTATA_WEB_UI_DIR= (empty) to disable the UI and run gRPC-only.
 
 ## More documentation
 
-- **Python API** (`AltaStataFunctions`): [PYTHON_API.md](https://github.com/AltaStata/altastata-python-package/blob/main/PYTHON_API.md)
-- **Developers** (build wheel, bundle JAR + Console SPA, PyPI): [README-developer.md](https://github.com/AltaStata/altastata-python-package/blob/main/README-developer.md)
-- **Examples**: [examples/](https://github.com/AltaStata/altastata-python-package/tree/main/examples/)
+- **Python HOWTO** (upload, download, share, streams, events): [HOWTO.md](HOWTO.md)
+- **Python API** (`AltaStataFunctions`): [PYTHON_API.md](PYTHON_API.md)
+- **Developers** (build wheel, bundle JAR + Console SPA, PyPI): [README-developer.md](README-developer.md)
+- **Examples**: [examples/](examples/)
 
 ## Questions?
 

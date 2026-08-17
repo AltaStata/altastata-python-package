@@ -3,6 +3,7 @@
 Primary SDK entry point after `pip install altastata`.
 
 Account setup (create keys / password): see [USER_SETUP_GUIDE.md](USER_SETUP_GUIDE.md).  
+Task-oriented examples: [HOWTO.md](HOWTO.md).  
 Integrations (fsspec, PyTorch, S3, LangChain): see [README.md](README.md).
 
 `from_account_dir` / `from_credentials` / `from_upload` talk to the bundled Java

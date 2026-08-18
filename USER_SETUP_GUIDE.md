@@ -1,82 +1,25 @@
 # AltaStata Python — User Account Setup
 
-How to **create** keys and **connect** from Python. For Desktop UI screenshots
-(Public Key → admin → properties), see also
-[USER_SETUP_GUIDE.md in sovereign-data-fabric](https://github.com/AltaStata/sovereign-data-fabric/blob/main/docs/guides/USER_SETUP_GUIDE.md).
+Create your keys, send the **public key** to your org admin, then put the
+`*user.properties` they return next to the keys. The private key never leaves
+your machine.
 
----
+Desktop UI (screenshots, **Account Properties**):
+[USER_SETUP_GUIDE in sovereign-data-fabric](https://github.com/AltaStata/sovereign-data-fabric/blob/main/docs/guides/USER_SETUP_GUIDE.md).
+Admins:
+[ADMIN_TOOL_GUIDE](https://github.com/AltaStata/sovereign-data-fabric/blob/main/docs/guides/ADMIN_TOOL_GUIDE.md).
 
-## Configure your account
+## Typical flow
 
-Two equivalent ways to connect from Python:
+1. **You** create keys (CLI / SDK below, or Desktop UI) and send the **public
+   key** to the admin.
+2. **Admin** provisions storage and sends you a `*user.properties` file.
+3. **You** drop that file into the same account directory, then connect with
+   `AltaStataFunctions.from_account_dir`.
 
-### 1. Account folder on disk (typical)
+## Create keys (CLI / SDK)
 
-Each user keeps a directory under `~/.altastata/accounts/<display-name>/`:
-
-```text
-amazon.rsa.bob123/
-  altastata-myorg-bob123.user.properties   # from your admin
-  private.key                              # RSA (password-encrypted PEM)
-  public.key
-```
-
-**Account types:**
-
-- **RSA:** Needs `private.key`, `public.key`, and a password.
-- **PQC:** Needs `kyber_private.key`, `dilithium_private.key`, etc., and a password.
-- **HPCS:** Needs `hpcs-privkey.blob`, `public.key`, `hpcs.marker`, and **no** password (leave empty).
-- **HSM:** Needs `*user.properties` only, and **no** password.
-
-```python
-from altastata import AltaStataFunctions
-
-f = AltaStataFunctions.from_account_dir(
-    "/path/to/.altastata/accounts/amazon.rsa.bob123",
-    password="your_password",
-)
-```
-
-### 2. Inline credentials (`user_properties` + private key)
-
-Pass the same text you would have in files — useful for notebooks, secrets managers, or CI:
-
-```python
-from altastata import AltaStataFunctions
-
-user_properties = """#My Properties
-#Sun Jan 05 12:10:23 EST 2025
-AWSSecretKey=*****
-AWSAccessKeyId=*****
-myuser=bob123
-accounttype=amazon-s3-secure
-acccontainer-prefix=altastata-myorg-
-region=us-east-1
-metadata-encryption=RSA"""
-
-private_key = """-----BEGIN RSA PRIVATE KEY-----
-Proc-Type: 4,ENCRYPTED
-DEK-Info: DES-EDE3,F26EBECE6DDAEC52
-
-... encrypted PEM body ...
------END RSA PRIVATE KEY-----"""
-
-altastata_functions = AltaStataFunctions.from_credentials(
-    user_properties,
-    private_key,
-    password="my_password",
-)
-```
-
-Your org admin creates `*user.properties` after you send them `public.key` (RSA/PQC/HPCS).
-
----
-
-## Create an account without the Desktop UI (CLI / SDK)
-
-Uses the same gRPC `AccountSetupService` as Console / SetupUI.
-
-### Requirements
+Same gRPC `AccountSetupService` as Console / Desktop Setup.
 
 - `pip install altastata`
 - Local gateway on port **9877** (CLI/SDK auto-starts the bundled runtime by default)
@@ -99,8 +42,6 @@ altastata account create --type pqc --password 'secret' \
 altastata account change-password \
   --account-dir ~/.altastata/accounts/amazon.rsa.alice
 ```
-
-Tips:
 
 - Run `altastata help` (or `altastata --help`) for the full command list.
 - Prefer `--password-env` / `--current-password-env` / `--new-password-env` in scripts.
@@ -146,8 +87,63 @@ with AccountSetupClient.connect() as client:
     result.write_to("~/.altastata/accounts/amazon.pqc.bob")
 ```
 
-### After the admin returns `*user.properties`
+## Connect from Python
 
-Place the file in the same account directory, then connect with
-`AltaStataFunctions.from_account_dir` (see **Configure your account** above).
-Enterprise also needs `license.jwt` and `org-ca.pem` — [ENTERPRISE.md](ENTERPRISE.md).
+### Account folder (typical)
+
+```python
+from altastata import AltaStataFunctions
+
+f = AltaStataFunctions.from_account_dir(
+    "~/.altastata/accounts/amazon.rsa.alice",
+    password="your-password",  # "" for HPCS / HSM
+)
+```
+
+RSA: `private.key` + `public.key` + a password.
+PQC: `kyber_private.key`, `dilithium_private.key`, etc. + a password.
+HPCS: `hpcs-privkey.blob`, `public.key`, `hpcs.marker`, and **no** password
+(leave empty).
+HSM: `*user.properties` only, and **no** password.
+
+After the admin returns `*user.properties` (filename
+`altastata-{org}-{username}.user.properties`), drop it in that same directory.
+Enterprise / eval: also `license.jwt` and `org-ca.pem` —
+[ENTERPRISE.md](ENTERPRISE.md).
+
+### Inline credentials
+
+Same text as the files — useful for notebooks, secrets managers, or CI:
+
+```python
+from altastata import AltaStataFunctions
+
+user_properties = """#My Properties
+#Sun Jan 05 12:10:23 EST 2025
+AWSSecretKey=*****
+AWSAccessKeyId=*****
+myuser=bob123
+accounttype=amazon-s3-secure
+acccontainer-prefix=altastata-myorg-
+region=us-east-1
+metadata-encryption=RSA"""
+
+private_key = """-----BEGIN RSA PRIVATE KEY-----
+Proc-Type: 4,ENCRYPTED
+DEK-Info: DES-EDE3,F26EBECE6DDAEC52
+
+... encrypted PEM body ...
+-----END RSA PRIVATE KEY-----"""
+
+altastata_functions = AltaStataFunctions.from_credentials(
+    user_properties,
+    private_key,
+    password="my_password",
+)
+```
+
+## Security notes
+
+- Never share private keys (`private.key`, PQC private keys, `hpcs-privkey.blob`).
+- Never commit account folders or passwords to git.
+- You need the passphrase at every login (RSA / PQC). Leave it empty for HPCS.

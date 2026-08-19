@@ -31,8 +31,8 @@ The Docker image version is centrally managed in `version.sh`. To update the ver
 
 1. Edit `version.sh` and update the relevant variable:
    ```bash
-   JUPYTER_VERSION="20260817.3"   # Bump on real Jupyter image changes
-   RAG_VERSION="20260817.3"       # Bump on RAG image changes (zDNN variant is :${RAG_VERSION}_zdnn)
+   JUPYTER_VERSION="20260819.1"   # Bump on real Jupyter image changes
+   RAG_VERSION="20260819.1"       # Bump on RAG image changes (zDNN variant is :${RAG_VERSION}_zdnn)
    ```
 
 2. Run the update script to sync the version to all configuration files:
@@ -90,12 +90,12 @@ source version.sh
 VERSION="${JUPYTER_VERSION}"
 
 # Apple Silicon (ARM64):
-docker pull ghcr.io/altastata/altastata/jupyter-datascience-arm64:${VERSION}
-docker run -p 8888:8888 ghcr.io/altastata/altastata/jupyter-datascience-arm64:${VERSION}
+docker pull ghcr.io/altastata/jupyter-datascience-arm64:${VERSION}
+docker run -p 8888:8888 ghcr.io/altastata/jupyter-datascience-arm64:${VERSION}
 
 # Intel/AMD (AMD64):
-docker pull ghcr.io/altastata/altastata/jupyter-datascience-amd64:${VERSION}
-docker run -p 8888:8888 ghcr.io/altastata/altastata/jupyter-datascience-amd64:${VERSION}
+docker pull ghcr.io/altastata/jupyter-datascience-amd64:${VERSION}
+docker run -p 8888:8888 ghcr.io/altastata/jupyter-datascience-amd64:${VERSION}
 ```
 
 ### Platform Compatibility
@@ -239,7 +239,7 @@ docker run -d \
   -v $(pwd)/examples/tensorflow-example:/home/jovyan/tensorflow-example \
   -v $(pwd)/altastata:/home/jovyan/altastata-source \
   -e JUPYTER_ENABLE_LAB=yes \
-  ghcr.io/altastata/altastata/jupyter-datascience-arm64:latest   # or jupyter-datascience-amd64 on Intel/AMD
+  ghcr.io/altastata/jupyter-datascience-arm64:latest   # or jupyter-datascience-amd64 on Intel/AMD
 ```
 
 ### Development Workflow
@@ -299,10 +299,10 @@ export GITHUB_TOKEN=your_github_token_here
 source version.sh
 
 # Apple Silicon (ARM64):
-docker pull ghcr.io/altastata/altastata/jupyter-datascience-arm64:${VERSION}
+docker pull ghcr.io/altastata/jupyter-datascience-arm64:${VERSION}
 
 # Intel/AMD (AMD64):
-docker pull ghcr.io/altastata/altastata/jupyter-datascience-amd64:${VERSION}
+docker pull ghcr.io/altastata/jupyter-datascience-amd64:${VERSION}
 
 
 
@@ -324,8 +324,8 @@ docker compose -f containers/jupyter/docker-compose-ghcr.yml up -d
 
 After pushing images to GHCR, you may need to make them public for external access:
 
-1. **ARM64**: `ghcr.io/altastata/altastata/jupyter-datascience-arm64`
-2. **AMD64**: `ghcr.io/altastata/altastata/jupyter-datascience-amd64`
+1. **ARM64**: `ghcr.io/altastata/jupyter-datascience-arm64`
+2. **AMD64**: `ghcr.io/altastata/jupyter-datascience-amd64`
 3. **Click "Package settings"** (gear icon) for each
 4. **Scroll to "Danger Zone"** → **"Change visibility"** → **"Public"**
 5. **Confirm the change**

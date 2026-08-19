@@ -4,7 +4,7 @@
 > **Scheme:** `1.0.YYYYMMDD.N` = bundled Java/BSL tag `vYYYY.MM.DD`, last digit =
 > wheel build that day (easy to increment; Java stays on the BSL date). See
 > [VERSIONING.md](VERSIONING.md).
-> In-tree `setup.py`: **1.0.20260817.6** (Java **`2026.08.17`**). Last `1.0.6.x`
+> In-tree `setup.py`: **1.0.20260819.1** (Java **`2026.08.19`**). Last `1.0.6.x`
 > line was **1.0.6.16** (no longer on PyPI; do not pin it).
 
 ## Prerequisites
@@ -206,8 +206,8 @@ is built separately using `containers/jupyter/Dockerfile.s390x`.
 ./containers/jupyter/push-to-ghcr.sh
 
 # This creates:
-# - ghcr.io/altastata/altastata/jupyter-datascience-arm64:${VERSION}
-# - ghcr.io/altastata/altastata/jupyter-datascience-amd64:${VERSION}
+# - ghcr.io/altastata/jupyter-datascience-arm64:${VERSION}
+# - ghcr.io/altastata/jupyter-datascience-amd64:${VERSION}
 ```
 
 ### Running the Container
@@ -241,7 +241,7 @@ docker run \
   -p 8888:8888 \
   -v ~/.altastata:/opt/app-root/src/.altastata:rw \
   -v ~/Desktop:/opt/app-root/src/Desktop:rw \
-  ghcr.io/altastata/altastata/jupyter-datascience-arm64:${VERSION}   # or jupyter-datascience-amd64
+  ghcr.io/altastata/jupyter-datascience-arm64:${VERSION}   # or jupyter-datascience-amd64
 ```
 
 **Option C: Local build with docker-compose**
@@ -267,7 +267,7 @@ docker run \
 
 **If the container won’t run**
 
-- **“pull access denied” **— Use the GHCR image for your platform: `ghcr.io/altastata/altastata/jupyter-datascience-arm64` or `jupyter-datascience-amd64` with your version.
+- **“pull access denied” **— Use the GHCR image for your platform: `ghcr.io/altastata/jupyter-datascience-arm64` or `jupyter-datascience-amd64` with your version.
 - **“container name already in use”** — Remove the existing container: `docker rm -f altastata-jupyter`, then start again.
 - **Port 8888 in use** — Stop the process using it or change the host port, e.g. `"8889:8888"` in the compose file.
 - **Get Jupyter URL/token** — `docker logs altastata-jupyter 2>&1 | grep -E "http://|token="`

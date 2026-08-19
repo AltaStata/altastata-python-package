@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Stop and remove RAG s390x containers and the 2026b_latest image on the LinuxONE server.
+# Stop and remove RAG s390x containers and the current rag-open-llm image on the LinuxONE server.
 # Run from repo root. Uses same SSH_HOST/SSH_KEY as build-rag-s390x-on-server.sh.
 #
 # Usage: ./containers/rag-example/stop-and-remove-rag-s390x-2026b-on-server.sh
@@ -11,7 +11,8 @@ SSH_KEY="${SSH_KEY:-$HOME/.ssh/id_rsa}"
 : "${SSH_HOST:?Set SSH_HOST=user@your-linuxone-host}"
 SSH_OPTS="-i $SSH_KEY -o StrictHostKeyChecking=accept-new -o GSSAPIAuthentication=no -o PreferredAuthentications=publickey"
 CONTAINER_NAME="rag-s390x-test"
-OLD_TAG="2026b_latest"
+source "$REPO_ROOT/version.sh"
+OLD_TAG="${RAG_VERSION}"
 
 echo "SSH: $SSH_HOST — stop/remove $CONTAINER_NAME and $OLD_TAG image(s)"
 
@@ -30,7 +31,7 @@ ssh $SSH_OPTS "$SSH_HOST" "
   echo '  Other containers done'
 "
 
-# Remove the 2026b_latest images (ignore errors if not present)
+# Remove the image(s) for OLD_TAG (ignore errors if not present)
 ssh $SSH_OPTS "$SSH_HOST" "
   for img in altastata/rag-open-llm-s390x:$OLD_TAG icr.io/altastata/rag-open-llm-s390x:$OLD_TAG; do
     if docker image inspect \$img >/dev/null 2>&1; then
@@ -42,4 +43,4 @@ ssh $SSH_OPTS "$SSH_HOST" "
   done
 "
 
-echo "Done. 2026b_latest containers and images cleared on server."
+echo "Done. RAG containers and images cleared on server (tag=${OLD_TAG})."

@@ -188,14 +188,14 @@ scp -i /path/to/private-key.pem -r altastata-python-package ubuntu@<FLOATING_IP>
 If you built the s390x image on macOS, you can export and copy it to the VM:
 
 ```bash
-docker save altastata/jupyter-datascience-s390x:2026c -o /tmp/jupyter-2026c.tar
-scp -i /path/to/private-key.pem /tmp/jupyter-2026c.tar ubuntu@<FLOATING_IP>:~/
+docker save altastata/jupyter-datascience-s390x:20260819.1 -o /tmp/jupyter-20260819.1.tar
+scp -i /path/to/private-key.pem /tmp/jupyter-20260819.1.tar ubuntu@<FLOATING_IP>:~/
 ```
 
 On the VM, load the image:
 
 ```bash
-sudo docker load -i /home/ubuntu/jupyter-2026c.tar
+sudo docker load -i /home/ubuntu/jupyter-20260819.1.tar
 ```
 
 ### Step 2: Navigate to Project Directory
@@ -360,27 +360,25 @@ ssh -i $SSH_KEY root@<FLOATING_IP> "docker logs rag-s390x-test 2>&1 | tail -80"
 
 **Push RAG s390x to ICR:** See [README-ICR-BUILD-AND-PUSH.md](README-ICR-BUILD-AND-PUSH.md) (build, tag, login, push).
 
-## Deploying S3 Gateway on s390x
+## Deploying altastata-services on s390x (S3 + gRPC in one process)
 
-### Step 1: Pull S3 Gateway Image
+### Step 1: Pull altastata-services Image
 
 ```bash
-# Pull the s390x S3 Gateway image
-docker pull ghcr.io/altastata/altastata/s3-gateway-s390x:2026b_latest
-
-# Tag as latest (optional)
-docker tag ghcr.io/altastata/altastata/s3-gateway-s390x:2026b_latest altastata/s3-gateway-s390x:latest
+# Pull the s390x altastata-services image (S3 REST on :9876 and gRPC on :9877)
+docker pull ghcr.io/altastata/altastata-services:v2026.08.19
 ```
 
-### Step 2: Run S3 Gateway Container
+### Step 2: Run altastata-services Container
 
 ```bash
 # Run the container
 docker run -d \
-  --name altastata-s3-gateway \
+  --name altastata-services \
   -p 9876:9876 \
+  -p 9877:9877 \
   -v ~/altastata-data:/app/data \
-  ghcr.io/altastata/altastata/s3-gateway-s390x:2026b_latest
+  ghcr.io/altastata/altastata-services:v2026.08.19
 ```
 
 ### Step 3: Configure Security Group
@@ -395,14 +393,14 @@ docker run -d \
    - **Source**: 0.0.0.0/0 (or your specific IP for security)
    - **Action**: Allow
 
-### Step 4: Verify S3 Gateway
+### Step 4: Verify altastata-services
 
 ```bash
 # Check container status
-docker ps | grep s3-gateway
+docker ps | grep altastata-services
 
 # Check logs
-docker logs altastata-s3-gateway
+docker logs altastata-services
 
 # Test status endpoint (on the VM)
 curl http://localhost:9876/status

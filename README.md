@@ -13,9 +13,9 @@ after sharing it with a partner. They know **which humans or applications**
 — in their own organization or a partner’s — have access, and they can
 revoke it.
 
-**Package version `1.0.20260817.6`** (`1.0.YYYYMMDD.N` — see [VERSIONING.md](https://github.com/AltaStata/altastata-python-package/blob/main/VERSIONING.md))
+**Package version `1.0.20260819.1`** (`1.0.YYYYMMDD.N` — see [VERSIONING.md](https://github.com/AltaStata/altastata-python-package/blob/main/VERSIONING.md))
 is built on the Java/BSL runtime from
-[sovereign-data-fabric `v2026.08.17`](https://github.com/AltaStata/sovereign-data-fabric/releases/tag/v2026.08.17)
+[sovereign-data-fabric `v2026.08.19`](https://github.com/AltaStata/sovereign-data-fabric/releases/tag/v2026.08.19)
 (bundled `altastata-services` uber jar + MCP). The last `1.0.6.x` line was `1.0.6.16` (no longer on PyPI).
 
 Encryption usually slows pipelines — and most tools cannot work on encrypted

@@ -40,7 +40,11 @@ pip install -e .
 # Build package
 python -m build
 
-# Run basic tests
+# Run unit tests (mocked; no live account)
+pip install pytest
+python -m pytest tests/ -q
+
+# Smoke test against a real account (see examples/smoke-test/)
 python examples/smoke-test/test_script.py
 
 # Test PyTorch example

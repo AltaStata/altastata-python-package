@@ -290,7 +290,7 @@ Set ALTASTATA_WEB_UI_DIR= (empty) to disable the UI and run gRPC-only.
 - **Python HOWTO** (upload, download, share, streams, events): [HOWTO.md](https://github.com/AltaStata/altastata-python-package/blob/main/HOWTO.md)
 - **Enterprise mode** (Custodian, PQC, HSM/HPCS): [ENTERPRISE.md](https://github.com/AltaStata/altastata-python-package/blob/main/ENTERPRISE.md)
 - **Python API** (`AltaStataFunctions`): [PYTHON_API.md](https://github.com/AltaStata/altastata-python-package/blob/main/PYTHON_API.md)
-- **Developers** (build wheel, bundle JAR + Console SPA, PyPI): [README-developer.md](https://github.com/AltaStata/altastata-python-package/blob/main/README-developer.md)
+- **Developers** (build wheel, bundle JAR + Console SPA, PyPI, **`pytest tests/`**): [README-developer.md](https://github.com/AltaStata/altastata-python-package/blob/main/README-developer.md)
 - **Examples**: [examples/](https://github.com/AltaStata/altastata-python-package/tree/main/examples)
 
 ## Questions?

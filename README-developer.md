@@ -152,15 +152,41 @@ want the convenience wrapper (`pip install boto3`). `s3_credentials` /
 ## Local Development
 
 ### Installation
+
 ```bash
 # Install the package in development mode
 pip install -e .
 
-# Install from pypi.org
+# Install from PyPI
 pip install altastata
+```
 
-# Run smoke tests (core API)
+### Testing
+
+**Unit tests** (mocked gRPC/S3; no live account or cloud):
+
+```bash
+pip install pytest   # not in install_requires — install once for dev
+python -m pytest tests/ -q
+```
+
+Expect ~60 tests; **one is skipped by default** — the boto3 object-tagging
+integration in `tests/test_object_tagging_boto3_integration.py` needs a real
+account directory and the bundled services JVM:
+
+```bash
+ALTASTATA_ACCOUNT_DIR=$HOME/.altastata/accounts/amazon.rsa.bob123 \
+  python -m pytest tests/test_object_tagging_boto3_integration.py -q
+```
+
+**Smoke test** (live account + gateway; not part of `pytest tests/`):
+
+```bash
 python examples/smoke-test/test_script.py
+```
+
+Example-specific tests live under `examples/*/README.md` (fsspec sharing, RAG,
+event listener, and so on).
 
 ## Build and Upload
 

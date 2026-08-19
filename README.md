@@ -49,7 +49,7 @@ grant or revoke sharing.
 
 In **Enterprise** mode the access manager is **not** the user who created
 the file. It is the organization’s **CISO / security team**, acting through
-the **Custodian**. They fully manage access (share, revoke, delete) without
+the **Custodian**. They fully manage users' access (share, revoke, delete) without
 having access to plaintext. See **[ENTERPRISE.md](https://github.com/AltaStata/altastata-python-package/blob/main/ENTERPRISE.md)**.
 
 ## Getting started

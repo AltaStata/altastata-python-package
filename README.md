@@ -13,7 +13,7 @@ after sharing it with a partner. They know **which humans or applications**
 — in their own organization or a partner’s — have access, and they can
 revoke it.
 
-**Package version `1.0.20260819.5`** (`1.0.YYYYMMDD.N` — see [VERSIONING.md](https://github.com/AltaStata/altastata-python-package/blob/main/VERSIONING.md))
+**Package version `1.0.20260819.6`** (`1.0.YYYYMMDD.N` — see [VERSIONING.md](https://github.com/AltaStata/altastata-python-package/blob/main/VERSIONING.md))
 is built on the Java/BSL runtime from
 [sovereign-data-fabric `v2026.08.19`](https://github.com/AltaStata/sovereign-data-fabric/releases/tag/v2026.08.19)
 (bundled `altastata-services` uber jar + MCP). The last `1.0.6.x` line was `1.0.6.16` (no longer on PyPI).
@@ -40,7 +40,7 @@ We collaborate with **Red Hat** and **IBM** on **confidential computing**:
 
 ## How to use
 
-With the **Admin Tool**, you turn ordinary cloud or local storage into this sovereign fabric.
+With the **Admin Tool**, you turn ordinary cloud or local storage into this sovereign fabric. Download the Admin Tool from [Releases](https://github.com/AltaStata/sovereign-data-fabric/releases) — [how to use the Admin Tool](https://github.com/AltaStata/sovereign-data-fabric/blob/main/docs/guides/ADMIN_TOOL_GUIDE.md).
 
 **Bob** uploads a report and shares access with **Alice** (a person or an
 application). In **Community** mode, Bob stays the **owner of that file**. Alice

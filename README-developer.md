@@ -4,7 +4,7 @@
 > **Scheme:** `1.0.YYYYMMDD.N` = bundled Java/BSL tag `vYYYY.MM.DD`, last digit =
 > wheel build that day (easy to increment; Java stays on the BSL date). See
 > [VERSIONING.md](VERSIONING.md).
-> In-tree `setup.py`: **1.0.20260819.5** (Java **`2026.08.19`**). Last `1.0.6.x`
+> In-tree `setup.py`: **1.0.20260819.6** (Java **`2026.08.19`**). Last `1.0.6.x`
 > line was **1.0.6.16** (no longer on PyPI; do not pin it).
 
 ## Prerequisites

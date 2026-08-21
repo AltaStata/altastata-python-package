@@ -13,7 +13,7 @@ after sharing it with a partner. They know **which humans or applications**
 — in their own organization or a partner’s — have access, and they can
 revoke it.
 
-**Package version `1.0.20260819.8`** (`1.0.YYYYMMDD.N` — see [VERSIONING.md](https://github.com/AltaStata/altastata-python-package/blob/main/VERSIONING.md))
+**Package version `1.0.20260819.9`** (`1.0.YYYYMMDD.N` — see [VERSIONING.md](https://github.com/AltaStata/altastata-python-package/blob/main/VERSIONING.md))
 is built on the Java/BSL runtime from
 [sovereign-data-fabric `v2026.08.19`](https://github.com/AltaStata/sovereign-data-fabric/releases/tag/v2026.08.19)
 (bundled `altastata-services` uber jar + MCP). The last `1.0.6.x` line was `1.0.6.16` (no longer on PyPI).
@@ -49,10 +49,10 @@ with your keys and that file.
 
 ### Typical data flow
 
-**Bob** uploads a report and shares access with **Alice** (a person or an
-application). In **Community** mode, Bob stays the **owner of that file**. Alice
-is a **reader**: she can open it and see who has access, but she does not
-grant or revoke sharing.
+A **data owner** uploads a file and shares access with a **ServiceId** that
+runs an application on a data platform. In **Community** mode, the data owner
+stays the **owner of that file**. The ServiceId is a **reader**: it can open
+the data and see who has access, but it does not grant or revoke sharing.
 
 In **Enterprise** mode the access manager is **not** the user who created
 the file. It is the organization’s **CISO / security team**, acting through

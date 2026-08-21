@@ -37,14 +37,8 @@ Also set `BUNDLED_JAVA_RELEASE` in `altastata/__init__.py` to `YYYY.MM.DD`
 runtime/docs checks.
 
 **Ordering note:** `1.0.YYYYMMDD.N` sorts **above** a bare `1.0.YYYYMMDD`. Keep
-using `.N` for the advertised latest.
-
-## Last `1.0.6.x` wheels
-
-The last `1.0.6.x` line was `1.0.6.16`. Those versions are **no longer on
-PyPI** (deleted, not yanked — the same numbers cannot be re-uploaded). Install
-the current `1.0.YYYYMMDD.N` (`pip install -U altastata`). Do not pin
-`1.0.6.x`. Going forward, **yank** a wheel instead of deleting it.
+using `.N` for the advertised latest. Prefer **yank** over delete so a version
+number cannot be reused.
 
 ## Release checklist (version only)
 

@@ -16,7 +16,7 @@ revoke it.
 **Package version `1.0.20260819.9`** (`1.0.YYYYMMDD.N` — see [VERSIONING.md](https://github.com/AltaStata/altastata-python-package/blob/main/VERSIONING.md))
 is built on the Java/BSL runtime from
 [sovereign-data-fabric `v2026.08.19`](https://github.com/AltaStata/sovereign-data-fabric/releases/tag/v2026.08.19)
-(bundled `altastata-services` uber jar + MCP). The last `1.0.6.x` line was `1.0.6.16` (no longer on PyPI).
+(bundled `altastata-services` uber jar + MCP).
 
 Encryption usually slows pipelines — and most tools cannot work on encrypted
 data. AltaStata keeps per-file cryptographic control **without losing speed**.

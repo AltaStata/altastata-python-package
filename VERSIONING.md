@@ -17,13 +17,14 @@ Examples:
 
 | Wheel | Bundled Java |
 | --- | --- |
+| `1.0.20260819.4` | `v2026.08.19` |
 | `1.0.20260819.3` | `v2026.08.19` |
 | `1.0.20260819.2` | `v2026.08.19` |
 | `1.0.20260819.1` | `v2026.08.19` |
 | `1.0.20260817.1` | `v2026.08.17` |
 | `1.0.20260817.2` | same Java tag, second wheel that day |
 
-`pip install altastata==1.0.20260819.3` is valid [PEP 440](https://peps.python.org/pep-0440/).
+`pip install altastata==1.0.20260819.4` is valid [PEP 440](https://peps.python.org/pep-0440/).
 Do **not** use `1.0.2026.08.16.1`: PEP 440 drops leading zeros (`08` → `8`).
 
 Also set `BUNDLED_JAVA_RELEASE` in `altastata/__init__.py` to `YYYY.MM.DD`

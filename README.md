@@ -13,7 +13,7 @@ after sharing it with a partner. They know **which humans or applications**
 — in their own organization or a partner’s — have access, and they can
 revoke it.
 
-**Package version `1.0.20260819.3`** (`1.0.YYYYMMDD.N` — see [VERSIONING.md](https://github.com/AltaStata/altastata-python-package/blob/main/VERSIONING.md))
+**Package version `1.0.20260819.4`** (`1.0.YYYYMMDD.N` — see [VERSIONING.md](https://github.com/AltaStata/altastata-python-package/blob/main/VERSIONING.md))
 is built on the Java/BSL runtime from
 [sovereign-data-fabric `v2026.08.19`](https://github.com/AltaStata/sovereign-data-fabric/releases/tag/v2026.08.19)
 (bundled `altastata-services` uber jar + MCP). The last `1.0.6.x` line was `1.0.6.16` (no longer on PyPI).
@@ -88,7 +88,7 @@ Enterprise (Custodian, PQC, HSM/HPCS): **[ENTERPRISE.md](https://github.com/Alta
 - **S3-compatible API:** boto3, aws CLI, s3fs on port **9876** — including Snowflake external stages that read S3
 - **Distributed apps:** gRPC API (Python client + JS clients via port **9877**)
 - **Sharing & events:** Users share encrypted files with each other; Python apps subscribe to SHARE/DELETE notifications
-- **Web UI User Console:** Finder-style file manager in the browser (http://127.0.0.1:9877)
+- **Web UI User Console:** Lighter browser UI on localhost only — same host as the Python install (http://127.0.0.1:9877)
 - **Big Data:** Databricks / Apache Spark (AltaStata Hadoop FS JAR)
 
 ---
@@ -98,8 +98,9 @@ Enterprise (Custodian, PQC, HSM/HPCS): **[ENTERPRISE.md](https://github.com/Alta
 The native **Desktop UI** is not in this pip package. Download the Desktop UI from
 [Releases](https://github.com/AltaStata/sovereign-data-fabric/releases) —
 [user account setup](https://github.com/AltaStata/sovereign-data-fabric/blob/main/docs/guides/USER_SETUP_GUIDE.md).
-For day-to-day Python work, use the bundled **Web UI User Console** at
-http://127.0.0.1:9877 instead.
+This package includes a lighter **Web UI User Console** at
+http://127.0.0.1:9877 — it is reachable only from a browser on the **same host**
+where the Python package (and its Java gateway) is installed.
 
 ![AltaStata Desktop UI — browse, preview, upload/download, and share encrypted files](https://raw.githubusercontent.com/AltaStata/altastata-python-package/main/docs/images/altastata_desktop_ui.png)
 
@@ -281,7 +282,9 @@ See [examples/event-listener-example/](https://github.com/AltaStata/altastata-py
 
 ## Web UI User Console
 
-The wheel ships a browser file manager. Start the gateway:
+A lighter browser UI bundled with this package. It listens on **localhost**
+(http://127.0.0.1:9877), so only a browser on the **same host** as the Python
+install (and Java gateway) can open it. Start the gateway:
 
 ```bash
 altastata-grpc-server

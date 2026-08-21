@@ -13,7 +13,7 @@ after sharing it with a partner. They know **which humans or applications**
 — in their own organization or a partner’s — have access, and they can
 revoke it.
 
-**Package version `1.0.20260819.2`** (`1.0.YYYYMMDD.N` — see [VERSIONING.md](https://github.com/AltaStata/altastata-python-package/blob/main/VERSIONING.md))
+**Package version `1.0.20260819.3`** (`1.0.YYYYMMDD.N` — see [VERSIONING.md](https://github.com/AltaStata/altastata-python-package/blob/main/VERSIONING.md))
 is built on the Java/BSL runtime from
 [sovereign-data-fabric `v2026.08.19`](https://github.com/AltaStata/sovereign-data-fabric/releases/tag/v2026.08.19)
 (bundled `altastata-services` uber jar + MCP). The last `1.0.6.x` line was `1.0.6.16` (no longer on PyPI).
@@ -52,12 +52,14 @@ the file. It is the organization’s **CISO / security team**, acting through
 the **Custodian**. They fully manage users' access (share, revoke, delete) without
 having access to plaintext. See **[ENTERPRISE.md](https://github.com/AltaStata/altastata-python-package/blob/main/ENTERPRISE.md)**.
 
+![AltaStata data flow — library, package, or S3 gateway over any cloud, with per-file encryption, verification, and compression](https://raw.githubusercontent.com/AltaStata/altastata-python-package/main/docs/images/altastata_dataflow.png)
+
 ## Getting started
 
 | Step | What to do |
 |------|------------|
 | **1. User account** | Create keys in the Desktop UI or with the CLI/SDK in this package (`pip install altastata`). See **[USER_SETUP_GUIDE.md](https://github.com/AltaStata/altastata-python-package/blob/main/USER_SETUP_GUIDE.md)**. |
-| **2. Admin Tool** | Org admin provisions the fabric and returns `*user.properties`. See **[ADMIN_TOOL_GUIDE.md](https://github.com/AltaStata/sovereign-data-fabric/blob/main/docs/guides/ADMIN_TOOL_GUIDE.md)**. |
+| **2. Admin Tool** | Download the Admin Tool from [Releases](https://github.com/AltaStata/sovereign-data-fabric/releases) — [how to use the Admin Tool](https://github.com/AltaStata/sovereign-data-fabric/blob/main/docs/guides/ADMIN_TOOL_GUIDE.md). Org admin returns `*user.properties`. |
 
 Then use the SDK below.
 
@@ -88,6 +90,18 @@ Enterprise (Custodian, PQC, HSM/HPCS): **[ENTERPRISE.md](https://github.com/Alta
 - **Sharing & events:** Users share encrypted files with each other; Python apps subscribe to SHARE/DELETE notifications
 - **Web UI User Console:** Finder-style file manager in the browser (http://127.0.0.1:9877)
 - **Big Data:** Databricks / Apache Spark (AltaStata Hadoop FS JAR)
+
+---
+
+## Desktop UI (separate download)
+
+The native **Desktop UI** is not in this pip package. Download the Desktop UI from
+[Releases](https://github.com/AltaStata/sovereign-data-fabric/releases) —
+[user account setup](https://github.com/AltaStata/sovereign-data-fabric/blob/main/docs/guides/USER_SETUP_GUIDE.md).
+For day-to-day Python work, use the bundled **Web UI User Console** at
+http://127.0.0.1:9877 instead.
+
+![AltaStata Desktop UI — browse, preview, upload/download, and share encrypted files](https://raw.githubusercontent.com/AltaStata/altastata-python-package/main/docs/images/altastata_desktop_ui.png)
 
 ---
 

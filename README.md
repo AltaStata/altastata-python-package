@@ -6,9 +6,9 @@ Integrations: **fsspec**, **PyTorch**, **TensorFlow**, **LangChain**, **AI Agent
 
 Cookbooks: [INTEGRATIONS.md](https://github.com/AltaStata/altastata-python-package/blob/main/docs/guides/INTEGRATIONS.md) · Account setup: [USER_SETUP_GUIDE.md](https://github.com/AltaStata/altastata-python-package/blob/main/docs/guides/USER_SETUP_GUIDE.md)
 
-### AltaStata with Red Hat and IBM (confidential computing)
+### Featured by Red Hat and IBM
 
-- [Red Hat: end-to-end security for AI (OpenShift confidential containers)](https://www.redhat.com/en/blog/end-end-security-ai-integrating-altastata-storage-red-hat-openshift-confidential-containers)
+- [Red Hat: end-to-end security for AI (OpenShift confidential containers)](https://www.redhat.com/en/blog/end-end-security-ai-integrating-altastata-storage-red-hat-openshift-confidential-containers) — [video](https://www.youtube.com/watch?v=2EGncReIi00)
 - [IBM: data sovereignty for AI (LinuxONE Confidential Computing)](https://community.ibm.com/community/user/blogs/savita-kumari/2026/06/24/data-sovereignty-for-ai-integrating-alta-stata)
 
 ![AltaStata data flow](https://raw.githubusercontent.com/AltaStata/altastata-python-package/main/docs/images/altastata_dataflow.png)

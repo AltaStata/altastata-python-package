@@ -4,8 +4,6 @@ Code patterns for **fsspec**, **LangChain**, **S3**, **PyTorch**, **TensorFlow**
 
 Account setup: [USER_SETUP_GUIDE.md](USER_SETUP_GUIDE.md). File operations: [HOWTO.md](HOWTO.md). API reference: [PYTHON_API.md](PYTHON_API.md).
 
-![AltaStata data flow](https://raw.githubusercontent.com/AltaStata/altastata-python-package/main/docs/images/altastata_dataflow.png)
-
 ---
 
 ## fsspec

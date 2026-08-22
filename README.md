@@ -2,28 +2,14 @@
 
 Sovereign encrypted data fabric for any cloud Python SDK — with support for **fsspec**, **PyTorch**, **TensorFlow**, **LangChain**, **AI Agents**, **Databricks**, **Snowflake** (via S3), **boto3/S3 CLI**, **gRPC**, and a bundled **Web UI User Console**.
 
-**Package version `1.0.20260819.10`** (`1.0.YYYYMMDD.N` — see [VERSIONING.md](https://github.com/AltaStata/altastata-python-package/blob/main/VERSIONING.md))
-is built on the Java/BSL runtime from
-[sovereign-data-fabric `v2026.08.19`](https://github.com/AltaStata/sovereign-data-fabric/releases/tag/v2026.08.19)
-(bundled `altastata-services` uber jar + MCP).
+**Integrations** (PyTorch, TensorFlow, fsspec, LangChain, S3, Web UI, events): **[INTEGRATIONS.md](https://github.com/AltaStata/altastata-python-package/blob/main/INTEGRATIONS.md)**
 
-When two organizations exchange files, when **sovereign data** moves to a
-**global cloud**, or when datasets are sent to an **AI data center** for
-model training, the usual pattern is the same: the sender **loses control**
-once a copy leaves their boundary. With AltaStata, a user who puts a **file**
-into the fabric **keeps cryptographic control of that file** even after sharing
-it with a partner. They **control** which **humans or applications** — in their own
-organization or a partner’s — have access, and they can revoke it.
+### AltaStata with Red Hat and IBM (confidential computing)
 
-Encryption usually slows pipelines — and most tools cannot work on encrypted
-data. AltaStata keeps per-file cryptographic control **without losing speed**.
-**Post-quantum** cryptography (ML-KEM / ML-DSA) is available in **Enterprise**;
-Community uses RSA. With **data compression**, you can even **boost throughput**
-and **lower storage costs**.
+- [Red Hat: end-to-end security for AI (OpenShift confidential containers)](https://www.redhat.com/en/blog/end-end-security-ai-integrating-altastata-storage-red-hat-openshift-confidential-containers)
+- [IBM: data sovereignty for AI (LinuxONE Confidential Computing)](https://community.ibm.com/community/user/blogs/savita-kumari/2026/06/24/data-sovereignty-for-ai-integrating-alta-stata)
 
-Each uploaded file is **immutable**. That is **cryptographically guaranteed**
-by **AES-256-GCM**: even the owner cannot modify the file in place.
-If a change is needed, the owner creates a **new version**.
+AltaStata is a **sovereign encrypted data fabric** — per-file cryptographic control across clouds and AI pipelines. Technology overview: [sovereign-data-fabric README](https://github.com/AltaStata/sovereign-data-fabric#altastata).
 
 ## What you get
 
@@ -37,13 +23,6 @@ If a change is needed, the owner creates a **new version**.
 - **Web UI User Console:** Lighter browser UI on localhost only — same host as the Python install (http://127.0.0.1:9877)
 - **Big Data:** Databricks / Apache Spark (AltaStata Hadoop FS JAR — not in the wheel; see [UBER_JARS](https://github.com/AltaStata/sovereign-data-fabric/blob/main/docs/guides/UBER_JARS.md))
 - **Clouds & backends:** **AWS**, **Azure**, **GCP**, **IBM**, **Fusion**, **MinIO**, **POSIX / LocalFS** (local or shared path), and hybrid setups
-
-The [AltaStata python package](https://github.com/AltaStata/altastata-python-package) is **seamlessly integrated** with **AI/ML** tools for **model training and use** — PyTorch, TensorFlow, boto3, LangChain, AI agents.
-
-We collaborate with **Red Hat** and **IBM** on **confidential computing**:
-
-- [Red Hat: end-to-end security for AI (OpenShift confidential containers)](https://www.redhat.com/en/blog/end-end-security-ai-integrating-altastata-storage-red-hat-openshift-confidential-containers)
-- [IBM: data sovereignty for AI (LinuxONE Confidential Computing)](https://community.ibm.com/community/user/blogs/savita-kumari/2026/06/24/data-sovereignty-for-ai-integrating-alta-stata)
 
 ## Quick start
 

@@ -1,6 +1,6 @@
 # AltaStata Python API — `AltaStataFunctions`
 
-Primary SDK entry point after `pip install altastata`.
+Primary SDK entry point — `AltaStataFunctions`.
 
 Account setup (create keys / password): see [USER_SETUP_GUIDE.md](USER_SETUP_GUIDE.md).  
 Task-oriented examples: [HOWTO.md](HOWTO.md).  
@@ -46,9 +46,8 @@ f = AltaStataFunctions.from_upload(
 
 Do not call `AltaStataFunctions()` directly.
 
-> **Local vs Remote Gateway:**
-> - When running on the **local machine** (default), `from_account_dir` automatically starts the co-hosted `altastata-services` JAR and references `~/.altastata/accounts/...`.
-> - When connecting to a **remote gateway** (`grpc_endpoint=GrpcEndpoint(host="...", port=9877)`), use `from_credentials` or `from_upload` so your encrypted keys and properties are transmitted to the remote server during authentication.
+**Local:** `from_account_dir` — account folder on the gateway host (auto-starts JAR).
+**Remote:** `from_credentials` / `from_upload` — send properties and keys to `grpc_endpoint`.
 
 ---
 

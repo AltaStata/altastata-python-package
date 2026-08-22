@@ -1,78 +1,48 @@
 # AltaStata Python — User Account Setup
 
-Create your keys, send the **public key** to your org admin, then put the
-`*user.properties` they return next to the keys. The private key never leaves
-your machine.
+Create keys (Desktop UI or CLI below), send the **public key** to your admin,
+drop `*user.properties` next to your keys. One account folder for **Python**,
+**Java**, **Scala**, **S3**, and **gRPC**.
 
-Desktop UI (screenshots, **Account Properties**):
-[USER_SETUP_GUIDE in sovereign-data-fabric](https://github.com/AltaStata/sovereign-data-fabric/blob/main/docs/guides/USER_SETUP_GUIDE.md).
-Admins:
-[ADMIN_TOOL_GUIDE](https://github.com/AltaStata/sovereign-data-fabric/blob/main/docs/guides/ADMIN_TOOL_GUIDE.md).
+Desktop UI:
+[USER_SETUP_GUIDE](https://github.com/AltaStata/sovereign-data-fabric/blob/main/docs/guides/USER_SETUP_GUIDE.md)
+· Admins:
+[ADMIN_TOOL_GUIDE](https://github.com/AltaStata/sovereign-data-fabric/blob/main/docs/guides/ADMIN_TOOL_GUIDE.md)
 
 ## Getting started
 
-| Step | What to do |
-|------|------------|
-| **1. User account** | Create keys in the Desktop UI or with the CLI/SDK in this package. See **Create keys** below. |
-| **2. Admin Tool** | Download the Admin Tool from [Releases](https://github.com/AltaStata/sovereign-data-fabric/releases) — [how to use the Admin Tool](https://github.com/AltaStata/sovereign-data-fabric/blob/main/docs/guides/ADMIN_TOOL_GUIDE.md). Your org admin provisions storage and returns `*user.properties`. |
-| **3. Account directory** | Place the `*user.properties` file in your account directory alongside your keys. See **Connect from Python** below. |
+| Step | Who | What to do |
+|------|-----|------------|
+| **1. Keys** | You | [Desktop UI](https://github.com/AltaStata/sovereign-data-fabric/blob/main/docs/guides/USER_SETUP_GUIDE.md#desktop-ui-altastata-ui) or **Create keys** below. Send the **public key** to your org admin. |
+| **2. Provision** | Org admin | Provisions storage with the Admin Tool; returns `*user.properties` ([ADMIN_TOOL_GUIDE](https://github.com/AltaStata/sovereign-data-fabric/blob/main/docs/guides/ADMIN_TOOL_GUIDE.md)). |
+| **3. Account directory** | You | Drop `*user.properties` in `~/.altastata/accounts/<name>/` next to your keys → **Connect from Python** below. |
 
-Cloud object storage and **POSIX / LocalFS** are both supported backends — see
-[how to provision POSIX / LocalFS](https://github.com/AltaStata/sovereign-data-fabric/blob/main/docs/guides/ADMIN_TOOL_GUIDE.md#33-evaluate-on-local-disk-posix--localfs).
-
-## How the fabric is provisioned
-
-Your organization’s **admin** (not each Python developer) provisions ordinary
-cloud or local storage into this sovereign fabric with the **Admin Tool**.
-Download it from [Releases](https://github.com/AltaStata/sovereign-data-fabric/releases)
-— [how to use the Admin Tool](https://github.com/AltaStata/sovereign-data-fabric/blob/main/docs/guides/ADMIN_TOOL_GUIDE.md).
-
-## Typical data flow
-
-A **data owner** uploads a file and shares access with a **ServiceId** that
-runs an application on a data platform. In **Community** mode, the data owner
-stays the **owner of that file**. The ServiceId is a **reader**: it can open
-the data and see who has access, but it does not grant or revoke sharing.
-
-In **Enterprise** mode the access manager is **not** the user who created
-the file. It is the organization’s **CISO / security team**, acting through
-the **Custodian**. They fully manage users' access (share, revoke, delete) without
-having access to plaintext. See **[ENTERPRISE.md](ENTERPRISE.md)**.
-
-![AltaStata data flow — library, package, or S3 gateway over any cloud, with per-file encryption, verification, and compression](https://raw.githubusercontent.com/AltaStata/altastata-python-package/main/docs/images/altastata_dataflow.png)
+Backends include cloud object storage and **POSIX / LocalFS**
+([ADMIN_TOOL_GUIDE §3.3](https://github.com/AltaStata/sovereign-data-fabric/blob/main/docs/guides/ADMIN_TOOL_GUIDE.md#33-evaluate-on-local-disk-posix--localfs)).
 
 ## Create keys (CLI / SDK)
 
-Same gRPC `AccountSetupService` as Console / Desktop Setup.
-
-- Local gateway on port **9877** (CLI/SDK auto-starts the bundled runtime by default)
-- For Docker / non-loopback binds: `ALTASTATA_LOCAL_MODE_ALLOW_ACCOUNT_SETUP=true`
+Same gRPC `AccountSetupService` as Desktop / Console. Gateway on **9877**
+(auto-starts by default); Docker / remote bind:
+`ALTASTATA_LOCAL_MODE_ALLOW_ACCOUNT_SETUP=true`.
 
 ### CLI
 
 ```bash
-altastata help          # list all commands
+altastata help
 
-# RSA
 altastata account create --type rsa --password 'secret' \
   --out ~/.altastata/accounts/amazon.rsa.alice --name amazon.rsa.alice
 
-# PQC
 altastata account create --type pqc --password 'secret' \
   --out ~/.altastata/accounts/amazon.pqc.bob --name amazon.pqc.bob
 
-# Optional — change private-key password later (RSA/PQC; no login)
-altastata account change-password \
-  --account-dir ~/.altastata/accounts/amazon.rsa.alice
+altastata account change-password --account-dir ~/.altastata/accounts/amazon.rsa.alice
 ```
 
-- Run `altastata help` (or `altastata --help`) for the full command list.
-- Prefer `--password-env` / `--current-password-env` / `--new-password-env` in scripts.
-- Use a **new** `--out` directory so you never overwrite an existing account.
-- The private key stays on disk encrypted with your password; send only the
-  **public** key material to your org admin.
-- `change-password` only re-encrypts key files on disk (same local bootstrap
-  mode as `create`; no LoginV2 / `*user.properties`).
+Use a **new** `--out` directory; send only the **public** key to the admin.
+In scripts, prefer `--password-env` variants. `change-password` re-encrypts
+keys on disk only (no `*user.properties` yet).
 
 ### Python SDK
 
@@ -80,39 +50,26 @@ altastata account change-password \
 from altastata import change_account_password, create_account
 
 result = create_account(
-    "rsa",
-    "~/.altastata/accounts/amazon.rsa.alice",
-    password="secret",
-    name="amazon.rsa.alice",
+    "rsa", "~/.altastata/accounts/amazon.rsa.alice",
+    password="secret", name="amazon.rsa.alice",
 )
 print(result.suggested_display_name, sorted(result.account_files))
 
-# Optional — you can change the private-key password later
-# (no login / *user.properties needed)
 change_account_password(
     "~/.altastata/accounts/amazon.rsa.alice",
-    current_password="secret",
-    new_password="new-secret",
+    current_password="secret", new_password="new-secret",
 )
 ```
-
-Or with an explicit client:
 
 ```python
 from altastata import AccountSetupClient
 
 with AccountSetupClient.connect() as client:
-    result = client.generate_keys(
-        "pqc",
-        password="secret",
-        suggested_display_name="amazon.pqc.bob",
-    )
+    result = client.generate_keys("pqc", password="secret", suggested_display_name="amazon.pqc.bob")
     result.write_to("~/.altastata/accounts/amazon.pqc.bob")
 ```
 
 ## Connect from Python
-
-### Account folder (typical)
 
 ```python
 from altastata import AltaStataFunctions
@@ -123,59 +80,34 @@ f = AltaStataFunctions.from_account_dir(
 )
 ```
 
-RSA: `private.key` + `public.key` + a password.
-PQC: `kyber_private.key`, `dilithium_private.key`, etc. + a password.
-HPCS: `hpcs-privkey.blob`, `public.key`, `hpcs.marker`, and **no** password
-(leave empty).
-HSM: `*user.properties` only, and **no** password.
+**Key types:** RSA — `private.key` + `public.key` + password. PQC — Kyber/Dilithium
+files + password. HPCS — `hpcs-privkey.blob`, `hpcs.marker`, empty password.
+HSM — `*user.properties` only, empty password.
 
-After the admin returns `*user.properties` (filename
-`altastata-{org}-{username}.user.properties`), drop it in that same directory.
-Enterprise / eval: also `license.jwt` and `org-ca.pem` —
-[ENTERPRISE.md](ENTERPRISE.md).
+Enterprise / eval: also `license.jwt` and `org-ca.pem` — [ENTERPRISE.md](ENTERPRISE.md).
 
 ### Inline credentials
 
-Same text as the files — useful for notebooks, secrets managers, or CI:
+Notebooks / CI — same file contents as text:
 
 ```python
 from altastata import AltaStataFunctions
 
-user_properties = """#My Properties
-#Sun Jan 05 12:10:23 EST 2025
-AWSSecretKey=*****
-AWSAccessKeyId=*****
-myuser=bob123
-accounttype=amazon-s3-secure
-acccontainer-prefix=altastata-myorg-
-region=us-east-1
-metadata-encryption=RSA"""
-
-private_key = """-----BEGIN RSA PRIVATE KEY-----
-Proc-Type: 4,ENCRYPTED
-DEK-Info: DES-EDE3,F26EBECE6DDAEC52
-
-... encrypted PEM body ...
------END RSA PRIVATE KEY-----"""
-
 altastata_functions = AltaStataFunctions.from_credentials(
-    user_properties,
-    private_key,
-    password="my_password",
+    user_properties, private_key, password="my_password",
 )
 ```
 
 ## Security notes
 
-- Never share private keys (`private.key`, PQC private keys, `hpcs-privkey.blob`).
-- Never commit account folders or passwords to git.
-- You need the passphrase at every login (RSA / PQC). Leave it empty for HPCS.
+- Never share private keys or commit account folders / passwords to git.
+- Passphrase at every login (RSA/PQC); empty for HPCS.
 
 ## What to read next
 
 | If you want… | Go to |
 |--------------|--------|
-| Upload, download, share, streams, events | [HOWTO.md](HOWTO.md) |
-| fsspec, PyTorch, LangChain, S3, Web UI | [INTEGRATIONS.md](INTEGRATIONS.md) |
-| Method reference | [PYTHON_API.md](PYTHON_API.md) |
-| Enterprise / Custodian / PQC | [ENTERPRISE.md](ENTERPRISE.md) |
+| File ops | [HOWTO.md](HOWTO.md) |
+| fsspec, PyTorch, LangChain, S3 | [INTEGRATIONS.md](INTEGRATIONS.md) |
+| API reference | [PYTHON_API.md](PYTHON_API.md) |
+| Enterprise | [ENTERPRISE.md](ENTERPRISE.md) |

@@ -1,13 +1,9 @@
 # How to work with AltaStata (Python)
 
-One page, organized by **what you want to do**. Same tasks as the Java
-[HOWTO](https://github.com/AltaStata/sovereign-data-fabric/blob/main/docs/guides/HOWTO.md)
-and Scala
-[Low-level-Scala-API](https://github.com/AltaStata/sovereign-data-fabric/blob/main/docs/guides/Low-level-Scala-API.md),
-using `AltaStataFunctions` after `pip install altastata`.
+Task-oriented `AltaStataFunctions` examples. Java / Desktop / S3:
+[sovereign-data-fabric HOWTO](https://github.com/AltaStata/sovereign-data-fabric/blob/main/docs/guides/HOWTO.md).
 
-Create an account first: [USER_SETUP_GUIDE.md](USER_SETUP_GUIDE.md). Method
-reference: [PYTHON_API.md](PYTHON_API.md).
+Account: [USER_SETUP_GUIDE.md](USER_SETUP_GUIDE.md). API: [PYTHON_API.md](PYTHON_API.md).
 
 ```python
 from altastata import AltaStataFunctions
@@ -172,34 +168,6 @@ f.get_file_attribute(
 
 `owner` is not a data attribute. The creator is the version tag in
 `list_cloud_files_versions`.
-
----
-
-## Prefix / subtree
-
-`list`, `share`, `revoke`, `delete`, and `retrieve` take a cloud path **or**
-a prefix. Pass the folder and `True` to include descendants:
-
-```python
-f.share_files(
-    "Public/inbox",  # prefix: every path that starts with this
-    True,            # include the subtree
-    None,
-    None,
-    ["bob123"],
-)
-```
-
-`store` maps a local tree onto a cloud prefix:
-
-```python
-f.store(
-    ["/data/images"],  # local directory
-    "/data",           # stripped: images/a.png stays images/a.png
-    "Public/inbox",    # cloud subtree: Public/inbox/images/a.png
-    True,
-)
-```
 
 ---
 

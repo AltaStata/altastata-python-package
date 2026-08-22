@@ -9,7 +9,11 @@ Sovereign encrypted data fabric for any cloud Python SDK — with support for **
 - [Red Hat: end-to-end security for AI (OpenShift confidential containers)](https://www.redhat.com/en/blog/end-end-security-ai-integrating-altastata-storage-red-hat-openshift-confidential-containers)
 - [IBM: data sovereignty for AI (LinuxONE Confidential Computing)](https://community.ibm.com/community/user/blogs/savita-kumari/2026/06/24/data-sovereignty-for-ai-integrating-alta-stata)
 
-AltaStata is a **sovereign encrypted data fabric** — per-file cryptographic control across clouds and AI pipelines. Technology overview: [sovereign-data-fabric README](https://github.com/AltaStata/sovereign-data-fabric#altastata).
+AltaStata is a **sovereign encrypted data fabric** — per-file cryptographic control across clouds and AI pipelines.
+
+![AltaStata data flow](https://raw.githubusercontent.com/AltaStata/altastata-python-package/main/docs/images/altastata_dataflow.png)
+
+Technology overview: [sovereign-data-fabric README](https://github.com/AltaStata/sovereign-data-fabric#altastata).
 
 ## What you get
 
@@ -26,9 +30,9 @@ AltaStata is a **sovereign encrypted data fabric** — per-file cryptographic co
 
 ## Quick start
 
-Set up your account first — **[USER_SETUP_GUIDE.md](https://github.com/AltaStata/altastata-python-package/blob/main/USER_SETUP_GUIDE.md)** (keys, Admin Tool, `*user.properties`).
+Requires a configured account directory (steps 1–3 in **[USER_SETUP_GUIDE.md](https://github.com/AltaStata/altastata-python-package/blob/main/USER_SETUP_GUIDE.md)**).
 
-`from_account_dir` / `from_credentials` auto-start the bundled Java gateway (Web UI User Console + gRPC + S3):
+`from_account_dir` auto-starts the bundled Java gateway (Web UI + gRPC on **9877**, S3 on **9876**):
 
 ```python
 from altastata import AltaStataFunctions
@@ -47,6 +51,8 @@ f = AltaStataFunctions.from_account_dir(
 
 print(f.list_cloud_files_versions("Public/", True, None, None))
 ```
+
+Next: file operations in [HOWTO.md](https://github.com/AltaStata/altastata-python-package/blob/main/HOWTO.md); PyTorch, fsspec, S3 in [INTEGRATIONS.md](https://github.com/AltaStata/altastata-python-package/blob/main/INTEGRATIONS.md).
 
 One bundled Java process (`altastata-services`) listens on **9877** (gRPC + Web UI at http://127.0.0.1:9877) and **9876** (S3-compatible REST API).
 

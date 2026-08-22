@@ -15,7 +15,7 @@ Cookbooks: [INTEGRATIONS.md](https://github.com/AltaStata/altastata-python-packa
 
 Technology overview: [sovereign-data-fabric README](https://github.com/AltaStata/sovereign-data-fabric#altastata).
 
-## What you get
+## Capabilities
 
 - **Pythonic APIs:** Standard Python file I/O via fsspec (`create_filesystem`)
 - **PyTorch:** Train and load datasets directly from encrypted cloud paths (`AltaStataPyTorchDataset`)

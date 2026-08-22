@@ -1,6 +1,6 @@
 include LICENSE
 include NOTICE
 include README.md
-include PYTHON_API.md
-include USER_SETUP_GUIDE.md
-include INTEGRATIONS.md
+include docs/guides/PYTHON_API.md
+include docs/guides/USER_SETUP_GUIDE.md
+include docs/guides/INTEGRATIONS.md

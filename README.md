@@ -2,7 +2,7 @@
 
 Sovereign encrypted data fabric for any cloud Python SDK — with support for **fsspec**, **PyTorch**, **TensorFlow**, **LangChain**, **AI Agents**, **Databricks**, **Snowflake** (via S3), **boto3/S3 CLI**, **gRPC**, and a bundled **Web UI User Console**.
 
-**Integrations** (PyTorch, TensorFlow, fsspec, LangChain, S3, Web UI, events): **[INTEGRATIONS.md](https://github.com/AltaStata/altastata-python-package/blob/main/INTEGRATIONS.md)**
+**Integrations** (PyTorch, TensorFlow, fsspec, LangChain, S3, Web UI, events): **[INTEGRATIONS.md](https://github.com/AltaStata/altastata-python-package/blob/main/docs/guides/INTEGRATIONS.md)**
 
 ### AltaStata with Red Hat and IBM (confidential computing)
 
@@ -30,7 +30,7 @@ Technology overview: [sovereign-data-fabric README](https://github.com/AltaStata
 
 ## Quick start
 
-Requires a configured account directory (steps 1–3 in **[USER_SETUP_GUIDE.md](https://github.com/AltaStata/altastata-python-package/blob/main/USER_SETUP_GUIDE.md)**).
+Requires a configured account directory (steps 1–3 in **[USER_SETUP_GUIDE.md](https://github.com/AltaStata/altastata-python-package/blob/main/docs/guides/USER_SETUP_GUIDE.md)**).
 
 `from_account_dir` auto-starts the bundled Java gateway (Web UI + gRPC on **9877**, S3 on **9876**):
 
@@ -52,7 +52,7 @@ f = AltaStataFunctions.from_account_dir(
 print(f.list_cloud_files_versions("Public/", True, None, None))
 ```
 
-Next: file operations in [HOWTO.md](https://github.com/AltaStata/altastata-python-package/blob/main/HOWTO.md); PyTorch, fsspec, S3 in [INTEGRATIONS.md](https://github.com/AltaStata/altastata-python-package/blob/main/INTEGRATIONS.md).
+Next: file operations in [HOWTO.md](https://github.com/AltaStata/altastata-python-package/blob/main/docs/guides/HOWTO.md); PyTorch, fsspec, S3 in [INTEGRATIONS.md](https://github.com/AltaStata/altastata-python-package/blob/main/docs/guides/INTEGRATIONS.md).
 
 One bundled Java process (`altastata-services`) listens on **9877** (gRPC + Web UI at http://127.0.0.1:9877) and **9876** (S3-compatible REST API).
 
@@ -60,13 +60,13 @@ One bundled Java process (`altastata-services`) listens on **9877** (gRPC + Web 
 
 | Topic | Guide |
 |-------|--------|
-| **Account setup & getting started** | [USER_SETUP_GUIDE.md](https://github.com/AltaStata/altastata-python-package/blob/main/USER_SETUP_GUIDE.md) |
-| **Upload, download, share, streams, events** | [HOWTO.md](https://github.com/AltaStata/altastata-python-package/blob/main/HOWTO.md) |
-| **fsspec, PyTorch, TensorFlow, LangChain, S3, Web UI** | [INTEGRATIONS.md](https://github.com/AltaStata/altastata-python-package/blob/main/INTEGRATIONS.md) |
-| **`AltaStataFunctions` API** | [PYTHON_API.md](https://github.com/AltaStata/altastata-python-package/blob/main/PYTHON_API.md) |
-| **Enterprise (Custodian, PQC, HSM/HPCS)** | [ENTERPRISE.md](https://github.com/AltaStata/altastata-python-package/blob/main/ENTERPRISE.md) |
+| **Account setup & getting started** | [USER_SETUP_GUIDE.md](https://github.com/AltaStata/altastata-python-package/blob/main/docs/guides/USER_SETUP_GUIDE.md) |
+| **Upload, download, share, streams, events** | [HOWTO.md](https://github.com/AltaStata/altastata-python-package/blob/main/docs/guides/HOWTO.md) |
+| **fsspec, PyTorch, TensorFlow, LangChain, S3, Web UI** | [INTEGRATIONS.md](https://github.com/AltaStata/altastata-python-package/blob/main/docs/guides/INTEGRATIONS.md) |
+| **`AltaStataFunctions` API** | [PYTHON_API.md](https://github.com/AltaStata/altastata-python-package/blob/main/docs/guides/PYTHON_API.md) |
+| **Enterprise (Custodian, PQC, HSM/HPCS)** | [ENTERPRISE.md](https://github.com/AltaStata/altastata-python-package/blob/main/docs/guides/ENTERPRISE.md) |
 | **Examples** | [examples/](https://github.com/AltaStata/altastata-python-package/tree/main/examples) |
-| **Build wheel, bundle JAR, PyPI** | [README-developer.md](https://github.com/AltaStata/altastata-python-package/blob/main/README-developer.md) |
+| **Build wheel, bundle JAR, PyPI** | [README-developer.md](https://github.com/AltaStata/altastata-python-package/blob/main/docs/guides/README-developer.md) |
 
 ## Questions?
 

@@ -9,4 +9,4 @@ alwaysApply: true
 - **Mac orchestration:** `containers/build-s390x-jupyter-and-rag-on-server.sh` (**workstation-only**) rsync+s then invokes the **`linuxone/`** builder on the server.
 - **`containers/linuxone/*.sh`** expect a **directory tree already on the VM** (copied/rsync'd).
 
-See **`CLAUDE.md`** (RAG Open LLM on IBM Z) for the mirrored detail.
+See **`examples/rag-example/open_llm/README.md`** and **`containers/jupyter/IBM-LINUXONE-S390X-SETUP.md`** for s390x / RAG detail.

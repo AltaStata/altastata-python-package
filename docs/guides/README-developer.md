@@ -4,7 +4,7 @@
 > **Scheme:** `1.0.YYYYMMDD.N` = bundled Java/BSL tag `vYYYY.MM.DD`, last digit =
 > wheel build that day (easy to increment; Java stays on the BSL date). See
 > [VERSIONING.md](VERSIONING.md).
-> In-tree `setup.py`: **1.0.20260819.12** (Java **`2026.08.19`**).
+> In-tree `setup.py`: **1.0.20260819.13** (Java **`2026.08.19`**).
 
 ## Prerequisites
 
@@ -85,7 +85,7 @@ CLI: `altastata help`, `altastata account create`, `altastata account change-pas
 `altastata grpc-server`, `altastata mcp`.
 SDK: `create_account`, `change_account_password`.
 
-See **[USER_SETUP_GUIDE.md](https://github.com/AltaStata/altastata-python-package/blob/main/USER_SETUP_GUIDE.md)**. When `account_setup.proto`
+See **[USER_SETUP_GUIDE.md](https://github.com/AltaStata/altastata-python-package/blob/main/docs/guides/USER_SETUP_GUIDE.md)**. When `account_setup.proto`
 changes in the Java repo, sync and regenerate:
 
 ```bash
@@ -204,7 +204,7 @@ twine upload dist/*                               # Upload to PyPI
 
 ## Docker Deployment
 
-Full guide: [containers/jupyter/README-Docker.md](containers/jupyter/README-Docker.md)
+Full guide: [containers/jupyter/README-Docker.md](../../containers/jupyter/README-Docker.md)
 
 ### Version Management
 

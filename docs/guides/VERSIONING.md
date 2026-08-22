@@ -17,13 +17,13 @@ Examples:
 
 | Wheel | Bundled Java |
 | --- | --- |
-| `1.0.20260819.18` | `v2026.08.19` (latest; same-day docs rebuild) |
+| `1.0.20260819.19` | `v2026.08.19` (latest; same-day docs rebuild) |
 | `1.0.20260819.2` | `v2026.08.19` (same Java tag, second wheel that day) |
 | `1.0.20260819.1` | `v2026.08.19` (first wheel for that Java date) |
 
 Same-day rebuilds only bump `.N`; Java stays on `v2026.08.19`.
 
-`pip install altastata==1.0.20260819.18` is valid [PEP 440](https://peps.python.org/pep-0440/).
+`pip install altastata==1.0.20260819.19` is valid [PEP 440](https://peps.python.org/pep-0440/).
 
 Also set `BUNDLED_JAVA_RELEASE` in `altastata/__init__.py` to `YYYY.MM.DD`
 (same date, dotted). The PyPI version is for humans; the constant is what

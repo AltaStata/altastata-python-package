@@ -14,8 +14,8 @@ Desktop UI:
 | Step | Who | What to do |
 |------|-----|------------|
 | **1. Keys** | You | [Desktop UI](https://github.com/AltaStata/sovereign-data-fabric/blob/main/docs/guides/USER_SETUP_GUIDE.md#desktop-ui-altastata-ui) or **Create keys** below. Send the **public key** to your org admin. |
-| **2. Provision** | Org admin | Provisions storage with the Admin Tool; returns `*user.properties` ([ADMIN_TOOL_GUIDE](https://github.com/AltaStata/sovereign-data-fabric/blob/main/docs/guides/ADMIN_TOOL_GUIDE.md)). |
-| **3. Account directory** | You | Drop `*user.properties` in `~/.altastata/accounts/<name>/` next to your keys → **Connect from Python** below. |
+| **2. Provision** | Org admin | Admin Tool output: `~/.altastata/admin/properties.<cloud>/` ([§3.2](https://github.com/AltaStata/sovereign-data-fabric/blob/main/docs/guides/ADMIN_TOOL_GUIDE.md#32-output-paths)); send `*.user.properties` to the user. |
+| **3. Account directory** | You | Drop `*user.properties` in `~/.altastata/accounts/<name>/` next to your keys → **Connect from Python** below. Paths & logs: [USER_SETUP](https://github.com/AltaStata/sovereign-data-fabric/blob/main/docs/guides/USER_SETUP_GUIDE.md#where-files-live). |
 
 Backends include cloud object storage and **POSIX / LocalFS**
 ([ADMIN_TOOL_GUIDE §3.3](https://github.com/AltaStata/sovereign-data-fabric/blob/main/docs/guides/ADMIN_TOOL_GUIDE.md#33-evaluate-on-local-disk-posix--localfs)).

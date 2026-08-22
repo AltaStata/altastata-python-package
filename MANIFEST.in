@@ -3,3 +3,4 @@ include NOTICE
 include README.md
 include PYTHON_API.md
 include USER_SETUP_GUIDE.md
+include INTEGRATIONS.md

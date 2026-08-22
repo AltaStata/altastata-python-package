@@ -4,7 +4,7 @@ Primary SDK entry point after `pip install altastata`.
 
 Account setup (create keys / password): see [USER_SETUP_GUIDE.md](USER_SETUP_GUIDE.md).  
 Task-oriented examples: [HOWTO.md](HOWTO.md).  
-Integrations (fsspec, PyTorch, S3, LangChain): see [README.md](README.md).
+Integrations (fsspec, PyTorch, S3, LangChain): see [INTEGRATIONS.md](INTEGRATIONS.md).
 
 `from_account_dir` / `from_credentials` / `from_upload` talk to the bundled Java
 gateway over **gRPC** (default `127.0.0.1:9877`) and can auto-start it.
@@ -135,6 +135,6 @@ Always call `shutdown()` (or use a `try`/`finally`) in long-running apps when do
 
 ## Related
 
-- **fsspec:** `from altastata.fsspec import create_filesystem` — [README § fsspec](README.md#fsspec)
-- **PyTorch / TensorFlow:** [README](README.md) + [`examples/`](examples/)
+- **fsspec:** `from altastata.fsspec import create_filesystem` — [INTEGRATIONS.md § fsspec](INTEGRATIONS.md#fsspec)
+- **PyTorch / TensorFlow:** [INTEGRATIONS.md](INTEGRATIONS.md) + [`examples/`](examples/)
 - **gRPC (advanced):** most apps should stay on `AltaStataFunctions`. For remote/JS clients or proto-level control, see protos under `proto/altastata/grpc/v1/` and `AltaStataGrpcClient` in the package source. Java-side services: [sovereign-data-fabric `altastata-grpc`](https://github.com/AltaStata/sovereign-data-fabric/tree/main/altastata-grpc).

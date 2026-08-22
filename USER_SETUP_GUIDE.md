@@ -9,19 +9,42 @@ Desktop UI (screenshots, **Account Properties**):
 Admins:
 [ADMIN_TOOL_GUIDE](https://github.com/AltaStata/sovereign-data-fabric/blob/main/docs/guides/ADMIN_TOOL_GUIDE.md).
 
-## Typical flow
+## Getting started
 
-1. **You** create keys (CLI / SDK below, or Desktop UI) and send the **public
-   key** to the admin.
-2. **Admin** provisions storage and sends you a `*user.properties` file.
-3. **You** drop that file into the same account directory, then connect with
-   `AltaStataFunctions.from_account_dir`.
+| Step | What to do |
+|------|------------|
+| **1. User account** | Create keys in the Desktop UI or with the CLI/SDK in this package. See **Create keys** below. |
+| **2. Admin Tool** | Download the Admin Tool from [Releases](https://github.com/AltaStata/sovereign-data-fabric/releases) — [how to use the Admin Tool](https://github.com/AltaStata/sovereign-data-fabric/blob/main/docs/guides/ADMIN_TOOL_GUIDE.md). Your org admin provisions storage and returns `*user.properties`. |
+| **3. Account directory** | Place the `*user.properties` file in your account directory alongside your keys. See **Connect from Python** below. |
+
+Cloud object storage and **POSIX / LocalFS** are both supported backends — see
+[how to provision POSIX / LocalFS](https://github.com/AltaStata/sovereign-data-fabric/blob/main/docs/guides/ADMIN_TOOL_GUIDE.md#33-evaluate-on-local-disk-posix--localfs).
+
+## How the fabric is provisioned
+
+Your organization’s **admin** (not each Python developer) provisions ordinary
+cloud or local storage into this sovereign fabric with the **Admin Tool**.
+Download it from [Releases](https://github.com/AltaStata/sovereign-data-fabric/releases)
+— [how to use the Admin Tool](https://github.com/AltaStata/sovereign-data-fabric/blob/main/docs/guides/ADMIN_TOOL_GUIDE.md).
+
+## Typical data flow
+
+A **data owner** uploads a file and shares access with a **ServiceId** that
+runs an application on a data platform. In **Community** mode, the data owner
+stays the **owner of that file**. The ServiceId is a **reader**: it can open
+the data and see who has access, but it does not grant or revoke sharing.
+
+In **Enterprise** mode the access manager is **not** the user who created
+the file. It is the organization’s **CISO / security team**, acting through
+the **Custodian**. They fully manage users' access (share, revoke, delete) without
+having access to plaintext. See **[ENTERPRISE.md](ENTERPRISE.md)**.
+
+![AltaStata data flow — library, package, or S3 gateway over any cloud, with per-file encryption, verification, and compression](https://raw.githubusercontent.com/AltaStata/altastata-python-package/main/docs/images/altastata_dataflow.png)
 
 ## Create keys (CLI / SDK)
 
 Same gRPC `AccountSetupService` as Console / Desktop Setup.
 
-- `pip install altastata`
 - Local gateway on port **9877** (CLI/SDK auto-starts the bundled runtime by default)
 - For Docker / non-loopback binds: `ALTASTATA_LOCAL_MODE_ALLOW_ACCOUNT_SETUP=true`
 
@@ -147,3 +170,12 @@ altastata_functions = AltaStataFunctions.from_credentials(
 - Never share private keys (`private.key`, PQC private keys, `hpcs-privkey.blob`).
 - Never commit account folders or passwords to git.
 - You need the passphrase at every login (RSA / PQC). Leave it empty for HPCS.
+
+## What to read next
+
+| If you want… | Go to |
+|--------------|--------|
+| Upload, download, share, streams, events | [HOWTO.md](HOWTO.md) |
+| fsspec, PyTorch, LangChain, S3, Web UI | [INTEGRATIONS.md](INTEGRATIONS.md) |
+| Method reference | [PYTHON_API.md](PYTHON_API.md) |
+| Enterprise / Custodian / PQC | [ENTERPRISE.md](ENTERPRISE.md) |

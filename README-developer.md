@@ -4,7 +4,7 @@
 > **Scheme:** `1.0.YYYYMMDD.N` = bundled Java/BSL tag `vYYYY.MM.DD`, last digit =
 > wheel build that day (easy to increment; Java stays on the BSL date). See
 > [VERSIONING.md](VERSIONING.md).
-> In-tree `setup.py`: **1.0.20260819.9** (Java **`2026.08.19`**).
+> In-tree `setup.py`: **1.0.20260819.10** (Java **`2026.08.19`**).
 
 ## Prerequisites
 
@@ -97,7 +97,7 @@ python scripts/generate_grpc_stubs.py
 ### Agents / MCP
 
 Python agents use `AltaStataFunctions.from_account_dir` (gateway auto-starts) —
-see **Agents (Python)** in [README.md](README.md). Optional Desktop MCP stdio:
+see **LangChain & AI Agents** in [INTEGRATIONS.md](INTEGRATIONS.md). Optional Desktop MCP stdio:
 `altastata mcp` / `python -m altastata.mcp_server`.
 
 ### Logging Configuration

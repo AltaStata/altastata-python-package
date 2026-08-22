@@ -248,6 +248,6 @@ f.remove_event_listener(listener)
 | Method reference | [PYTHON_API.md](PYTHON_API.md) |
 | Create account (CLI/SDK) | [USER_SETUP_GUIDE.md](USER_SETUP_GUIDE.md) |
 | Enterprise / Custodian / PQC | [ENTERPRISE.md](ENTERPRISE.md) |
-| fsspec / PyTorch / S3 | [README.md](README.md) |
+| fsspec / PyTorch / S3 | [INTEGRATIONS.md](INTEGRATIONS.md) |
 | Java / Desktop / S3 how-to | [sovereign-data-fabric HOWTO](https://github.com/AltaStata/sovereign-data-fabric/blob/main/docs/guides/HOWTO.md) |
 | Scala `CloudFile` API | [Low-level-Scala-API](https://github.com/AltaStata/sovereign-data-fabric/blob/main/docs/guides/Low-level-Scala-API.md) |

@@ -5,10 +5,10 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name='altastata',
-    version='1.0.20260819.13',
+    version='1.0.20260819.14',
     author='AltaStata Inc.',
     author_email='contact@altastata.com',
-    description='A Python package for Altastata data processing and machine learning integration',
+    description='AltaStata Python SDK — encrypted cloud storage, CLI, and ML integrations',
     long_description=long_description,
     long_description_content_type="text/markdown",
     url='https://github.com/AltaStata/altastata-python-package',

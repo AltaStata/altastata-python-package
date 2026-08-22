@@ -1,15 +1,13 @@
-# Altastata Python Package
+# AltaStata Python package
 
-Sovereign encrypted data fabric for any cloud Python SDK — with support for **fsspec**, **PyTorch**, **TensorFlow**, **LangChain**, **AI Agents**, **Databricks**, **Snowflake** (via S3), **boto3/S3 CLI**, **gRPC**, and a bundled **Web UI User Console**.
+**`altastata`** on PyPI — CLI, SDK, and framework integrations over the bundled **`altastata-services`** gateway (gRPC + Web UI **9877**, S3 **9876**).
 
-**Integrations** (PyTorch, TensorFlow, fsspec, LangChain, S3, Web UI, events): **[INTEGRATIONS.md](https://github.com/AltaStata/altastata-python-package/blob/main/docs/guides/INTEGRATIONS.md)**
+Cookbooks: [INTEGRATIONS.md](https://github.com/AltaStata/altastata-python-package/blob/main/docs/guides/INTEGRATIONS.md) · Account setup: [USER_SETUP_GUIDE.md](https://github.com/AltaStata/altastata-python-package/blob/main/docs/guides/USER_SETUP_GUIDE.md)
 
 ### AltaStata with Red Hat and IBM (confidential computing)
 
 - [Red Hat: end-to-end security for AI (OpenShift confidential containers)](https://www.redhat.com/en/blog/end-end-security-ai-integrating-altastata-storage-red-hat-openshift-confidential-containers)
 - [IBM: data sovereignty for AI (LinuxONE Confidential Computing)](https://community.ibm.com/community/user/blogs/savita-kumari/2026/06/24/data-sovereignty-for-ai-integrating-alta-stata)
-
-AltaStata is a **sovereign encrypted data fabric** — per-file cryptographic control across clouds and AI pipelines.
 
 ![AltaStata data flow](https://raw.githubusercontent.com/AltaStata/altastata-python-package/main/docs/images/altastata_dataflow.png)
 

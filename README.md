@@ -1,6 +1,8 @@
 # AltaStata Python package
 
-Sovereign encrypted data fabric for any cloud Python SDK — with support for **fsspec**, **PyTorch**, **TensorFlow**, **LangChain**, **AI Agents**, **Databricks**, **Snowflake** (via S3), **boto3/S3 CLI**, **gRPC**, and a bundled **Web UI User Console**.
+Python SDK for the AltaStata sovereign data fabric: run AI/ML workloads and data pipelines as an AltaStata user, with per-file encryption on AWS, Azure, GCP, IBM, MinIO, POSIX, and hybrid backends.
+
+Integrations: **fsspec**, **PyTorch**, **TensorFlow**, **LangChain**, **AI Agents**, **Databricks**, **Snowflake** (via S3), **boto3/S3 CLI**, **gRPC**, and a bundled **Web UI User Console**.
 
 Cookbooks: [INTEGRATIONS.md](https://github.com/AltaStata/altastata-python-package/blob/main/docs/guides/INTEGRATIONS.md) · Account setup: [USER_SETUP_GUIDE.md](https://github.com/AltaStata/altastata-python-package/blob/main/docs/guides/USER_SETUP_GUIDE.md)
 

@@ -2,9 +2,10 @@
 
 Sovereign encrypted data fabric for any cloud Python SDK — with support for **fsspec**, **PyTorch**, **TensorFlow**, **LangChain**, **AI Agents**, **Databricks**, **Snowflake** (via S3), **boto3/S3 CLI**, **gRPC**, and a bundled **Web UI User Console**.
 
-```bash
-pip install altastata
-```
+**Package version `1.0.20260819.9`** (`1.0.YYYYMMDD.N` — see [VERSIONING.md](https://github.com/AltaStata/altastata-python-package/blob/main/VERSIONING.md))
+is built on the Java/BSL runtime from
+[sovereign-data-fabric `v2026.08.19`](https://github.com/AltaStata/sovereign-data-fabric/releases/tag/v2026.08.19)
+(bundled `altastata-services` uber jar + MCP).
 
 When two organizations exchange files in the usual way, the sender **loses
 control** once a copy leaves their boundary. With AltaStata, a user who puts a
@@ -12,11 +13,6 @@ control** once a copy leaves their boundary. With AltaStata, a user who puts a
 after sharing it with a partner. They know **which humans or applications**
 — in their own organization or a partner’s — have access, and they can
 revoke it.
-
-**Package version `1.0.20260819.9`** (`1.0.YYYYMMDD.N` — see [VERSIONING.md](https://github.com/AltaStata/altastata-python-package/blob/main/VERSIONING.md))
-is built on the Java/BSL runtime from
-[sovereign-data-fabric `v2026.08.19`](https://github.com/AltaStata/sovereign-data-fabric/releases/tag/v2026.08.19)
-(bundled `altastata-services` uber jar + MCP).
 
 Encryption usually slows pipelines — and most tools cannot work on encrypted
 data. AltaStata keeps per-file cryptographic control **without losing speed**.

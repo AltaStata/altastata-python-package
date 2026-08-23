@@ -67,7 +67,8 @@ Do not call `AltaStataFunctions()` directly.
 | `copy_file(from_path, to_path)` | Copy cloud → cloud |
 | `store(local_paths, local_fs_prefix, cloud_path_prefix, wait_until_done)` | Upload local files/dirs |
 | `retrieve_files(output_dir, cloud_path_prefix, including_subdirectories, snapshot_time, is_streaming, wait_until_done)` | Download to local dir |
-| `delete_files(cloud_path_prefix, including_subdirectories, time_interval_start, time_interval_end)` | Delete matching versions |
+| `delete_files(cloud_path_prefix, including_subdirectories, time_interval_start, time_interval_end)` | Delete matching versions under one prefix |
+| `delete_files_by_paths(file_paths, time_interval_start=None, time_interval_end=None)` | Delete explicit paths |
 | `list_cloud_files_versions(cloud_path_prefix, including_subdirectories, time_interval_start, time_interval_end)` | List versions under a prefix |
 
 Time filters: use `None` where you want “no bound” (see method docs / examples).
@@ -92,8 +93,12 @@ for chunk in bobAmazon.get_input_stream("Public/hello.txt"):
 
 | Method | Role |
 |--------|------|
-| `share_files(prefix, including_subdirectories, time_start, time_end, users)` | Grant readers |
-| `revoke_reader_access(prefix, including_subdirectories, time_start, time_end, readers_to_revoke)` | Revoke readers (owner/custodian) |
+| `share_files(prefix, including_subdirectories, time_start, time_end, users)` | Grant readers under one prefix |
+| `share_paths(file_paths, users)` | Grant readers on explicit paths |
+| `revoke_reader_access(prefix, including_subdirectories, time_start, time_end, readers_to_revoke)` | Revoke readers under one prefix (owner/custodian) |
+| `revoke_paths(file_paths, readers_to_revoke)` | Revoke readers on explicit paths |
+
+Single path (prefix query):
 
 ```python
 bobAmazon.share_files(
@@ -110,6 +115,18 @@ bobAmazon.revoke_reader_access(
     None,
     ["alice222"],
 )
+```
+
+Several explicit paths:
+
+```python
+paths = [
+    "Public/inbox/report.pdf",
+    "Public/inbox/notes.txt",
+]
+bobAmazon.share_paths(paths, ["alice222"])
+bobAmazon.revoke_paths(paths, ["alice222"])
+bobAmazon.delete_files_by_paths(paths)
 ```
 
 ---

@@ -203,6 +203,7 @@ class AltaStataGrpcClient:
             started_process = _start_local_grpc_service(
                 grpc_server_command=grpc_server_command,
                 working_dir=grpc_server_working_dir,
+                grpc_port=endpoint.port,
             )
             _wait_for_port(endpoint.host, endpoint.port, timeout_s=start_timeout_s)
 
@@ -294,6 +295,7 @@ class AltaStataGrpcClient:
             started_process = _start_local_grpc_service(
                 grpc_server_command=grpc_server_command,
                 working_dir=grpc_server_working_dir,
+                grpc_port=endpoint.port,
             )
             _wait_for_port(endpoint.host, endpoint.port, timeout_s=start_timeout_s)
 
@@ -579,6 +581,20 @@ class AltaStataGrpcClient:
             time_interval_end=time_interval_end or "",
         )
         resp = self._fileops_stub.Delete(req, metadata=self._metadata)
+        return [self._status_to_dict(s) for s in resp.statuses]
+
+    def delete_files_by_paths(
+        self,
+        file_paths: Sequence[str],
+        time_interval_start: Optional[str] = None,
+        time_interval_end: Optional[str] = None,
+    ) -> List[Dict[str, str]]:
+        req = self._fileops_pb2.DeleteByPathsRequest(
+            file_paths=list(file_paths),
+            time_interval_start=time_interval_start or "",
+            time_interval_end=time_interval_end or "",
+        )
+        resp = self._fileops_stub.DeleteByPaths(req, metadata=self._metadata)
         return [self._status_to_dict(s) for s in resp.statuses]
 
     def list_cloud_files_versions(

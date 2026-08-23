@@ -479,10 +479,9 @@ Answer:"""
     # Cleanup
     print("\n🧹 Cleaning up test data...")
     try:
-        # Delete all test documents from AltaStata
+        file_paths = [f"{test_dir}/{filename}" for filename in sample_docs.keys()]
+        altastata_functions.delete_files_by_paths(file_paths)
         for filename in sample_docs.keys():
-            file_path = f"{test_dir}/{filename}"
-            result = altastata_functions.delete_files(file_path, False, None, None)
             print(f"   ✅ Deleted from storage: {filename}")
         
         # Try to delete the directory

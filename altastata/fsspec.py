@@ -135,9 +135,11 @@ class AltaStataFileSystem(AbstractFileSystem):
             time_end: Filter file versions with creation time <= this value.
         """
         path = self._strip_protocol(path)
-        return self.altastata_functions.share_files(
-            path, including_subdirectories, time_start, time_end, users
-        )
+        if including_subdirectories or time_start is not None or time_end is not None:
+            return self.altastata_functions.share_files(
+                path, including_subdirectories, time_start, time_end, users
+            )
+        return self.altastata_functions.share_paths([path], users)
         
     def revoke(self, path: str, users: List[str], including_subdirectories: bool = True,
                time_start: Optional[str] = None, time_end: Optional[str] = None) -> List[Any]:
@@ -152,9 +154,11 @@ class AltaStataFileSystem(AbstractFileSystem):
             time_end: Filter file versions with creation time <= this value.
         """
         path = self._strip_protocol(path)
-        return self.altastata_functions.revoke_reader_access(
-            path, including_subdirectories, time_start, time_end, users
-        )
+        if including_subdirectories or time_start is not None or time_end is not None:
+            return self.altastata_functions.revoke_reader_access(
+                path, including_subdirectories, time_start, time_end, users
+            )
+        return self.altastata_functions.revoke_paths([path], users)
 
     def exists(self, path: str, **kwargs) -> bool:
         """Check if file exists (latest version)."""

@@ -49,6 +49,11 @@ class FileOpsServiceStub(object):
                 request_serializer=altastata_dot_grpc_dot_v1_dot_fileops__pb2.DeleteRequest.SerializeToString,
                 response_deserializer=altastata_dot_grpc_dot_v1_dot_fileops__pb2.DeleteResponse.FromString,
                 _registered_method=True)
+        self.DeleteByPaths = channel.unary_unary(
+                '/altastata.v1.FileOpsService/DeleteByPaths',
+                request_serializer=altastata_dot_grpc_dot_v1_dot_fileops__pb2.DeleteByPathsRequest.SerializeToString,
+                response_deserializer=altastata_dot_grpc_dot_v1_dot_fileops__pb2.DeleteResponse.FromString,
+                _registered_method=True)
         self.ListVersions = channel.unary_stream(
                 '/altastata.v1.FileOpsService/ListVersions',
                 request_serializer=altastata_dot_grpc_dot_v1_dot_fileops__pb2.ListVersionsRequest.SerializeToString,
@@ -122,6 +127,12 @@ class FileOpsServiceServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def Delete(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def DeleteByPaths(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -209,6 +220,11 @@ def add_FileOpsServiceServicer_to_server(servicer, server):
             'Delete': grpc.unary_unary_rpc_method_handler(
                     servicer.Delete,
                     request_deserializer=altastata_dot_grpc_dot_v1_dot_fileops__pb2.DeleteRequest.FromString,
+                    response_serializer=altastata_dot_grpc_dot_v1_dot_fileops__pb2.DeleteResponse.SerializeToString,
+            ),
+            'DeleteByPaths': grpc.unary_unary_rpc_method_handler(
+                    servicer.DeleteByPaths,
+                    request_deserializer=altastata_dot_grpc_dot_v1_dot_fileops__pb2.DeleteByPathsRequest.FromString,
                     response_serializer=altastata_dot_grpc_dot_v1_dot_fileops__pb2.DeleteResponse.SerializeToString,
             ),
             'ListVersions': grpc.unary_stream_rpc_method_handler(
@@ -347,6 +363,33 @@ class FileOpsService(object):
             target,
             '/altastata.v1.FileOpsService/Delete',
             altastata_dot_grpc_dot_v1_dot_fileops__pb2.DeleteRequest.SerializeToString,
+            altastata_dot_grpc_dot_v1_dot_fileops__pb2.DeleteResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def DeleteByPaths(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/altastata.v1.FileOpsService/DeleteByPaths',
+            altastata_dot_grpc_dot_v1_dot_fileops__pb2.DeleteByPathsRequest.SerializeToString,
             altastata_dot_grpc_dot_v1_dot_fileops__pb2.DeleteResponse.FromString,
             options,
             channel_credentials,

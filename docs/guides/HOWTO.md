@@ -1,6 +1,7 @@
 # How to work with AltaStata (Python)
 
-Task-oriented `AltaStataFunctions` examples. Java / Desktop / S3:
+Task-oriented `AltaStataFunctions` examples. Method reference:
+[PYTHON_API.md](PYTHON_API.md). Java / Desktop / S3:
 [sovereign-data-fabric HOWTO](https://github.com/AltaStata/sovereign-data-fabric/blob/main/docs/guides/HOWTO.md).
 
 Account: [USER_SETUP_GUIDE.md](USER_SETUP_GUIDE.md). API: [PYTHON_API.md](PYTHON_API.md).
@@ -95,6 +96,8 @@ for row in bobAmazon.list_cloud_files_versions(
 
 ## Share
 
+Single file or folder prefix:
+
 ```python
 bobAmazon.share_files(
     "Public/inbox/report.pdf",  # cloud path or prefix to share
@@ -105,9 +108,25 @@ bobAmazon.share_files(
 )
 ```
 
+Several explicit paths:
+
+```python
+bobAmazon.share_paths(
+    [
+        "Public/inbox/report.pdf",
+        "Public/inbox/notes.txt",
+    ],
+    ["alice222"],
+)
+```
+
+Entire subtree under one prefix — see [Prefix / subtree](#prefix--subtree).
+
 ---
 
 ## Revoke
+
+Single file or folder prefix:
 
 ```python
 bobAmazon.revoke_reader_access(
@@ -119,9 +138,23 @@ bobAmazon.revoke_reader_access(
 )
 ```
 
+Several explicit paths:
+
+```python
+bobAmazon.revoke_paths(
+    [
+        "Public/inbox/report.pdf",
+        "Public/inbox/notes.txt",
+    ],
+    ["alice222"],
+)
+```
+
 ---
 
 ## Delete
+
+Single file or folder prefix:
 
 ```python
 bobAmazon.delete_files(
@@ -129,6 +162,17 @@ bobAmazon.delete_files(
     True,                       # recursively delete descendants
     None,                       # no minimum version create-time
     None,                       # no maximum version create-time
+)
+```
+
+Several explicit paths:
+
+```python
+bobAmazon.delete_files_by_paths(
+    [
+        "Public/inbox/report.pdf",
+        "Public/inbox/notes.txt",
+    ],
 )
 ```
 

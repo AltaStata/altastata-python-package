@@ -184,10 +184,9 @@ def test_rag_pipeline():
     # Cleanup
     print("\n8️⃣  Cleaning up test data...")
     try:
-        # Delete all test documents
+        file_paths = [f"{test_dir}/{filename}" for filename in sample_docs.keys()]
+        altastata_functions.delete_files_by_paths(file_paths)
         for filename in sample_docs.keys():
-            file_path = f"{test_dir}/{filename}"
-            result = altastata_functions.delete_files(file_path, False, None, None)
             print(f"   ✅ Deleted: {filename}")
         
         # Try to delete the directory (it's okay if this fails)

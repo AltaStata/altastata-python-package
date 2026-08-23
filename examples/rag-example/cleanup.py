@@ -111,8 +111,8 @@ class CleanupService:
                 
                 if files:
                     print(f"   Found {len(files)} file(s)")
+                    altastata.delete_files_by_paths(files, start_time, end_time)
                     for file_path in files:
-                        altastata.delete_files(file_path, False, start_time, end_time)
                         print(f"   ✅ Deleted: {file_path}")
                     
                     # Delete directory

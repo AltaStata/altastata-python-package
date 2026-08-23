@@ -8,9 +8,14 @@ Account: [USER_SETUP_GUIDE.md](USER_SETUP_GUIDE.md). API: [PYTHON_API.md](PYTHON
 ```python
 from altastata import AltaStataFunctions
 
-f = AltaStataFunctions.from_account_dir(
-    "~/.altastata/accounts/amazon.rsa.alice",  # account directory path
-    password="your-password",                  # passphrase; "" for HPCS/HSM
+# Two backends in one process — AWS and Azure accounts side by side
+f_aws = AltaStataFunctions.from_account_dir(
+    "~/.altastata/accounts/amazon.rsa.bob123",
+    password="your-password",
+)
+f_azure = AltaStataFunctions.from_account_dir(
+    "~/.altastata/accounts/azure.rsa.alice222",
+    password="your-password",
 )
 ```
 

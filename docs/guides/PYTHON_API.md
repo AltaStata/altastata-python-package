@@ -16,10 +16,14 @@ gateway over **gRPC** (default `127.0.0.1:9877`) and can auto-start it.
 ```python
 from altastata import AltaStataFunctions
 
-# Preferred: local account directory
-f = AltaStataFunctions.from_account_dir(
+# Two backends in one process — AWS and Azure accounts side by side
+f_aws = AltaStataFunctions.from_account_dir(
     "~/.altastata/accounts/amazon.rsa.bob123",
-    password="your_password",   # "" for HPCS/HSM
+    password="your_password",
+)
+f_azure = AltaStataFunctions.from_account_dir(
+    "~/.altastata/accounts/azure.rsa.alice222",
+    password="your_password",
 )
 
 # Inline Community credentials (*user.properties + private.key)

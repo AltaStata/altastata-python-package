@@ -3,7 +3,7 @@
 # Build context: repo root `/Users/sergevilvovsky/eclipse-workspace/mcloud`
 #
 # Inputs (current local build artefacts):
-# - mycloud/altastata-services/build/libs/altastata-services-2026.08.19-uber.jar
+# - mycloud/altastata-services/build/libs/altastata-services-2026.08.23-uber.jar
 # - mycloud/altastata-services/build/libs/lib/
 # - altastata-python-package/altastata/lib/altastata-console-static/
 
@@ -21,7 +21,7 @@ RUN useradd -r -u 1001 -g root appuser
 
 WORKDIR /app
 
-COPY mycloud/altastata-services/build/libs/altastata-services-2026.08.19-uber.jar /app/app.jar
+COPY mycloud/altastata-services/build/libs/altastata-services-2026.08.23-uber.jar /app/app.jar
 COPY mycloud/altastata-services/build/libs/lib /app/lib
 COPY altastata-python-package/altastata/lib/altastata-console-static /app/altastata-console-static
 

@@ -1,6 +1,7 @@
 # How to work with AltaStata (Python)
 
-Task-oriented `AltaStataFunctions` examples. Java / Desktop / S3:
+Task-oriented `AltaStataFunctions` examples. Method reference:
+[PYTHON_API.md](PYTHON_API.md). Java / Desktop / S3:
 [sovereign-data-fabric HOWTO](https://github.com/AltaStata/sovereign-data-fabric/blob/main/docs/guides/HOWTO.md).
 
 Account: [USER_SETUP_GUIDE.md](USER_SETUP_GUIDE.md). API: [PYTHON_API.md](PYTHON_API.md).
@@ -29,6 +30,10 @@ time bound you do not want. `retrieve_files` takes a snapshot time; pass
 A **path prefix** names a subtree. `"Public/inbox"` with
 `including_subdirectories=True` is every file under that folder; `False`
 applies only to that exact path.
+
+For **several unrelated files**, use the batch path-list methods — one gRPC
+call on the combined set. Method reference: [PYTHON_API.md](PYTHON_API.md) ·
+examples: [Share](#share), [Revoke](#revoke), [Delete](#delete).
 
 ---
 
@@ -229,7 +234,8 @@ bobAmazon.get_file_attribute(
 
 `list_cloud_files_versions`, `share_files`, `revoke_reader_access`,
 `delete_files`, and `retrieve_files` take a cloud path **or** a prefix. Pass
-the folder and `True` to include descendants:
+the folder and `True` to include descendants. For several unrelated paths at
+once, use `share_paths`, `revoke_paths`, or `delete_files_by_paths`.
 
 ```python
 bobAmazon.share_files(

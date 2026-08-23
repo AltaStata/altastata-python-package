@@ -73,6 +73,14 @@ Do not call `AltaStataFunctions()` directly.
 
 Time filters: use `None` where you want “no bound” (see method docs / examples).
 
+**Prefix vs batch** (share / revoke / delete):
+
+| Operation | One path or prefix | Several explicit paths |
+|-----------|-------------------|------------------------|
+| Share | `share_files` | `share_paths` |
+| Revoke | `revoke_reader_access` | `revoke_paths` |
+| Delete | `delete_files` | `delete_files_by_paths` |
+
 ```python
 bobAmazon.create_file("Public/hello.txt", b"hi")
 # size must match the bytes you intend to read (or the known object size)

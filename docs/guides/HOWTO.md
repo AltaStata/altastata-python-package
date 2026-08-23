@@ -19,6 +19,8 @@ f_azure = AltaStataFunctions.from_account_dir(
 )
 ```
 
+Task examples below use **`f_aws`** (AWS). Use **`f_azure`** (Azure) the same way.
+
 Times are milliseconds since epoch. On `share_files`, `delete_files`,
 `list_cloud_files_versions`, and `revoke_reader_access`, pass `None` for a
 time bound you do not want. `retrieve_files` takes a snapshot time; pass
@@ -33,7 +35,7 @@ applies only to that exact path.
 ## Upload
 
 ```python
-f.store(
+f_aws.store(
     ["/data/report.pdf", "/data/images"],  # local files/dirs to upload
     "/data",          # local prefix stripped from every selected path
     "Public/inbox",   # destination prefix inside AltaStata
@@ -41,9 +43,9 @@ f.store(
 )
 
 # create_file creates a new version rather than overwriting version history.
-f.create_file("Public/inbox/hello.txt", b"hello")
+f_aws.create_file("Public/inbox/hello.txt", b"hello")
 
-f.append_buffer_to_file(
+f_aws.append_buffer_to_file(
     "Public/inbox/hello.txt",   # existing cloud path
     b"\nmore",                  # bytes appended to that version
     snapshot_time=None,         # None = latest version
@@ -57,7 +59,7 @@ f.append_buffer_to_file(
 ```python
 import time
 
-f.retrieve_files(
+f_aws.retrieve_files(
     "./out",                    # local destination directory
     "Public/inbox",             # cloud path or prefix to download
     True,                       # include subdirectories
@@ -66,7 +68,7 @@ f.retrieve_files(
     True,                       # wait until all downloads finish
 )
 
-data = f.get_buffer(
+data = f_aws.get_buffer(
     "Public/inbox/hello.txt",  # cloud path
     None,                      # None = latest version
     0,                         # starting byte offset
@@ -80,7 +82,7 @@ data = f.get_buffer(
 ## List / see versions
 
 ```python
-for row in f.list_cloud_files_versions(
+for row in f_aws.list_cloud_files_versions(
     "Public/",  # cloud path or prefix to list
     True,       # recursively include subdirectories
     None,       # no minimum create-time
@@ -94,7 +96,7 @@ for row in f.list_cloud_files_versions(
 ## Share
 
 ```python
-f.share_files(
+f_aws.share_files(
     "Public/inbox/report.pdf",  # cloud path or prefix to share
     True,                       # include descendants when the path is a directory
     None,                       # no minimum version create-time
@@ -108,7 +110,7 @@ f.share_files(
 ## Revoke
 
 ```python
-f.revoke_reader_access(
+f_aws.revoke_reader_access(
     "Public/inbox/report.pdf",  # cloud path whose readers change
     True,                       # include descendants
     None,                       # no minimum version create-time
@@ -122,7 +124,7 @@ f.revoke_reader_access(
 ## Delete
 
 ```python
-f.delete_files(
+f_aws.delete_files(
     "Public/inbox/report.pdf",  # cloud path or prefix to delete
     True,                       # recursively delete descendants
     None,                       # no minimum version create-time
@@ -137,7 +139,7 @@ f.delete_files(
 No dedicated search. List under a prefix and filter locally.
 
 ```python
-for row in f.list_cloud_files_versions("Public/", True, None, None):
+for row in f_aws.list_cloud_files_versions("Public/", True, None, None):
     path = row[0] if isinstance(row, (list, tuple)) else row
     if "report" in str(path):
         print(path)
@@ -148,7 +150,7 @@ for row in f.list_cloud_files_versions("Public/", True, None, None):
 ## Copy (same fabric)
 
 ```python
-f.copy_file(
+f_aws.copy_file(
     "Public/inbox/report.pdf",     # latest source version is read
     "Public/archive/report.pdf",   # source is preserved
 )
@@ -159,12 +161,12 @@ f.copy_file(
 ## Who can see a file
 
 ```python
-f.get_file_attribute(
+f_aws.get_file_attribute(
     "Public/inbox/report.pdf",  # cloud path
     None,                       # version create-time; None = latest
     "readers",                  # attribute name
 )
-f.get_file_attribute(
+f_aws.get_file_attribute(
     "Public/inbox/report.pdf",
     None,
     "size",
@@ -184,7 +186,7 @@ Python does not expose Java `AltaStataChunkedInputStream` /
 `store`.
 
 ```python
-for chunk in f.get_input_stream(
+for chunk in f_aws.get_input_stream(
     "Public/inbox/video.mp4",  # cloud path
     snapshot_time=None,        # None = latest version
     start_position=0,          # starting byte offset
@@ -207,9 +209,9 @@ def on_event(name, data):
     # name is "SHARE" or "DELETE"; data is the cloud path of the version
     print(name, data)
 
-listener = f.add_event_listener(on_event)
+listener = f_aws.add_event_listener(on_event)
 # later:
-f.remove_event_listener(listener)
+f_aws.remove_event_listener(listener)
 ```
 
 ---

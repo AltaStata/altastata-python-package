@@ -9,17 +9,17 @@ Account: [USER_SETUP_GUIDE.md](USER_SETUP_GUIDE.md). API: [PYTHON_API.md](PYTHON
 from altastata import AltaStataFunctions
 
 # Two backends in one process — AWS and Azure accounts side by side
-f_aws = AltaStataFunctions.from_account_dir(
+bobFS = AltaStataFunctions.from_account_dir(
     "~/.altastata/accounts/amazon.rsa.bob123",
     password="your-password",
 )
-f_azure = AltaStataFunctions.from_account_dir(
+aliceFS = AltaStataFunctions.from_account_dir(
     "~/.altastata/accounts/azure.rsa.alice222",
     password="your-password",
 )
 ```
 
-Task examples below use **`f_aws`** (AWS). Use **`f_azure`** (Azure) the same way.
+Task examples below use **`bobFS`** (AWS). Use **`aliceFS`** (Azure) the same way.
 
 Times are milliseconds since epoch. On `share_files`, `delete_files`,
 `list_cloud_files_versions`, and `revoke_reader_access`, pass `None` for a
@@ -35,7 +35,7 @@ applies only to that exact path.
 ## Upload
 
 ```python
-f_aws.store(
+bobFS.store(
     ["/data/report.pdf", "/data/images"],  # local files/dirs to upload
     "/data",          # local prefix stripped from every selected path
     "Public/inbox",   # destination prefix inside AltaStata
@@ -43,9 +43,9 @@ f_aws.store(
 )
 
 # create_file creates a new version rather than overwriting version history.
-f_aws.create_file("Public/inbox/hello.txt", b"hello")
+bobFS.create_file("Public/inbox/hello.txt", b"hello")
 
-f_aws.append_buffer_to_file(
+bobFS.append_buffer_to_file(
     "Public/inbox/hello.txt",   # existing cloud path
     b"\nmore",                  # bytes appended to that version
     snapshot_time=None,         # None = latest version
@@ -59,7 +59,7 @@ f_aws.append_buffer_to_file(
 ```python
 import time
 
-f_aws.retrieve_files(
+bobFS.retrieve_files(
     "./out",                    # local destination directory
     "Public/inbox",             # cloud path or prefix to download
     True,                       # include subdirectories
@@ -68,7 +68,7 @@ f_aws.retrieve_files(
     True,                       # wait until all downloads finish
 )
 
-data = f_aws.get_buffer(
+data = bobFS.get_buffer(
     "Public/inbox/hello.txt",  # cloud path
     None,                      # None = latest version
     0,                         # starting byte offset
@@ -82,7 +82,7 @@ data = f_aws.get_buffer(
 ## List / see versions
 
 ```python
-for row in f_aws.list_cloud_files_versions(
+for row in bobFS.list_cloud_files_versions(
     "Public/",  # cloud path or prefix to list
     True,       # recursively include subdirectories
     None,       # no minimum create-time
@@ -96,7 +96,7 @@ for row in f_aws.list_cloud_files_versions(
 ## Share
 
 ```python
-f_aws.share_files(
+bobFS.share_files(
     "Public/inbox/report.pdf",  # cloud path or prefix to share
     True,                       # include descendants when the path is a directory
     None,                       # no minimum version create-time
@@ -110,7 +110,7 @@ f_aws.share_files(
 ## Revoke
 
 ```python
-f_aws.revoke_reader_access(
+bobFS.revoke_reader_access(
     "Public/inbox/report.pdf",  # cloud path whose readers change
     True,                       # include descendants
     None,                       # no minimum version create-time
@@ -124,7 +124,7 @@ f_aws.revoke_reader_access(
 ## Delete
 
 ```python
-f_aws.delete_files(
+bobFS.delete_files(
     "Public/inbox/report.pdf",  # cloud path or prefix to delete
     True,                       # recursively delete descendants
     None,                       # no minimum version create-time
@@ -139,7 +139,7 @@ f_aws.delete_files(
 No dedicated search. List under a prefix and filter locally.
 
 ```python
-for row in f_aws.list_cloud_files_versions("Public/", True, None, None):
+for row in bobFS.list_cloud_files_versions("Public/", True, None, None):
     path = row[0] if isinstance(row, (list, tuple)) else row
     if "report" in str(path):
         print(path)
@@ -150,7 +150,7 @@ for row in f_aws.list_cloud_files_versions("Public/", True, None, None):
 ## Copy (same fabric)
 
 ```python
-f_aws.copy_file(
+bobFS.copy_file(
     "Public/inbox/report.pdf",     # latest source version is read
     "Public/archive/report.pdf",   # source is preserved
 )
@@ -161,12 +161,12 @@ f_aws.copy_file(
 ## Who can see a file
 
 ```python
-f_aws.get_file_attribute(
+bobFS.get_file_attribute(
     "Public/inbox/report.pdf",  # cloud path
     None,                       # version create-time; None = latest
     "readers",                  # attribute name
 )
-f_aws.get_file_attribute(
+bobFS.get_file_attribute(
     "Public/inbox/report.pdf",
     None,
     "size",
@@ -186,7 +186,7 @@ Python does not expose Java `AltaStataChunkedInputStream` /
 `store`.
 
 ```python
-for chunk in f_aws.get_input_stream(
+for chunk in bobFS.get_input_stream(
     "Public/inbox/video.mp4",  # cloud path
     snapshot_time=None,        # None = latest version
     start_position=0,          # starting byte offset
@@ -209,9 +209,9 @@ def on_event(name, data):
     # name is "SHARE" or "DELETE"; data is the cloud path of the version
     print(name, data)
 
-listener = f_aws.add_event_listener(on_event)
+listener = bobFS.add_event_listener(on_event)
 # later:
-f_aws.remove_event_listener(listener)
+bobFS.remove_event_listener(listener)
 ```
 
 ---

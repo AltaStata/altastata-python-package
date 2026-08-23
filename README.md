@@ -43,7 +43,7 @@ bobAmazon = AltaStataFunctions.from_account_dir(
     password="your_password",
 )
 bobAzure = AltaStataFunctions.from_account_dir(
-    "/path/to/.altastata/accounts/azure.rsa.alice222",
+    "/path/to/.altastata/accounts/azure.rsa.bob123",
     password="your_password",
 )
 

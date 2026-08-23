@@ -101,7 +101,7 @@ bobAmazon.share_files(
     True,                       # include descendants when the path is a directory
     None,                       # no minimum version create-time
     None,                       # no maximum version create-time
-    ["bob123"],                 # reader usernames
+    ["alice222"],               # reader usernames
 )
 ```
 
@@ -115,7 +115,7 @@ bobAmazon.revoke_reader_access(
     True,                       # include descendants
     None,                       # no minimum version create-time
     None,                       # no maximum version create-time
-    ["bob123"],                 # readers to remove
+    ["alice222"],               # readers to remove
 )
 ```
 
@@ -158,23 +158,56 @@ bobAmazon.copy_file(
 
 ---
 
-## Who can see a file
+## Version attributes
+
+Read metadata from a file version — **size**, **readers**, and **creator**.
 
 ```python
 bobAmazon.get_file_attribute(
     "Public/inbox/report.pdf",  # cloud path
     None,                       # version create-time; None = latest
-    "readers",                  # attribute name
+    "size",                     # plaintext size in bytes
 )
 bobAmazon.get_file_attribute(
     "Public/inbox/report.pdf",
     None,
-    "size",
+    "readers",                  # usernames with reader access
 )
 ```
 
 `owner` is not a data attribute. The creator is the version tag in
 `list_cloud_files_versions`.
+
+**Java / Scala.** [HOWTO § Version attributes](https://github.com/AltaStata/sovereign-data-fabric/blob/main/docs/guides/HOWTO.md#version-attributes) · [Low-level-Scala-API § Version attributes](https://github.com/AltaStata/sovereign-data-fabric/blob/main/docs/guides/Low-level-Scala-API.md#version-attributes)
+
+---
+
+## Prefix / subtree
+
+`list_cloud_files_versions`, `share_files`, `revoke_reader_access`,
+`delete_files`, and `retrieve_files` take a cloud path **or** a prefix. Pass
+the folder and `True` to include descendants:
+
+```python
+bobAmazon.share_files(
+    "Public/inbox",             # prefix: every path that starts with this
+    True,                       # include the subtree
+    None,                       # no minimum version create-time
+    None,                       # no maximum version create-time
+    ["alice222"],               # reader usernames
+)
+```
+
+`store` maps a local tree onto a cloud prefix:
+
+```python
+bobAmazon.store(
+    ["/data/images"],  # local directory
+    "/data",           # stripped: images/a.png stays images/a.png
+    "Public/inbox",    # cloud subtree: Public/inbox/images/a.png
+    True,
+)
+```
 
 ---
 

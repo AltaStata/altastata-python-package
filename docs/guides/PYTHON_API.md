@@ -73,13 +73,16 @@ Do not call `AltaStataFunctions()` directly.
 Time filters: use `None` where you want “no bound” (see method docs / examples).
 
 ```python
-f.create_file("Public/hello.txt", b"hi")
+bobAmazon.create_file("Public/hello.txt", b"hi")
 # size must match the bytes you intend to read (or the known object size)
-data = f.get_buffer("Public/hello.txt", None, 0, 4, 2)
-versions = f.list_cloud_files_versions("Public/", True, None, None)
+data = bobAmazon.get_buffer("Public/hello.txt", None, 0, 4, 2)
+versions = bobAmazon.list_cloud_files_versions("Public/", True, None, None)
+
+bobAmazon.get_file_attribute("Public/hello.txt", None, "size")    # bytes
+bobAmazon.get_file_attribute("Public/hello.txt", None, "readers") # access list
 
 # Large files: stream chunks without buffering the whole object
-for chunk in f.get_input_stream("Public/hello.txt"):
+for chunk in bobAmazon.get_input_stream("Public/hello.txt"):
     process(chunk)
 ```
 
@@ -92,6 +95,23 @@ for chunk in f.get_input_stream("Public/hello.txt"):
 | `share_files(prefix, including_subdirectories, time_start, time_end, users)` | Grant readers |
 | `revoke_reader_access(prefix, including_subdirectories, time_start, time_end, readers_to_revoke)` | Revoke readers (owner/custodian) |
 
+```python
+bobAmazon.share_files(
+    "Public/inbox/report.pdf",
+    True,
+    None,
+    None,
+    ["alice222"],
+)
+bobAmazon.revoke_reader_access(
+    "Public/inbox/report.pdf",
+    True,
+    None,
+    None,
+    ["alice222"],
+)
+```
+
 ---
 
 ## Events
@@ -100,10 +120,10 @@ for chunk in f.get_input_stream("Public/hello.txt"):
 def on_event(name, data):
     print(name, data)  # e.g. SHARE, DELETE
 
-listener = f.add_event_listener(on_event)
+listener = bobAmazon.add_event_listener(on_event)
 # later, when done listening:
-f.remove_event_listener(listener)
-# or f.remove_all_event_listeners()
+bobAmazon.remove_event_listener(listener)
+# or bobAmazon.remove_all_event_listeners()
 ```
 
 ---
@@ -119,7 +139,7 @@ Same instance; uses the S3-compatible API on port **9876** (auto-started with th
 | `install_aws_env(*, endpoint=None, region="us-east-1")` | Export `AWS_*` for shell / Jupyter `!aws` |
 
 ```python
-s3 = f.boto3_s3()
+s3 = bobAmazon.boto3_s3()
 s3.put_object(Bucket="altastata-bucket", Key="hello.txt", Body=b"hi")
 ```
 

@@ -160,7 +160,7 @@ def default_mycloud_dir() -> Optional[str]:
     return None
 
 
-def build_grpc_subprocess_env() -> Dict[str, str]:
+def build_grpc_subprocess_env(*, grpc_port: Optional[int] = None) -> Dict[str, str]:
     """
     Environment for ``subprocess.Popen`` when launching the Java gateway.
 
@@ -169,6 +169,8 @@ def build_grpc_subprocess_env() -> Dict[str, str]:
     the variable — including empty to disable the UI).
     """
     env = os.environ.copy()
+    if grpc_port is not None and not env.get("GRPCGATEWAY_PORT"):
+        env["GRPCGATEWAY_PORT"] = str(grpc_port)
     if not env.get("ALTASTATA_WEB_UI_DIR"):
         ui_dir = find_bundled_console_ui_dir()
         if ui_dir is not None:
@@ -240,6 +242,8 @@ def _start_stream_thread(pipe, label: str) -> None:
 def start_local_grpc_service(
     grpc_server_command: Optional[Sequence[str]] = None,
     working_dir: Optional[str] = None,
+    *,
+    grpc_port: Optional[int] = None,
 ):
     """Spawn the local Java gateway (bundled uber jar or Gradle fallback)."""
     resolved_command, resolved_working_dir = resolve_local_grpc_startup_command(
@@ -261,7 +265,7 @@ def start_local_grpc_service(
     process = subprocess.Popen(
         list(resolved_command),
         cwd=resolved_working_dir,
-        env=build_grpc_subprocess_env(),
+        env=build_grpc_subprocess_env(grpc_port=grpc_port),
         stdout=subprocess.PIPE if stream_logs else subprocess.DEVNULL,
         stderr=subprocess.PIPE if stream_logs else subprocess.DEVNULL,
     )

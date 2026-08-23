@@ -48,7 +48,7 @@ def main():
         
         # Test share
         print(f"\n3. Sharing with {target_user}...")
-        res = fs.share(test_file, [target_user])
+        res = fs.share(test_file, [target_user], including_subdirectories=False)
         print(f"   Share result: {res[0].getOperationStateValue() if res else 'Unknown'}")
         
         # Wait a moment for metadata update
@@ -59,7 +59,7 @@ def main():
         
         # Test revoke
         print(f"\n5. Revoking from {target_user}...")
-        res = fs.revoke(test_file, [target_user])
+        res = fs.revoke(test_file, [target_user], including_subdirectories=False)
         print(f"   Revoke result: {res[0].getOperationStateValue() if res else 'Unknown'}")
         
         time.sleep(1)
@@ -71,7 +71,7 @@ def main():
         
     finally:
         # Cleanup
-        alt.delete_files(test_file, False, None, None)
+        alt.delete_files_by_paths([test_file])
         print(f"Deleted {test_file}")
 
 if __name__ == "__main__":

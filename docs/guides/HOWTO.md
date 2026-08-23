@@ -95,6 +95,8 @@ for row in bobAmazon.list_cloud_files_versions(
 
 ## Share
 
+Single file or folder prefix:
+
 ```python
 bobAmazon.share_files(
     "Public/inbox/report.pdf",  # cloud path or prefix to share
@@ -105,9 +107,25 @@ bobAmazon.share_files(
 )
 ```
 
+Several unrelated files — one batch call (`share_paths` → single `shareCloudFiles` on the server):
+
+```python
+bobAmazon.share_paths(
+    [
+        "Public/inbox/report.pdf",
+        "Public/inbox/notes.txt",
+    ],
+    ["alice222"],
+)
+```
+
+Entire subtree under one prefix — see [Prefix / subtree](#prefix--subtree).
+
 ---
 
 ## Revoke
+
+Single file or folder prefix:
 
 ```python
 bobAmazon.revoke_reader_access(
@@ -119,9 +137,23 @@ bobAmazon.revoke_reader_access(
 )
 ```
 
+Several unrelated files — one batch call:
+
+```python
+bobAmazon.revoke_paths(
+    [
+        "Public/inbox/report.pdf",
+        "Public/inbox/notes.txt",
+    ],
+    ["alice222"],
+)
+```
+
 ---
 
 ## Delete
+
+Single file or folder prefix:
 
 ```python
 bobAmazon.delete_files(
@@ -129,6 +161,17 @@ bobAmazon.delete_files(
     True,                       # recursively delete descendants
     None,                       # no minimum version create-time
     None,                       # no maximum version create-time
+)
+```
+
+Several unrelated files — one batch call:
+
+```python
+bobAmazon.delete_files_by_paths(
+    [
+        "Public/inbox/report.pdf",
+        "Public/inbox/notes.txt",
+    ],
 )
 ```
 

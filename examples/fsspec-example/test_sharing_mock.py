@@ -18,6 +18,16 @@ class MockAltaStataFunctions:
             {"user_name": "uninit_user", "initialized": False}
         ]
         
+    def share_paths(self, file_paths, users):
+        path = file_paths[0]
+        self._attrs[path]["readers"] = " ".join(["bob123"] + list(users))
+        return [{"status": "OK"}]
+
+    def revoke_paths(self, file_paths, users):
+        path = file_paths[0]
+        self._attrs[path]["readers"] = "bob123"
+        return [{"status": "OK"}]
+
     def share_files(self, path, subdirs, start, end, users):
         self._attrs[path]["readers"] = " ".join(["bob123"] + users)
         return [{"status": "OK"}]

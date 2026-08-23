@@ -7,7 +7,6 @@ class AltaStataFunctionsTransportTests(unittest.TestCase):
     @patch("altastata.altastata_functions.AltaStataGrpcClient")
     def test_from_credentials_uses_grpc_backend(self, mock_grpc_cls):
         mock_client = MagicMock()
-        # from_credentials is a thin alias that calls from_upload.
         mock_grpc_cls.from_upload.return_value = mock_client
 
         from altastata.altastata_functions import AltaStataFunctions
@@ -39,6 +38,50 @@ class AltaStataFunctionsTransportTests(unittest.TestCase):
         )
         value = f.get_file_attribute("a/b.txt", None, "size")
         self.assertEqual("42", value)
+
+    @patch("altastata.altastata_functions.AltaStataGrpcClient")
+    def test_delete_files_by_paths_delegates_to_grpc(self, mock_grpc_cls):
+        mock_client = MagicMock()
+        mock_client.delete_files_by_paths.return_value = [{"operation_state": "DONE"}]
+        mock_grpc_cls.from_upload.return_value = mock_client
+
+        from altastata.altastata_functions import AltaStataFunctions
+
+        f = AltaStataFunctions.from_credentials("myuser=bob123\n", "PK", password="123")
+        paths = ["Public/a.txt", "Public/b.txt"]
+        result = f.delete_files_by_paths(paths)
+        self.assertEqual(1, len(result))
+        mock_client.delete_files_by_paths.assert_called_once_with(
+            paths, time_interval_start=None, time_interval_end=None
+        )
+
+    @patch("altastata.altastata_functions.AltaStataGrpcClient")
+    def test_share_paths_delegates_to_grpc(self, mock_grpc_cls):
+        mock_client = MagicMock()
+        mock_client.share.return_value = [{"operation_state": "DONE"}]
+        mock_grpc_cls.from_upload.return_value = mock_client
+
+        from altastata.altastata_functions import AltaStataFunctions
+
+        f = AltaStataFunctions.from_credentials("myuser=bob123\n", "PK", password="123")
+        paths = ["Public/a.txt", "Public/b.txt"]
+        result = f.share_paths(paths, ["alice222"])
+        self.assertEqual(1, len(result))
+        mock_client.share.assert_called_once_with(paths, ["alice222"])
+
+    @patch("altastata.altastata_functions.AltaStataGrpcClient")
+    def test_revoke_paths_delegates_to_grpc(self, mock_grpc_cls):
+        mock_client = MagicMock()
+        mock_client.revoke.return_value = [{"operation_state": "DONE"}]
+        mock_grpc_cls.from_upload.return_value = mock_client
+
+        from altastata.altastata_functions import AltaStataFunctions
+
+        f = AltaStataFunctions.from_credentials("myuser=bob123\n", "PK", password="123")
+        paths = ["Public/a.txt", "Public/b.txt"]
+        result = f.revoke_paths(paths, ["alice222"])
+        self.assertEqual(1, len(result))
+        mock_client.revoke.assert_called_once_with(paths, ["alice222"])
 
     @patch("altastata.altastata_functions.AltaStataGrpcClient")
     def test_legacy_transport_kwarg_warns_and_is_ignored(self, mock_grpc_cls):

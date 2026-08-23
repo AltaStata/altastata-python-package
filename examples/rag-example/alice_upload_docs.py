@@ -90,20 +90,14 @@ class AliceUploader:
         print(f"\n⏳ Waiting for files to be fully stored...")
         time.sleep(1)
         
-        # Step 2: Share all files
+        # Step 2: Share all files in one batch call
         print(f"\n4️⃣  Sharing {len(file_paths)} files with bob123...")
-        for file_path, filename in file_paths:
-            share_result = self.alice_altastata.share_files(
-                cloud_path_prefix=file_path,
-                including_subdirectories=True,
-                time_interval_start=time_start,
-                time_interval_end=time_end,
-                users=["bob123"]
-            )
-            if share_result:
-                print(f"   ✅ {filename}: Shared ({len(share_result)} version)")
-            else:
-                print(f"   ⚠️  {filename}: No versions shared (file may not be ready yet)")
+        paths = [file_path for file_path, _filename in file_paths]
+        share_result = self.alice_altastata.share_paths(paths, ["bob123"])
+        if share_result:
+            print(f"   ✅ Shared {len(share_result)} file version(s)")
+        else:
+            print("   ⚠️  No versions shared (files may not be ready yet)")
     
     def initialize(self):
         """Initialize Alice connection"""

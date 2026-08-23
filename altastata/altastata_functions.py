@@ -283,6 +283,22 @@ class AltaStataFunctions(S3BridgeMixin):
             time_interval_end=time_interval_end,
         )
 
+    def delete_files_by_paths(self, file_paths, time_interval_start=None, time_interval_end=None):
+        """Delete several explicit cloud paths in one gRPC call."""
+        return self.grpc_client.delete_files_by_paths(
+            file_paths,
+            time_interval_start=time_interval_start,
+            time_interval_end=time_interval_end,
+        )
+
+    def share_paths(self, file_paths, users):
+        """Share several explicit cloud paths in one gRPC call."""
+        return self.grpc_client.share(file_paths, users)
+
+    def revoke_paths(self, file_paths, readers_to_revoke):
+        """Revoke readers from several explicit cloud paths in one gRPC call."""
+        return self.grpc_client.revoke(file_paths, readers_to_revoke)
+
     def share_files(self, cloud_path_prefix: str, including_subdirectories: bool, time_interval_start: str, time_interval_end: str, users: list) -> list:
         return self.grpc_client.share_files(
             cloud_path_prefix, including_subdirectories, time_interval_start, time_interval_end, users

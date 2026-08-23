@@ -148,6 +148,7 @@ class AccountSetupClient:
             started = start_local_grpc_service(
                 grpc_server_command=grpc_server_command,
                 working_dir=grpc_server_working_dir,
+                grpc_port=endpoint.port,
             )
             _wait_for_port(endpoint.host, endpoint.port, timeout_s=start_timeout_s)
 

@@ -17,11 +17,11 @@ gateway over **gRPC** (default `127.0.0.1:9877`) and can auto-start it.
 from altastata import AltaStataFunctions
 
 # Two backends in one process — AWS and Azure accounts side by side
-bobFS = AltaStataFunctions.from_account_dir(
+bobAmazon = AltaStataFunctions.from_account_dir(
     "~/.altastata/accounts/amazon.rsa.bob123",
     password="your_password",
 )
-aliceFS = AltaStataFunctions.from_account_dir(
+bobAzure = AltaStataFunctions.from_account_dir(
     "~/.altastata/accounts/azure.rsa.alice222",
     password="your_password",
 )

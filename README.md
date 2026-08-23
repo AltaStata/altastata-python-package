@@ -38,17 +38,17 @@ Requires a configured account directory (steps 1–3 in **[USER_SETUP_GUIDE.md](
 from altastata import AltaStataFunctions
 
 # Two backends in one process — AWS and Azure accounts side by side
-bobFS = AltaStataFunctions.from_account_dir(
+bobAmazon = AltaStataFunctions.from_account_dir(
     "/path/to/.altastata/accounts/amazon.rsa.bob123",
     password="your_password",
 )
-aliceFS = AltaStataFunctions.from_account_dir(
+bobAzure = AltaStataFunctions.from_account_dir(
     "/path/to/.altastata/accounts/azure.rsa.alice222",
     password="your_password",
 )
 
-print(bobFS.list_cloud_files_versions("Public/", True, None, None))
-print(aliceFS.list_cloud_files_versions("Public/", True, None, None))
+print(bobAmazon.list_cloud_files_versions("Public/", True, None, None))
+print(bobAzure.list_cloud_files_versions("Public/", True, None, None))
 ```
 
 Next: file operations in [HOWTO.md](https://github.com/AltaStata/altastata-python-package/blob/main/docs/guides/HOWTO.md); PyTorch, fsspec, S3 in [INTEGRATIONS.md](https://github.com/AltaStata/altastata-python-package/blob/main/docs/guides/INTEGRATIONS.md).

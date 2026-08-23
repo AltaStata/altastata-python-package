@@ -68,18 +68,10 @@ Do not call `AltaStataFunctions()` directly.
 | `store(local_paths, local_fs_prefix, cloud_path_prefix, wait_until_done)` | Upload local files/dirs |
 | `retrieve_files(output_dir, cloud_path_prefix, including_subdirectories, snapshot_time, is_streaming, wait_until_done)` | Download to local dir |
 | `delete_files(cloud_path_prefix, including_subdirectories, time_interval_start, time_interval_end)` | Delete matching versions under one prefix |
-| `delete_files_by_paths(file_paths, time_interval_start=None, time_interval_end=None)` | Delete several explicit paths in one batch call |
+| `delete_files_by_paths(file_paths, time_interval_start=None, time_interval_end=None)` | Delete explicit paths |
 | `list_cloud_files_versions(cloud_path_prefix, including_subdirectories, time_interval_start, time_interval_end)` | List versions under a prefix |
 
 Time filters: use `None` where you want “no bound” (see method docs / examples).
-
-**Prefix vs batch** (share / revoke / delete):
-
-| Operation | One path or prefix | Several explicit paths |
-|-----------|-------------------|------------------------|
-| Share | `share_files` | `share_paths` |
-| Revoke | `revoke_reader_access` | `revoke_paths` |
-| Delete | `delete_files` | `delete_files_by_paths` |
 
 ```python
 bobAmazon.create_file("Public/hello.txt", b"hi")
@@ -102,9 +94,9 @@ for chunk in bobAmazon.get_input_stream("Public/hello.txt"):
 | Method | Role |
 |--------|------|
 | `share_files(prefix, including_subdirectories, time_start, time_end, users)` | Grant readers under one prefix |
-| `share_paths(file_paths, users)` | Grant readers on several explicit paths in one batch call |
+| `share_paths(file_paths, users)` | Grant readers on explicit paths |
 | `revoke_reader_access(prefix, including_subdirectories, time_start, time_end, readers_to_revoke)` | Revoke readers under one prefix (owner/custodian) |
-| `revoke_paths(file_paths, readers_to_revoke)` | Revoke readers on several explicit paths in one batch call |
+| `revoke_paths(file_paths, readers_to_revoke)` | Revoke readers on explicit paths |
 
 Single path (prefix query):
 
@@ -125,7 +117,7 @@ bobAmazon.revoke_reader_access(
 )
 ```
 
-Several unrelated files (one batch call each):
+Several explicit paths:
 
 ```python
 paths = [

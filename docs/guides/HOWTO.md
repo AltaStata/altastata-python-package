@@ -31,10 +31,6 @@ A **path prefix** names a subtree. `"Public/inbox"` with
 `including_subdirectories=True` is every file under that folder; `False`
 applies only to that exact path.
 
-For **several unrelated files**, use the batch path-list methods — one gRPC
-call on the combined set. Method reference: [PYTHON_API.md](PYTHON_API.md) ·
-examples: [Share](#share), [Revoke](#revoke), [Delete](#delete).
-
 ---
 
 ## Upload
@@ -112,7 +108,7 @@ bobAmazon.share_files(
 )
 ```
 
-Several unrelated files — one batch call (`share_paths` → single `shareCloudFiles` on the server):
+Several explicit paths:
 
 ```python
 bobAmazon.share_paths(
@@ -142,7 +138,7 @@ bobAmazon.revoke_reader_access(
 )
 ```
 
-Several unrelated files — one batch call:
+Several explicit paths:
 
 ```python
 bobAmazon.revoke_paths(
@@ -169,7 +165,7 @@ bobAmazon.delete_files(
 )
 ```
 
-Several unrelated files — one batch call:
+Several explicit paths:
 
 ```python
 bobAmazon.delete_files_by_paths(
@@ -234,8 +230,7 @@ bobAmazon.get_file_attribute(
 
 `list_cloud_files_versions`, `share_files`, `revoke_reader_access`,
 `delete_files`, and `retrieve_files` take a cloud path **or** a prefix. Pass
-the folder and `True` to include descendants. For several unrelated paths at
-once, use `share_paths`, `revoke_paths`, or `delete_files_by_paths`.
+the folder and `True` to include descendants:
 
 ```python
 bobAmazon.share_files(

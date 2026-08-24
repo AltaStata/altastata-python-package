@@ -5,13 +5,19 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name='altastata',
-    version='1.0.20260823.2',
+    version='1.0.20260823.3',
     author='AltaStata Inc.',
     author_email='contact@altastata.com',
     description='Python SDK for the AltaStata sovereign data fabric — AI/ML pipelines, CLI, fsspec, and S3',
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url='https://github.com/AltaStata/altastata-python-package',
+    url='https://www.altastata.com/',
+    project_urls={
+        'Homepage': 'https://www.altastata.com/',
+        'Source': 'https://github.com/AltaStata/altastata-python-package',
+        'Documentation': 'https://github.com/AltaStata/altastata-python-package#documentation',
+        'Java / BSL runtime': 'https://github.com/AltaStata/sovereign-data-fabric',
+    },
     packages=find_packages(),
     include_package_data=True,
     package_data={

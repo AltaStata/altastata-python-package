@@ -17,6 +17,7 @@ Examples:
 
 | Wheel | Bundled Java |
 | --- | --- |
+| `1.0.20260823.3` | `v2026.08.23` (PyPI Homepage → altastata.com) |
 | `1.0.20260823.2` | `v2026.08.23` (same Java tag; docs tone-down rebuild) |
 | `1.0.20260823.1` | `v2026.08.23` (batch path-list share/revoke/delete) |
 | `1.0.20260819.28` | `v2026.08.19` (prior release; still installable) |

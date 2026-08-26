@@ -16,6 +16,10 @@ Cookbooks: [INTEGRATIONS.md](https://github.com/AltaStata/altastata-python-packa
 Video with Red Hat: [YouTube](https://www.youtube.com/watch?v=2EGncReIi00)  
 For a live demo, email [contact@altastata.com](mailto:contact@altastata.com).
 
+![AltaStata data flow](https://raw.githubusercontent.com/AltaStata/altastata-python-package/main/docs/images/altastata_dataflow.png)
+
+Technology overview: [sovereign-data-fabric README](https://github.com/AltaStata/sovereign-data-fabric#altastata).
+
 ## Capabilities
 
 Pythonic APIs: Standard Python file I/O via fsspec (`create_filesystem`)  
@@ -28,10 +32,6 @@ Sharing & events: Users share encrypted files with each other; Python apps subsc
 Web UI User Console: Lighter browser UI on localhost only — same host as the Python install (http://127.0.0.1:9877)  
 Big Data: Databricks / Apache Spark (AltaStata Hadoop FS JAR — not in the wheel; see [UBER_JARS](https://github.com/AltaStata/sovereign-data-fabric/blob/main/docs/guides/UBER_JARS.md))  
 Clouds & backends: **AWS**, **Azure**, **GCP**, **IBM**, **Fusion**, **MinIO**, **POSIX / LocalFS** (local or shared path), and hybrid setups
-
-![AltaStata data flow](https://raw.githubusercontent.com/AltaStata/altastata-python-package/main/docs/images/altastata_dataflow.png)
-
-Technology overview: [sovereign-data-fabric README](https://github.com/AltaStata/sovereign-data-fabric#altastata).
 
 ## Quick start
 

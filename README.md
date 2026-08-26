@@ -12,7 +12,6 @@ Cookbooks: [INTEGRATIONS.md](https://github.com/AltaStata/altastata-python-packa
 - [IBM: data sovereignty for AI (LinuxONE Confidential Computing)](https://community.ibm.com/community/user/blogs/savita-kumari/2026/06/24/data-sovereignty-for-ai-integrating-alta-stata)
 
 ## Demo
-
 Video with Red Hat: [YouTube](https://www.youtube.com/watch?v=2EGncReIi00)
 
 For a live demo, email [contact@altastata.com](mailto:contact@altastata.com).

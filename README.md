@@ -21,16 +21,16 @@ Technology overview: [sovereign-data-fabric README](https://github.com/AltaStata
 
 ## Capabilities
 
-Pythonic APIs: Standard Python file I/O via fsspec (`create_filesystem`)  
-PyTorch: Train and load datasets directly from encrypted cloud paths (`AltaStataPyTorchDataset`)  
-TensorFlow: Same for TensorFlow / `tf.data` (`AltaStataTensorFlowDataset`)  
-LangChain & AI Agents: RAG loaders and agent tools over encrypted data; gateway auto-starts  
-S3-compatible API: boto3, aws CLI, s3fs on port **9876** — including Snowflake external stages that read S3  
-Distributed apps: gRPC API (Python client + JS clients via port **9877**)  
-Sharing & events: Users share encrypted files with each other; Python apps subscribe to SHARE/DELETE notifications  
-Web UI User Console: Lighter browser UI on localhost only — same host as the Python install (http://127.0.0.1:9877)  
-Big Data: Databricks / Apache Spark (AltaStata Hadoop FS JAR — not in the wheel; see [UBER_JARS](https://github.com/AltaStata/sovereign-data-fabric/blob/main/docs/guides/UBER_JARS.md))  
-Clouds & backends: **AWS**, **Azure**, **GCP**, **IBM**, **Fusion**, **MinIO**, **POSIX / LocalFS** (local or shared path), and hybrid setups
+- **Pythonic APIs:** Standard Python file I/O via fsspec (`create_filesystem`)
+- **PyTorch:** Train and load datasets directly from encrypted cloud paths (`AltaStataPyTorchDataset`)
+- **TensorFlow:** Same for TensorFlow / `tf.data` (`AltaStataTensorFlowDataset`)
+- **LangChain & AI Agents:** RAG loaders and agent tools over encrypted data; gateway auto-starts
+- **S3-compatible API:** boto3, aws CLI, s3fs on port **9876** — including Snowflake external stages that read S3
+- **Distributed apps:** gRPC API (Python client + JS clients via port **9877**)
+- **Sharing & events:** Users share encrypted files with each other; Python apps subscribe to SHARE/DELETE notifications
+- **Web UI User Console:** Lighter browser UI on localhost only — same host as the Python install (http://127.0.0.1:9877)
+- **Big Data:** Databricks / Apache Spark (AltaStata Hadoop FS JAR — not in the wheel; see [UBER_JARS](https://github.com/AltaStata/sovereign-data-fabric/blob/main/docs/guides/UBER_JARS.md))
+- **Clouds & backends:** **AWS**, **Azure**, **GCP**, **IBM**, **Fusion**, **MinIO**, **POSIX / LocalFS** (local or shared path), and hybrid setups
 
 ## Quick start
 

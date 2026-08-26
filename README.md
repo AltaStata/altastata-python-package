@@ -11,27 +11,27 @@ Cookbooks: [INTEGRATIONS.md](https://github.com/AltaStata/altastata-python-packa
 - [Red Hat: end-to-end security for AI (OpenShift confidential containers)](https://www.redhat.com/en/blog/end-end-security-ai-integrating-altastata-storage-red-hat-openshift-confidential-containers)
 - [IBM: data sovereignty for AI (LinuxONE Confidential Computing)](https://community.ibm.com/community/user/blogs/savita-kumari/2026/06/24/data-sovereignty-for-ai-integrating-alta-stata)
 
-### Demo
+## Demo
 
-- Video with Red Hat: [YouTube](https://www.youtube.com/watch?v=2EGncReIi00)
-- For a live demo, email [contact@altastata.com](mailto:contact@altastata.com)
+Video with Red Hat: [YouTube](https://www.youtube.com/watch?v=2EGncReIi00)  
+For a live demo, email [contact@altastata.com](mailto:contact@altastata.com).
+
+## Capabilities
+
+Pythonic APIs: Standard Python file I/O via fsspec (`create_filesystem`)  
+PyTorch: Train and load datasets directly from encrypted cloud paths (`AltaStataPyTorchDataset`)  
+TensorFlow: Same for TensorFlow / `tf.data` (`AltaStataTensorFlowDataset`)  
+LangChain & AI Agents: RAG loaders and agent tools over encrypted data; gateway auto-starts  
+S3-compatible API: boto3, aws CLI, s3fs on port **9876** — including Snowflake external stages that read S3  
+Distributed apps: gRPC API (Python client + JS clients via port **9877**)  
+Sharing & events: Users share encrypted files with each other; Python apps subscribe to SHARE/DELETE notifications  
+Web UI User Console: Lighter browser UI on localhost only — same host as the Python install (http://127.0.0.1:9877)  
+Big Data: Databricks / Apache Spark (AltaStata Hadoop FS JAR — not in the wheel; see [UBER_JARS](https://github.com/AltaStata/sovereign-data-fabric/blob/main/docs/guides/UBER_JARS.md))  
+Clouds & backends: **AWS**, **Azure**, **GCP**, **IBM**, **Fusion**, **MinIO**, **POSIX / LocalFS** (local or shared path), and hybrid setups
 
 ![AltaStata data flow](https://raw.githubusercontent.com/AltaStata/altastata-python-package/main/docs/images/altastata_dataflow.png)
 
 Technology overview: [sovereign-data-fabric README](https://github.com/AltaStata/sovereign-data-fabric#altastata).
-
-## Capabilities
-
-- **Pythonic APIs:** Standard Python file I/O via fsspec (`create_filesystem`)
-- **PyTorch:** Train and load datasets directly from encrypted cloud paths (`AltaStataPyTorchDataset`)
-- **TensorFlow:** Same for TensorFlow / `tf.data` (`AltaStataTensorFlowDataset`)
-- **LangChain & AI Agents:** RAG loaders and agent tools over encrypted data; gateway auto-starts
-- **S3-compatible API:** boto3, aws CLI, s3fs on port **9876** — including Snowflake external stages that read S3
-- **Distributed apps:** gRPC API (Python client + JS clients via port **9877**)
-- **Sharing & events:** Users share encrypted files with each other; Python apps subscribe to SHARE/DELETE notifications
-- **Web UI User Console:** Lighter browser UI on localhost only — same host as the Python install (http://127.0.0.1:9877)
-- **Big Data:** Databricks / Apache Spark (AltaStata Hadoop FS JAR — not in the wheel; see [UBER_JARS](https://github.com/AltaStata/sovereign-data-fabric/blob/main/docs/guides/UBER_JARS.md))
-- **Clouds & backends:** **AWS**, **Azure**, **GCP**, **IBM**, **Fusion**, **MinIO**, **POSIX / LocalFS** (local or shared path), and hybrid setups
 
 ## Quick start
 

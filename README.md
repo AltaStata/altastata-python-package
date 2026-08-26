@@ -11,10 +11,10 @@ Cookbooks: [INTEGRATIONS.md](https://github.com/AltaStata/altastata-python-packa
 - [Red Hat: end-to-end security for AI (OpenShift confidential containers)](https://www.redhat.com/en/blog/end-end-security-ai-integrating-altastata-storage-red-hat-openshift-confidential-containers)
 - [IBM: data sovereignty for AI (LinuxONE Confidential Computing)](https://community.ibm.com/community/user/blogs/savita-kumari/2026/06/24/data-sovereignty-for-ai-integrating-alta-stata)
 
-## Demo
-Video with Red Hat: [YouTube](https://www.youtube.com/watch?v=2EGncReIi00)
+### Demo
 
-For a live demo, email [contact@altastata.com](mailto:contact@altastata.com).
+- Video with Red Hat: [YouTube](https://www.youtube.com/watch?v=2EGncReIi00)
+- For a live demo, email [contact@altastata.com](mailto:contact@altastata.com)
 
 ![AltaStata data flow](https://raw.githubusercontent.com/AltaStata/altastata-python-package/main/docs/images/altastata_dataflow.png)
 

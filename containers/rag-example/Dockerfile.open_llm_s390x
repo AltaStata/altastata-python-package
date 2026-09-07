@@ -141,14 +141,20 @@ RUN if [ "$ENABLE_ZDNN" != "1" ]; then \
         ls -la /opt/models/ ; \
     fi
 
-# Install AltaStata from repo copy only (do not also pip install altastata from PyPI – would conflict).
-# Narrowed from `COPY . /src/altastata-python-package` so the 2.5 GB F16 GGUF
-# in the build context is not duplicated into a second layer.
-COPY setup.py pyproject.toml README.md /src/altastata-python-package/
-COPY altastata /src/altastata-python-package/altastata
-RUN pip install --no-cache-dir /src/altastata-python-package
-# gRPC stubs in altastata.grpc.v1 are generated with grpcio-tools 1.80.x.
-RUN pip install --no-cache-dir "grpcio>=1.80.0"
+# Keep native gRPC in a stable layer. AltaStata version bumps then reuse this
+# expensive s390x build instead of compiling grpcio again.
+RUN pip install --no-cache-dir "grpcio>=1.80.0" "protobuf>=5.29.6" fsspec
+
+# Install the released AltaStata wheel so the bundled Java runtime and Console
+# assets under altastata/lib are present. A source checkout does not contain
+# those generated artifacts because they are intentionally gitignored.
+ARG ALTASTATA_VERSION=
+RUN if [ -n "${ALTASTATA_VERSION}" ]; then \
+        pip install --no-cache-dir --no-deps "altastata==${ALTASTATA_VERSION}" ; \
+    else \
+        echo "WARN: ALTASTATA_VERSION not set. Installing latest from PyPI." && \
+        pip install --no-cache-dir --no-deps altastata ; \
+    fi
 
 # App code (no sample_documents; documents come from AltaStata — run indexer to populate)
 COPY examples/rag-example/open_llm /app/open_llm
@@ -157,7 +163,7 @@ RUN chmod +x /app/open_llm/docker-entrypoint.sh
 # Empty local_index (index from AltaStata at run time via indexer)
 RUN mkdir -p /app/open_llm/local_index
 
-ENV PYTHONPATH=/app/open_llm:/src/altastata-python-package
+ENV PYTHONPATH=/app/open_llm
 ENV WEB_HOST=0.0.0.0
 ENV WEB_PORT=8000
 ENV VECTOR_STORE=simple

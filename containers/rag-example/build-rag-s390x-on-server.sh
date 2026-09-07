@@ -140,8 +140,8 @@ else
   TAG_ARGS="-t altastata/rag-open-llm-s390x:latest -t altastata/rag-open-llm-s390x:\${RAG_VERSION}"
   TAG_REPORT="altastata/rag-open-llm-s390x:${RAG_VERSION} and :latest"
 fi
-echo "Building image on server — tags=${TAG_REPORT} ENABLE_ZDNN=${ENABLE_ZDNN}"
-ssh $SSH_OPTS "$SSH_HOST" "cd $REMOTE_DIR && source version.sh && docker build --build-arg ENABLE_ZDNN=$ENABLE_ZDNN -f containers/rag-example/Dockerfile.open_llm_s390x $TAG_ARGS ."
+echo "Building image on server — tags=${TAG_REPORT} ENABLE_ZDNN=${ENABLE_ZDNN} altastata==$ALTASTATA_PYPI_VERSION"
+ssh $SSH_OPTS "$SSH_HOST" "cd $REMOTE_DIR && source version.sh && docker build --build-arg ENABLE_ZDNN=$ENABLE_ZDNN --build-arg ALTASTATA_VERSION=\$ALTASTATA_PYPI_VERSION -f containers/rag-example/Dockerfile.open_llm_s390x $TAG_ARGS ."
 
 echo "Done. Image $TAG_REPORT is on the server."
 echo "Accounts — if synced — are under $REMOTE_ALTASTATA_ACCOUNTS. Run with:"

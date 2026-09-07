@@ -116,6 +116,9 @@ ENV LC_ALL=en_US.UTF-8
 # altastata-grpc-server safe default is loopback; override here so Docker
 # port forwarding reaches it. See AltaStata/sovereign-data-fabric (altastata-grpc)/TLS_DESIGN.md.
 ENV ALTASTATA_GRPC_BIND_ADDRESS=0.0.0.0
+# Enable the co-hosted S3-compatible API on :9876. Without this explicit flag
+# the Java process starts, but S3 routes return 404.
+ENV ALTASTATA_SERVICES_S3GATEWAY_ENABLED=true
 
 # Console UI on :9877 (default on). Set ENABLE_ALTASTATA_CONSOLE_UI=0 to disable.
 # to auto-start altastata-grpc-server alongside Jupyter Lab.

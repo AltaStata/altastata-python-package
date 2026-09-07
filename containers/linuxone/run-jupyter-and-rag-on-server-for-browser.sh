@@ -28,11 +28,12 @@ REMOTE_ALTASTATA_ACCOUNTS="${REMOTE_ALTASTATA_ACCOUNTS:-/root/.altastata/account
 REMOTE_GREP11_YAML="${REMOTE_GREP11_YAML:-/etc/ep11client/grep11client.yaml}"
 REMOTE_HPCS_DIR="${REMOTE_HPCS_DIR:-/home/jovyan/hpcs}"
 REMOTE_HPCS_BLOB="${REMOTE_HPCS_BLOB:-$REMOTE_HPCS_DIR/hpcs-privkey.blob}"
-REMOTE_PROPERTIES_FILE="${REMOTE_PROPERTIES_FILE:-$REMOTE_ALTASTATA_ACCOUNTS/$ACCOUNT_NAME/my.user.properties}"
 REMOTE_MODELS_DIR="${REMOTE_MODELS_DIR:-/root/llama_models}"
+REMOTE_RAG_INDEX="${REMOTE_RAG_INDEX:-/opt/altastata-rag-index}"
+ALTASTATA_ACCOUNT_ID="${ALTASTATA_ACCOUNT_ID:-${ACCOUNT_NAME##*.}}"
 
-JUP_IMG="altastata/jupyter-datascience-s390x:${JUPYTER_VERSION}"
-RAG_IMG="altastata/rag-open-llm-s390x:${RAG_VERSION}"
+JUP_IMG="${JUP_IMG:-ghcr.io/altastata/jupyter-datascience-s390x:${JUPYTER_VERSION}}"
+RAG_IMG="${RAG_IMG:-ghcr.io/altastata/rag-open-llm-s390x:${RAG_VERSION}}"
 
 JUP_CTR="${JUP_CTR:-altastata-jupyter-s390x-web}"
 RAG_CTR="${RAG_CTR:-rag-open-llm-s390x-web}"
@@ -40,7 +41,7 @@ RAG_CTR="${RAG_CTR:-rag-open-llm-s390x-web}"
 JUPYTER_HOST_PORT="${JUPYTER_HOST_PORT:-8888}"
 RAG_HOST_PORT="${RAG_HOST_PORT:-8000}"
 
-REMOTE_JUP_WORK="${REMOTE_JUP_WORK:-/root/jupyter-web-work}"
+REMOTE_JUP_WORK="${REMOTE_JUP_WORK:-/home/ubuntu/jupyter-data}"
 
 LLM_PROVIDER="${LLM_PROVIDER:-llama-cpp}"
 QUERY_TIMEOUT="${QUERY_TIMEOUT:-400}"
@@ -58,7 +59,7 @@ echo "RAG image:     $RAG_IMG  container: $RAG_CTR  port: $RAG_HOST_PORT"
 echo "RAG account:   $REMOTE_ALTASTATA_ACCOUNTS/$ACCOUNT_NAME"
 echo ""
 
-ssh $SSH_OPTS "$SSH_HOST" "mkdir -p '$REMOTE_JUP_WORK' '$REMOTE_MODELS_DIR'" || true
+ssh $SSH_OPTS "$SSH_HOST" "mkdir -p '$REMOTE_JUP_WORK' '$REMOTE_MODELS_DIR' '$REMOTE_RAG_INDEX'" || true
 
 # Console UI (gRPC + SPA) defaults to enabled inside the Jupyter image but is
 # only reachable through the port we publish here. Bind 9877 the same way 8888
@@ -84,12 +85,15 @@ fi
 if [ "$RUN_JUP" = "1" ]; then
   echo "--- Starting Jupyter (detached)"
   ssh $SSH_OPTS "$SSH_HOST" "docker rm -f '$JUP_CTR' 2>/dev/null || true"
-  ssh $SSH_OPTS "$SSH_HOST" "docker run -d --name '$JUP_CTR' \
+  ssh $SSH_OPTS "$SSH_HOST" "docker run -d --name '$JUP_CTR' --restart unless-stopped --user root \
     -p '${JUPYTER_HOST_PORT}:8888' \
-    -p '${JUPYTER_CONSOLE_UI_HOST_PORT}:9877' \
+    -p '127.0.0.1:9876:9876' \
+    -p '127.0.0.1:${JUPYTER_CONSOLE_UI_HOST_PORT}:9877' \
     -e 'ENABLE_ALTASTATA_CONSOLE_UI=${ENABLE_ALTASTATA_CONSOLE_UI:-1}' \
+    -e ALTASTATA_LOCAL_MODE_ALLOW_ACCOUNT_DIRECTORY=true \
+    -e ALTASTATA_SERVICES_S3GATEWAY_ENABLED=true \
     -v '${REMOTE_JUP_WORK}:/home/jovyan/work' \
-    -v '/root/.altastata:/opt/app-root/src/.altastata:rw' \
+    -v '$REMOTE_ALTASTATA_ACCOUNTS:/root/.altastata/accounts:ro' \
     $JUP_HPCS_MOUNTS \
     '$JUP_IMG'"
 else
@@ -100,7 +104,7 @@ if [ "$RUN_RAG" = "1" ]; then
   HPCS_ENV=""
   HPCS_MOUNTS=""
   case "$ACCOUNT_NAME" in *hpcs*)
-    ssh $SSH_OPTS "$SSH_HOST" "for f in '$REMOTE_GREP11_YAML' '$REMOTE_HPCS_BLOB' '$REMOTE_PROPERTIES_FILE'; do
+    ssh $SSH_OPTS "$SSH_HOST" "for f in '$REMOTE_GREP11_YAML' '$REMOTE_HPCS_BLOB'; do
       [ -f \"\$f\" ] || { echo \"Missing: \$f\"; exit 1; }; echo \"  OK \$f\"; done"
     HPCS_ENV="-e ALTASTATA_USE_HPCS=1 -e GREP11_YAML=/etc/ep11client/grep11client.yaml -e HPCS_PRIV_KEY_BLOB_PATH=/home/jovyan/hpcs/hpcs-privkey.blob"
     HPCS_MOUNTS="-v $REMOTE_GREP11_YAML:/etc/ep11client/grep11client.yaml:ro -v $REMOTE_HPCS_DIR:/home/jovyan/hpcs:ro"
@@ -115,8 +119,9 @@ if [ "$RUN_RAG" = "1" ]; then
   echo "--- Starting RAG (detached)"
   ssh $SSH_OPTS "$SSH_HOST" "docker rm -f '$RAG_CTR' 2>/dev/null || true"
   # shellcheck disable=SC2086
-  ssh $SSH_OPTS "$SSH_HOST" "docker run -d --name '$RAG_CTR' -p '${RAG_HOST_PORT}:8000' \
+  ssh $SSH_OPTS "$SSH_HOST" "docker run -d --name '$RAG_CTR' --restart unless-stopped --user root -p '${RAG_HOST_PORT}:8000' \
     -e ALTASTATA_ACCOUNT_DIR=$REMOTE_ALTASTATA_ACCOUNTS/$ACCOUNT_NAME \
+    -e ALTASTATA_ACCOUNT_ID=$ALTASTATA_ACCOUNT_ID \
     $HPCS_ENV \
     -e LLM_PROVIDER=$LLM_PROVIDER \
     -e QUERY_TIMEOUT=$QUERY_TIMEOUT \
@@ -124,6 +129,7 @@ if [ "$RUN_RAG" = "1" ]; then
     $LLAMA_OPTS \
     -v $REMOTE_ALTASTATA_ACCOUNTS:$REMOTE_ALTASTATA_ACCOUNTS:ro \
     -v $REMOTE_MODELS_DIR:/models \
+    -v $REMOTE_RAG_INDEX:/app/open_llm/local_index \
     $HPCS_MOUNTS \
     '$RAG_IMG'"
 else

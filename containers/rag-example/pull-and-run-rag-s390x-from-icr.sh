@@ -27,6 +27,9 @@
 
 set -e
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+echo "DEPRECATED: RAG distribution moved to GHCR; forwarding to the GHCR helper." >&2
+exec "$SCRIPT_DIR/pull-and-run-rag-s390x-from-ghcr.sh" "$@"
+
 REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 source "$REPO_ROOT/version.sh"
 SSH_KEY="${SSH_KEY:-$HOME/.ssh/id_rsa}"

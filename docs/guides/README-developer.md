@@ -287,7 +287,7 @@ docker run \
   --name altastata-jupyter-s390x \
   -d \
   -p 8888:8888 \
-  icr.io/altastata/jupyter-datascience-s390x:${VERSION}
+  ghcr.io/altastata/jupyter-datascience-s390x:${JUPYTER_VERSION}
 ```
 
 **If the container won’t run**

@@ -6,7 +6,7 @@ Complete examples and documentation for building secure RAG (Retrieval-Augmented
 
 ### Option 1: Open-source stack (Chroma + Ollama + Web UI) ⭐ NO GCP
 
-Fully local or self-hosted: Chroma, Ollama, sentence-transformers, and an HTTPS-capable web interface. See **[open_llm/](open_llm/)** for Docker and usage. Open_llm also supports **IBM Z/s390x** (build via `containers/rag-example/build-rag-s390x-on-server.sh`, push via `containers/rag-example/push-rag-s390x-to-icr-from-server.sh`, run via `containers/rag-example/pull-and-run-rag-s390x-from-icr.sh`; see [open_llm/README.md](open_llm/README.md)).
+Fully local or self-hosted: Chroma, Ollama, sentence-transformers, and an HTTPS-capable web interface. See **[open_llm/](open_llm/)** for Docker and usage. Open_llm also supports **IBM Z/s390x** (build via `containers/rag-example/build-rag-s390x-on-server.sh`, push via `containers/rag-example/push-rag-s390x-to-ghcr-from-server.sh`, run via `containers/rag-example/pull-and-run-rag-s390x-from-ghcr.sh`; see [open_llm/README.md](open_llm/README.md)).
 
 ### Option 2: Basic RAG (HuggingFace - Local)
 

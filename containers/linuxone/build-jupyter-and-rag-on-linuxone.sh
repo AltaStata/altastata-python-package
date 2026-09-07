@@ -54,6 +54,7 @@ else
 fi
 # shellcheck disable=SC2086
 docker build --build-arg ENABLE_ZDNN="$ENABLE_ZDNN" \
+  --build-arg ALTASTATA_VERSION="$ALTASTATA_PYPI_VERSION" \
   -f containers/rag-example/Dockerfile.open_llm_s390x \
   ${RAG_TAGS} .
 

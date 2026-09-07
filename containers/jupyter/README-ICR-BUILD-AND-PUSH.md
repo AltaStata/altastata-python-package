@@ -1,5 +1,11 @@
 # Build and Push Docker Images (ICR)
 
+> **Legacy:** s390x images moved to GHCR in September 2026. Use
+> `push-jupyter-s390x-to-ghcr-from-server.sh`,
+> `push-rag-s390x-to-ghcr-from-server.sh`, and
+> `pull-and-run-rag-s390x-from-ghcr.sh`. The ICR token workflow below is kept
+> only as historical reference.
+
 This guide covers building the IBM s390x image and the local arm64 test image,
 then tagging and pushing the s390x image to IBM Container Registry (ICR).
 

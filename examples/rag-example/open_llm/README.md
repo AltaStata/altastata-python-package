@@ -487,7 +487,7 @@ On runs like this, **vector search + AltaStata chunk reads are negligible versus
 docker run -d -p 8000:8000 \
   -e ALTASTATA_ACCOUNT_DIR=/path/to/altastata-account \
   -v /path/to/altastata-accounts:/path/to/altastata-accounts:ro \
-  icr.io/altastata/rag-open-llm-s390x:<VERSION>
+  ghcr.io/altastata/rag-open-llm-s390x:<VERSION>
 ```
 
 **Maintainer workflow (us, when shipping a new image):**
@@ -507,7 +507,7 @@ docker run -d -p 8000:8000 \
 
    ```bash
    ./containers/rag-example/build-rag-s390x-on-server.sh
-   ICR_TOKEN=… ./containers/rag-example/push-rag-s390x-to-icr-from-server.sh
+   ./containers/rag-example/push-rag-s390x-to-ghcr-from-server.sh
    ```
 
    For research builds with the F16 + zDNN path active (~6.6 GB image), set the flag:
@@ -584,12 +584,12 @@ Pre-built “model-in-a-container” images (e.g. Red Hat Granite on Docker Hub)
 2. **Remote LLM** – Run the RAG app on 390 and set `OLLAMA_BASE_URL` (or equivalent) to a server that runs the LLM (e.g. on x86). No LLM container on 390.
 3. **Build llama.cpp or Ollama on s390x** – llama.cpp can be built on 390 ([build guide](https://fossies.org/linux/llama.cpp/docs/build-s390x.md#:~:text=%22Fossies%22%20%2D%20the%20Free%20Open,cmake%20%2DS%20.%20%2D)); Ollama can also be built from source. Run the LLM on 390 yourself; no pre-built s390x LLM image to pull.
 
-**RAG container image for s390x:** Build on the server, push to ICR, then pull and run. The container builds the index from AltaStata at startup if no index exists (see [Indexing inside Docker](#4-indexing-inside-docker)).
+**RAG container image for s390x:** Build on the server, push to GHCR, then pull and run. The container builds the index from AltaStata at startup if no index exists (see [Indexing inside Docker](#4-indexing-inside-docker)).
 
 **Workflow (from your Mac):**
 1. **Build on LinuxONE server:** `./containers/rag-example/build-rag-s390x-on-server.sh` (syncs repo, builds image on the server).
-2. **Push to ICR:** `./containers/rag-example/push-rag-s390x-to-icr-from-server.sh` (requires `ICR_TOKEN`).
-3. **Pull and run:** `./containers/rag-example/pull-and-run-rag-s390x-from-icr.sh` (pulls image on the server, runs container, runs a test query).
+2. **Push to GHCR:** `./containers/rag-example/push-rag-s390x-to-ghcr-from-server.sh`.
+3. **Pull and run:** `./containers/rag-example/pull-and-run-rag-s390x-from-ghcr.sh`.
 
 **Server setup:** The server needs `grep11client.yaml` (default `/etc/ep11client/grep11client.yaml`), the HPCS key blob at `/home/jovyan/hpcs/hpcs-privkey.blob`, and the account `*.user.properties` file in the account directory (e.g. `/root/.altastata/accounts/amazon.rsa.hpcs.serge678/`). The properties file should be container-ready: no `hpcs-yaml-path` or `hpcs-priv-key-blob-path` entries. See [containers/jupyter/README-ICR-BUILD-AND-PUSH.md](../../../containers/jupyter/README-ICR-BUILD-AND-PUSH.md) for details.
 
@@ -601,10 +601,11 @@ Pre-built “model-in-a-container” images (e.g. Red Hat Granite on Docker Hub)
 # Or on the s390x server directly (from repo root; image tag = RAG_VERSION in version.sh)
 source ./version.sh
 docker build -f containers/rag-example/Dockerfile.open_llm_s390x --platform linux/s390x \
+  --build-arg ALTASTATA_VERSION=${ALTASTATA_PYPI_VERSION} \
   -t altastata/rag-open-llm-s390x:latest -t altastata/rag-open-llm-s390x:${RAG_VERSION} .
 ```
 
-**Run (after build or pull from ICR):** Use **`RAG_VERSION`** from **`version.sh`** for the image tag.
+**Run (after build or pull from GHCR):** Use **`RAG_VERSION`** from **`version.sh`** for the image tag.
 ```bash
 # From repository root
 source ./version.sh
@@ -620,15 +621,15 @@ docker run -d -p 8000:8000 --name rag \
 # Open http://<host>:8000/
 ```
 
-**Pull from IBM Container Registry (ICR):** See [containers/jupyter/README-ICR-BUILD-AND-PUSH.md](../../../containers/jupyter/README-ICR-BUILD-AND-PUSH.md) for push; to run from a pre-pushed image (tag **`RAG_VERSION`** in `version.sh`):
+**Pull from GitHub Container Registry (GHCR):**
 ```bash
 # From repository root
 source ./version.sh
-docker pull icr.io/altastata/rag-open-llm-s390x:${RAG_VERSION}
-# Then run as above, using image icr.io/altastata/rag-open-llm-s390x:${RAG_VERSION}
+docker pull ghcr.io/altastata/rag-open-llm-s390x:${RAG_VERSION}
+# Then run as above, using image ghcr.io/altastata/rag-open-llm-s390x:${RAG_VERSION}
 ```
 
-**Pull and run from your Mac (script):** From repo root run `./containers/rag-example/pull-and-run-rag-s390x-from-icr.sh`. It SSHs to the server, stops/removes any existing RAG container, pulls the image, runs the container, runs a test query, and leaves the container running. Set `ICR_TOKEN` on your Mac. **Accounts:** Default is **HPCS** (`amazon.rsa.hpcs.serge678`; no password; script passes `ALTASTATA_USE_HPCS=1`). For **bob123** (password-based): `ACCOUNT_NAME=amazon.rsa.bob123 ./containers/rag-example/pull-and-run-rag-s390x-from-icr.sh`. Optional env: `SSH_HOST`, `SSH_KEY`, `HF_LLM_MODEL=gpt2` (8 GB VMs). Account dir must exist on the server at `$REMOTE_ALTASTATA_ACCOUNTS/$ACCOUNT_NAME` (default `/root/.altastata/accounts/...`).
+**Pull and run from your Mac (script):** From repo root run `./containers/rag-example/pull-and-run-rag-s390x-from-ghcr.sh`. It pulls the image, replaces the existing container, and leaves it running with `--restart unless-stopped`. **Accounts:** Set `ACCOUNT_NAME` (for example `amazon.rsa.hpcs.serge678`). Optional env: `SSH_HOST`, `SSH_KEY`, `RAG_INDEX_PATH`, and llama.cpp model overrides. Account directories default to `$REMOTE_ALTASTATA_ACCOUNTS` (`/root/.altastata/accounts`).
 
 Use an NNPA-capable host for faster inference. **Faster models:** set **`HF_LLM_MODEL=HuggingFaceTB/SmolLM2-360M-Instruct`** for roughly 2–3× faster inference than TinyLlama with still usable RAG answers (360M params, instruction-tuned). **`HF_LLM_MODEL=gpt2`** is fastest but gives weak quality. On **small VMs (8 GB RAM)** use **gpt2** to avoid OOM, or **watsonx** for better answers without a local model.
 

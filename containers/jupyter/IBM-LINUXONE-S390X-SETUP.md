@@ -322,22 +322,22 @@ The **Open LLM RAG** app (simple vector store + Transformers + AltaStata) can be
 
 ### Build and run
 
-**Option A – Pull from ICR and run:** If the image is published to ICR, from your Mac run:
+**Option A – Pull from GHCR and run:** From your Mac run:
 ```bash
-./containers/rag-example/pull-and-run-rag-s390x-from-icr.sh
+./containers/rag-example/pull-and-run-rag-s390x-from-ghcr.sh
 ```
-- SSHs to the server, **stops/removes** any existing `rag-s390x-test` container **before** pulling, pulls `icr.io/altastata/rag-open-llm-s390x:${RAG_VERSION}` (same as **`RAG_VERSION`** in repo **`version.sh`**), runs the container, runs a test query, then **leaves the container running** (no stop/rm at the end).
-- Set **`ICR_TOKEN`** on your Mac so the script can log in to icr.io on the server before pull.
+- Pulls `ghcr.io/altastata/rag-open-llm-s390x:${RAG_VERSION}`, replaces the existing RAG container, and leaves it running with `--restart unless-stopped`.
+- Public packages need no registry token. For a private package, set `GHCR_USER` and `GHCR_TOKEN`.
 - **Account:** Default is **HPCS** (`amazon.rsa.hpcs.example`; no password). For **bob123** (password-based):
   ```bash
-  ACCOUNT_NAME=amazon.rsa.bob123 ./containers/rag-example/pull-and-run-rag-s390x-from-icr.sh
+  ACCOUNT_NAME=amazon.rsa.bob123 ./containers/rag-example/pull-and-run-rag-s390x-from-ghcr.sh
   ```
-- Optional: `SSH_HOST`, `SSH_KEY`, `HF_LLM_MODEL=gpt2` (8 GB VMs). See [README-ICR-BUILD-AND-PUSH.md](README-ICR-BUILD-AND-PUSH.md) for full pull-and-run options.
+- Optional: `SSH_HOST`, `SSH_KEY`, and llama.cpp model overrides.
 
 Or manually on the server (from repo root; RAG tag is **`RAG_VERSION`**, not Jupyter’s **`JUPYTER_VERSION`**):
 ```bash
 source ./version.sh
-docker pull icr.io/altastata/rag-open-llm-s390x:${RAG_VERSION}
+docker pull ghcr.io/altastata/rag-open-llm-s390x:${RAG_VERSION}
 # Then run with your account dir; see "Run the container" below.
 ```
 
@@ -348,7 +348,7 @@ docker pull icr.io/altastata/rag-open-llm-s390x:${RAG_VERSION}
 Set `SSH_HOST` and `SSH_KEY` if needed (see script defaults). The script uses `GSSAPIAuthentication=no` and `PreferredAuthentications=publickey` to speed up SSH.
 
 **Run the container** (after build or pull):
-- After pushing to ICR, from your Mac run `./containers/rag-example/pull-and-run-rag-s390x-from-icr.sh` to pull and run on the server (or run `docker run` manually on the server).
+- After pushing to GHCR, run `./containers/rag-example/pull-and-run-rag-s390x-from-ghcr.sh` from your Mac (or run `docker run` manually on the server).
 - Manually on the server: use the same `docker run` as in [examples/rag-example/open_llm/README.md](../../examples/rag-example/open_llm/README.md) (env `ALTASTATA_ACCOUNT_DIR`, `HF_LLM_MODEL`, volume mount for `$HOME/.altastata/accounts`). For HPCS accounts add `-e ALTASTATA_USE_HPCS=1`, mount `/home/jovyan/hpcs:/home/jovyan/hpcs:ro`, and set `HPCS_PRIV_KEY_BLOB_PATH=/home/jovyan/hpcs/hpcs-privkey.blob`. Open `http://<host>:8000/`.
 
 On **8 GB VMs** use **gpt2** (`HF_LLM_MODEL=gpt2`); on 16+ GB use `HF_LLM_MODEL=TinyLlama/TinyLlama-1.1B-Chat-v1.0`. See [examples/rag-example/open_llm/README.md](../../examples/rag-example/open_llm/README.md) for full s390x options (watsonx, llama.cpp, etc.).

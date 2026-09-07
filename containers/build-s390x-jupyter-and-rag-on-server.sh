@@ -137,7 +137,7 @@ EOS
 fi
 
 echo ""
-echo "When builds finish (see log), run Jupyter + RAG for browser testing before ICR push:"
+echo "When builds finish (see log), run Jupyter + RAG for browser testing before GHCR push:"
 echo "  ./containers/linuxone/run-jupyter-and-rag-on-server-for-browser.sh"
-echo "Push Jupyter: ./containers/jupyter/push-jupyter-s390x-to-icr-from-server.sh"
-echo "Push RAG:     ICR_TOKEN=... ./containers/rag-example/push-rag-s390x-to-icr-from-server.sh"
+echo "Push Jupyter: ./containers/jupyter/push-jupyter-s390x-to-ghcr-from-server.sh"
+echo "Push RAG:     ./containers/rag-example/push-rag-s390x-to-ghcr-from-server.sh"

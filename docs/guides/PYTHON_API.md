@@ -69,7 +69,7 @@ Do not call `AltaStataFunctions()` directly.
 | `retrieve_files(output_dir, cloud_path_prefix, including_subdirectories, snapshot_time, is_streaming, wait_until_done)` | Download to local dir |
 | `delete_files(cloud_path_prefix, including_subdirectories, time_interval_start, time_interval_end)` | Delete matching versions under one prefix |
 | `delete_files_by_paths(file_paths, time_interval_start=None, time_interval_end=None)` | Delete explicit paths |
-| `list_cloud_files_versions(cloud_path_prefix, including_subdirectories, time_interval_start, time_interval_end)` | List versions under a prefix |
+| `list_cloud_files_versions(cloud_path_prefix, including_subdirectories, time_interval_start, time_interval_end, max_files=None)` | List versions under a prefix. Optional `max_files` stops after N files (lazy catalog; further pages not fetched once N files complete). `None` / `<= 0` = full list. |
 
 Time filters: use `None` where you want “no bound” (see method docs / examples).
 
@@ -78,6 +78,8 @@ bobAmazon.create_file("Public/hello.txt", b"hi")
 # size must match the bytes you intend to read (or the known object size)
 data = bobAmazon.get_buffer("Public/hello.txt", None, 0, 4, 2)
 versions = bobAmazon.list_cloud_files_versions("Public/", True, None, None)
+# First 10 files only (does not drain the rest of a large prefix)
+few = bobAmazon.list_cloud_files_versions("Public/", True, None, None, max_files=10)
 
 bobAmazon.get_file_attribute("Public/hello.txt", None, "size")    # bytes
 bobAmazon.get_file_attribute("Public/hello.txt", None, "readers") # access list

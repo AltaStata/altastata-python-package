@@ -603,12 +603,21 @@ class AltaStataGrpcClient:
         including_subdirectories: bool = True,
         time_interval_start: Optional[str] = None,
         time_interval_end: Optional[str] = None,
+        max_files: Optional[int] = None,
     ) -> List[List[str]]:
+        """List file versions under a prefix.
+
+        Args:
+            max_files: Optional cap on how many files to return. None/<=0 = unlimited.
+                Stops the server-side catalog iterator early once N files are complete
+                so further cloud pages are not fetched. Order follows the catalog stream.
+        """
         req = self._fileops_pb2.ListVersionsRequest(
             cloud_path_prefix=cloud_path_prefix,
             including_subdirectories=including_subdirectories,
             time_interval_start=time_interval_start or "",
             time_interval_end=time_interval_end or "",
+            max_files=0 if max_files is None or max_files <= 0 else int(max_files),
         )
         out: List[List[str]] = []
         for entry in self._fileops_stub.ListVersions(req, metadata=self._metadata):

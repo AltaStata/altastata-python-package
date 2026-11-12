@@ -8,7 +8,7 @@
  * PATENT NOTICE: Protected by US Patent No. 10,693,660.
  *
  * For the full license text, see the LICENSE.md file in the root of the repository,
- * or visit https://altastata.com/licensing
+ * or https://github.com/AltaStata/sovereign-data-fabric/blob/main/LICENSE.md
  */
 
 syntax = "proto3";
@@ -67,6 +67,10 @@ message ListVersionsRequest {
   bool including_subdirectories = 2;
   string time_interval_start = 3;
   string time_interval_end = 4;
+  // Optional cap on how many files (VersionEntry messages) to return.
+  // 0 or unset = unlimited. Cloud listing is page-by-page; stopping early
+  // avoids fetching further catalog pages. Order follows the catalog stream.
+  int32 max_files = 5;
 }
 
 message VersionEntry {

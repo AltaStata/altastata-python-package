@@ -327,12 +327,25 @@ class AltaStataFunctions(S3BridgeMixin):
             readers_to_revoke,
         )
 
-    def list_cloud_files_versions(self, cloudPathPrefix, includingSubdirectories, timeIntervalStart, timeIntervalEnd):
+    def list_cloud_files_versions(
+        self,
+        cloudPathPrefix,
+        includingSubdirectories,
+        timeIntervalStart,
+        timeIntervalEnd,
+        max_files=None,
+    ):
+        """List file versions under a prefix.
+
+        Args:
+            max_files: Optional cap on how many files to return. None/<=0 = unlimited.
+        """
         return self.grpc_client.list_cloud_files_versions(
             cloudPathPrefix,
             including_subdirectories=includingSubdirectories,
             time_interval_start=timeIntervalStart,
             time_interval_end=timeIntervalEnd,
+            max_files=max_files,
         )
 
     def get_buffer(self, cloudFilePath, snapshotTime, startPosition, howManyChunksInParallel, size, trust_cached_size=False):

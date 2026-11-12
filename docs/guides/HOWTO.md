@@ -90,6 +90,11 @@ for row in bobAmazon.list_cloud_files_versions(
     None,       # no maximum create-time
 ):
     print(row)
+
+# Optional max_files: stop after N files (lazy catalog; further pages not fetched once N files complete).
+# None / <= 0 = full list. Maps to gRPC ListVersions.max_files.
+for row in bobAmazon.list_cloud_files_versions("Public/", True, None, None, max_files=10):
+    print(row)
 ```
 
 ---
